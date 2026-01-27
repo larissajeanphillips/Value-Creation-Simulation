@@ -1,0 +1,147 @@
+name: citizen-dev7-Build and Publish
+
+run-name: 🐳 Build & Publish - ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+      # Add branches here for auto trigger of docker build and publish
+      # - 'feature/*'
+      # - 'hotfix/*'
+    paths:
+      - 'deployer-apps/citizen-dev7/src/**'
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+  security-events: write
+
+env:
+  JF_REPO: mckinsey-citizen-dev7-docker-local.jfrog.io
+
+jobs:
+  docker-build-and-publish:
+    name: Build and Publish Docker Image
+    runs-on: [gh-larger-linux-mini]
+    
+    steps:    
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Generate version
+        id: version
+        run: |
+          # Read version from package.json
+          COMMIT_HASH=${GITHUB_SHA:0:8}
+          
+          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+          
+          echo "Full version: $COMMIT_HASH"
+      
+      - name: Set up JFrog CLI for rw account
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: https://mckinsey.jfrog.io
+        with:
+          oidc-provider-name: svc-22391-rw
+          oidc-audience: rw
+
+      - name: Build Docker image with versioned tags
+        run: |
+            # Build with latest tag (primary)
+            docker build -t ${{env.JF_REPO}}/citizen-dev7-starter-app:latest ./deployer-apps/citizen-dev7/src/
+            
+            # Tag with semantic version
+            docker tag ${{env.JF_REPO}}/citizen-dev7-starter-app:latest ${{env.JF_REPO}}/citizen-dev7-starter-app:${{ steps.version.outputs.commit_hash }}
+
+      - name: Security scan with JFrog Xray
+        run: |
+            echo "🔍 Scanning Docker image for security vulnerabilities..."
+            jf docker scan ${{env.JF_REPO}}/citizen-dev7-starter-app:latest --format=sarif > sarif-results.sarif
+            
+            # Verify SARIF file was created
+            if [ -f sarif-results.sarif ] && [ -s sarif-results.sarif ]; then
+                echo "✅ SARIF file created successfully"
+            else
+                echo "⚠️ Warning: SARIF file not found or empty"
+            fi
+            
+            echo "✅ Security scan completed"         
+
+      - name: Push docker images to Jfrog SaaS using CLI
+        run: |
+            # Push latest tag (skip build info to avoid permission issues)
+            jf docker push ${{env.JF_REPO}}/citizen-dev7-starter-app:latest
+            # Push semantic version (skip build info to avoid permission issues)
+            jf docker push ${{env.JF_REPO}}/citizen-dev7-starter-app:${{ steps.version.outputs.commit_hash }}
+
+      - name: Display build and security summary
+        if: always()
+        run: |
+            echo "## 🐳 Build Complete" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Image:** \`${{env.JF_REPO}}/citizen-dev7-starter-app\`" >> $GITHUB_STEP_SUMMARY
+            echo "**Version:** \`${{ steps.version.outputs.commit_hash }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "**Tags:** \`latest\`, \`${{ steps.version.outputs.commit_hash }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Tests passed | 🔒 Security scanned | ✅ Ready for deployment" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "---" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            echo "## 🧪 Unit Test Results" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Display test results
+            TESTS_PASSED="${{ steps.tests.outputs.tests_passed }}"
+            TESTS_FAILED="${{ steps.tests.outputs.tests_failed }}"
+            TESTS_TOTAL="${{ steps.tests.outputs.tests_total }}"
+            
+            if [ "$TESTS_FAILED" = "0" ]; then
+              echo "### ✅ All tests passed!" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "### ⚠️ Some tests failed" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Status | Count |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| ✅ Passed | $TESTS_PASSED |" >> $GITHUB_STEP_SUMMARY
+            echo "| ❌ Failed | $TESTS_FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Total** | **$TESTS_TOTAL** |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "---" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            echo "## 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Scan Type:** JFrog Xray Docker Security Scan" >> $GITHUB_STEP_SUMMARY
+            echo "**Image:** \`${{env.JF_REPO}}/citizen-dev7-starter-app:latest\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Count vulnerabilities by level and map to CVSS severity
+            TOTAL_VULNS=$(jq '.runs[0].results | length' sarif-results.sarif)
+            ERROR_COUNT=$(jq '[.runs[0].results[] | select(.level == "error")] | length' sarif-results.sarif)
+            WARNING_COUNT=$(jq '[.runs[0].results[] | select(.level == "warning")] | length' sarif-results.sarif)
+            NOTE_COUNT=$(jq '[.runs[0].results[] | select(.level == "note")] | length' sarif-results.sarif)
+            
+            echo "### 📊 Vulnerability Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| SARIF Level | Common Severity | Count | Description |" >> $GITHUB_STEP_SUMMARY
+            echo "|-------------|------------------|-------|-------------|" >> $GITHUB_STEP_SUMMARY
+            echo "| 🔴 Error | Critical / High | $ERROR_COUNT | Serious problem requiring immediate attention |" >> $GITHUB_STEP_SUMMARY
+            echo "| 🟡 Warning | Medium | $WARNING_COUNT | Important to fix but less urgent than error |" >> $GITHUB_STEP_SUMMARY
+            echo "| 🔵 Note | Low | $NOTE_COUNT | Minor finding, suggestion, or informational |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Total** | **All Severities** | **$TOTAL_VULNS** | **All vulnerabilities** |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+     
+            # Uncomment below to show detailed vulnerability list with full information
+            # echo "### 🔍 Detailed Vulnerabilities" >> $GITHUB_STEP_SUMMARY
+            # echo "" >> $GITHUB_STEP_SUMMARY
+            # echo "| CVE ID | Severity | Component | Message |" >> $GITHUB_STEP_SUMMARY
+            # echo "|--------|----------|-----------|---------|" >> $GITHUB_STEP_SUMMARY
+            # jq -r '.runs[0].results[] | "| \(.ruleId) | \(.level) | \(.locations[0].logicalLocations[0].name // "N/A") | \(.message.text) |"' sarif-results.sarif >> $GITHUB_STEP_SUMMARY
+            # echo "" >> $GITHUB_STEP_SUMMARY

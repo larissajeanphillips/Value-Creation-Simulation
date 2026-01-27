@@ -1,0 +1,16 @@
+version: 2
+registries:
+  tfe:
+    type: terraform-registry
+    url: https://terraform.mckinsey.cloud
+    token: '${{ secrets.DEPENDABOT_TFE_API_RO_TOKEN }}'
+updates:
+  - package-ecosystem: 'terraform'
+    directories:
+      - 'deployer-apps/*/*/iac'
+    commit-message:
+      prefix: 'chore: '
+    schedule:
+      interval: weekly
+    registries:
+      - 'tfe'

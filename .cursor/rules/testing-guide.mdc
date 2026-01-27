@@ -1,0 +1,436 @@
+---
+description: Defines when and how to create and run tests for agents.
+alwaysApply: false
+---
+# Testing Guide - Running Agents via Cursor Chat
+
+This guide explains how to handle user requests to test agents directly from Cursor chat, without requiring them to run scripts manually.
+
+## Two Types of Testing
+
+### 1. Test Specific Agent (Bypasses Routing)
+Tests a single agent in isolation with its system prompt. Useful for:
+- Iterating on agent prompts
+- Debugging agent behavior
+- Comparing different agents with the same objective
+
+### 2. Test Full Workflow (Includes Routing)
+Tests the complete system including routing logic. Useful for:
+- Validating routing keywords
+- Testing end-to-end behavior
+- Ensuring objectives route to correct agents
+
+## Recognized Test Commands
+
+### Test Specific Agent (Direct)
+- `"Test the {agent_name} agent with: {objective}"`
+- `"Test {agent_name} agent: {objective}"`
+- `"Run the {agent_name} agent with objective: {objective}"`
+- `"Try the {agent_name} agent on: {objective}"`
+
+**Key**: Uses `--agent {agent_name}` flag to bypass routing
+
+### Test Full Workflow (with Routing)
+- `"Test the full workflow with: {objective}"`
+- `"Test workflow: {objective}"`
+- `"Test routing with: {objective}"`
+- `"Run full workflow: {objective}"`
+
+**Key**: No `--agent` flag, so routing selects the agent
+
+## How to Execute Tests
+
+### Step 1: Validate Environment
+
+Check that required setup is complete:
+1. Verify `configs/settings.yaml` exists and has AI Gateway credentials
+2. Check that the specified agent exists (if testing specific agent)
+3. Confirm environment variables are set (remind user if needed)
+
+### Step 2: Construct the Command
+
+Generate timestamp for output file:
+```python
+from datetime import datetime
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+```
+
+**For specific agent test (BYPASSES ROUTING):**
+```bash
+python scripts/run_workflow.py \
+  --agent "{agent_name}" \
+  --objective "{user's objective}" \
+  --output-path "data/outputs/test_{agent_name}_{timestamp}.md" \
+  --settings-path configs/settings.yaml \
+  --max-turns 1
+```
+
+**For full workflow test (INCLUDES ROUTING):**
+```bash
+python scripts/run_workflow.py \
+  --objective "{user's objective}" \
+  --output-path "data/outputs/test_workflow_{timestamp}.md" \
+  --settings-path configs/settings.yaml \
+  --max-turns 1
+```
+
+**Important Notes:**
+- Specific agent test: includes `--agent` flag → routing bypassed
+- Full workflow test: no `--agent` flag → routing determines agent
+- Remove `--inputs-dir` flag (we use reference data only, loaded automatically)
+- Always use `max-turns 1` for testing unless user specifies otherwise
+
+### Step 3: Execute and Monitor
+
+1. **Inform the user**:
+   - Direct test: "Testing {agent_name} agent directly (routing bypassed)..."
+   - Full workflow: "Running full workflow with routing..."
+2. **Execute the command** using Bash tool
+3. **Monitor for errors**: Watch for API errors, credential issues, etc.
+
+### Step 4: Display Results
+
+After execution:
+
+**For Direct Agent Test:**
+```
+Test completed successfully!
+
+Agent tested: {agent_name} (routing bypassed)
+Output saved to: data/outputs/test_{agent_name}_{timestamp}.md
+
+[Display output or summary]
+
+This was a direct agent test. The routing system was not involved.
+```
+
+**For Full Workflow Test:**
+```
+Test completed successfully!
+
+Routing selected: {agent_name}
+Why: [Explain based on objective keywords and routing.yaml]
+
+Output saved to: data/outputs/test_workflow_{timestamp}.md
+
+[Display output or summary]
+
+The routing system correctly identified this as a {agent_name} task.
+```
+
+### Step 5: Provide Context and Next Steps
+
+**After summarizing results:**
+1. **Assess output quality**: Are recommendations appropriate for the domain?
+2. **Check for issues**: Hallucinations, incorrect terminology, missing aspects?
+3. **Offer next steps**:
+   - Refine system prompt?
+   - Test another agent?
+   - Adjust routing keywords (if full workflow)?
+   - Add reference data?
+
+## Example Execution Flows
+
+### Example 1: Test Specific Agent
+
+**User**: "Test the compliance_review agent with: Review glucose monitoring device for FDA compliance"
+
+**You (Cursor)**:
+```
+I'll test the compliance_review agent directly (bypassing routing).
+
+Running command...
+```
+
+[Execute:]
+```bash
+python scripts/run_workflow.py \
+  --agent "compliance_review" \
+  --objective "Review glucose monitoring device for FDA compliance" \
+  --output-path "data/outputs/test_compliance_review_20260112_143022.md" \
+  --settings-path configs/settings.yaml \
+  --max-turns 1
+```
+
+[After completion:]
+```
+✓ Test completed successfully!
+
+Agent tested: compliance_review (routing bypassed)
+Output saved to: data/outputs/test_compliance_review_20260112_143022.md
+
+Summary of results:
+- Identified 5 key compliance gaps
+- Referenced CFR 21 Part 820 requirements
+- Recommended ISO 13485 documentation
+- Flagged biocompatibility testing needs
+- Estimated 6-8 week compliance timeline
+
+Output quality: ✓ Comprehensive and domain-appropriate
+The agent correctly applied FDA medical device regulations.
+
+This was a direct test of the compliance_review agent's system prompt.
+The routing system was not involved.
+
+Would you like to:
+1. Test with a different objective?
+2. Refine the system prompt for more specific output?
+3. Test the full workflow to validate routing?
+```
+
+### Example 2: Test Full Workflow
+
+**User**: "Test the full workflow with: Analyze electrical system cost reduction for ECU consolidation"
+
+**You (Cursor)**:
+```
+I'll run the full workflow including routing to see which agent handles this.
+
+Running command...
+```
+
+[Execute:]
+```bash
+python scripts/run_workflow.py \
+  --objective "Analyze electrical system cost reduction for ECU consolidation" \
+  --output-path "data/outputs/test_workflow_20260112_143530.md" \
+  --settings-path configs/settings.yaml \
+  --max-turns 1
+```
+
+[After completion:]
+```
+✓ Test completed successfully!
+
+Routing decision: electricalarch
+Why: Objective contains keywords "electrical", "ECU" which match electricalarch agent
+
+Output saved to: data/outputs/test_workflow_20260112_143530.md
+
+Summary of results:
+- Analyzed ECU consolidation opportunities
+- Loaded reference data from Tesla, Rivian designs
+- Recommended reducing 12 ECUs to 5 domain controllers
+- Estimated $150-200 per vehicle savings
+- Identified wiring harness reduction potential
+
+Output quality: ✓ Comprehensive with specific recommendations
+Routing quality: ✓ Correctly selected electricalarch agent
+
+The routing system worked as expected!
+
+Would you like to:
+1. Test routing with a different objective?
+2. Test a different agent directly?
+3. Adjust routing keywords in routing.yaml?
+```
+
+### Example 3: Comparing Two Agents
+
+**User**: "Test both catchall and compliance_review agents with: Check if our glucose meter meets ISO requirements"
+
+**You (Cursor)**:
+```
+I'll test both agents with the same objective to compare their outputs.
+
+Testing catchall agent...
+```
+
+[Execute test 1:]
+```bash
+python scripts/run_workflow.py \
+  --agent "catchall" \
+  --objective "Check if our glucose meter meets ISO requirements" \
+  --output-path "data/outputs/test_catchall_20260112_144000.md" \
+  --settings-path configs/settings.yaml \
+  --max-turns 1
+```
+
+```
+Testing compliance_review agent...
+```
+
+[Execute test 2:]
+```bash
+python scripts/run_workflow.py \
+  --agent "compliance_review" \
+  --objective "Check if our glucose meter meets ISO requirements" \
+  --output-path "data/outputs/test_compliance_review_20260112_144015.md" \
+  --settings-path configs/settings.yaml \
+  --max-turns 1
+```
+
+[After both complete:]
+```
+✓ Both tests completed!
+
+Comparison:
+
+CATCHALL AGENT:
+- Generic advice about ISO compliance
+- Mentioned ISO 13485 but no specific clauses
+- Suggested hiring a consultant
+- Output: 2/5 - too generic
+
+COMPLIANCE_REVIEW AGENT:
+- Detailed analysis against ISO 13485:2016
+- Specific clause references (7.3, 7.5, 8.2)
+- Identified 4 specific gaps
+- Provided actionable remediation steps
+- Output: 5/5 - highly specific and actionable
+
+Recommendation: For ISO compliance checks, use compliance_review agent.
+Should we update routing.yaml to route ISO-related objectives to compliance_review?
+```
+
+## Handling Test Errors
+
+### AI Gateway Authentication Error
+```
+ERROR: AI Gateway authentication failed (401 Unauthorized)
+
+Please verify your credentials are set in environment variables (via .env):
+- AI_GATEWAY_INSTANCE_ID
+- AI_GATEWAY_API_KEY  # format: clientID:clientSecret
+
+You can create a .env file:
+AI_GATEWAY_INSTANCE_ID=your_instance_id
+AI_GATEWAY_API_KEY=your_client_id:your_client_secret
+
+Then load it before running:
+export $(cat .env | xargs)
+```
+
+### Agent Not Found (Direct Test)
+```
+ERROR: Agent 'risk_analysis' does not exist.
+
+Available agents in this workspace:
+- catchall
+- electricalarch
+
+Did you mean one of these? Or do you need to generate this agent first?
+To generate new agents, fill out SETUP.md and say "Generate agents from SETUP.md".
+```
+
+### Unexpected Routing (Full Workflow Test)
+```
+Note: Routing selected 'catchall' instead of expected 'compliance_review'.
+
+Objective: "Check device for ISO compliance"
+Expected: compliance_review
+Actual: catchall
+
+Possible reasons:
+1. Keywords "ISO" and "compliance" not in routing.yaml for compliance_review
+2. LLM routing didn't recognize this as a compliance task
+3. Objective phrasing doesn't match routing descriptions
+
+To fix:
+1. Update configs/routing.yaml to add "ISO" keyword to compliance_review
+2. Make objective more explicit: "Perform compliance review for ISO requirements"
+3. Test direct agent to confirm it would work correctly if routed
+
+Would you like me to update routing.yaml?
+```
+
+### Model Not Available
+```
+ERROR: Model 'gpt-5-chat-latest' not available in your AI Gateway instance.
+
+Let me fetch available models...
+[Run model_catalog.py]
+
+Based on your gateway, I recommend:
+- For routing: gpt-5-mini-2025-08-07 ($0.15/M tokens input)
+- For analysis: gpt-5-chat-latest ($5/M tokens input)
+
+Should I update configs/settings.yaml with these models?
+```
+
+## Testing Best Practices
+
+### When to Use Each Test Type:
+
+**Use Direct Agent Test when:**
+- Developing or refining an agent's system prompt
+- Debugging unexpected agent behavior
+- Comparing multiple agents with same objective
+- You know exactly which agent should handle the task
+- Iterating quickly on prompt improvements
+
+**Use Full Workflow Test when:**
+- Validating routing logic
+- Testing end-to-end system behavior
+- Verifying keywords work correctly
+- Testing from user's perspective
+- Preparing for production use
+
+### Progressive Testing Strategy:
+
+1. **First**: Test each agent directly with clear objectives
+2. **Second**: Refine prompts based on direct test results
+3. **Third**: Test full workflow with various objectives
+4. **Fourth**: Adjust routing based on workflow test results
+5. **Fifth**: Re-test full workflow to validate routing changes
+
+## Quality Checks
+
+After each test, automatically assess:
+
+1. **Completeness**: Did the agent address all aspects of the objective?
+2. **Domain accuracy**: Correct terminology and concepts?
+3. **Actionability**: Specific, implementable recommendations?
+4. **Structure**: Follows prompt's requested output format?
+5. **Hallucination check**: Any suspicious claims to verify?
+
+**If quality issues found:**
+- Suggest specific prompt refinements
+- Recommend adding reference data
+- Consider using a more powerful model
+- Break complex objectives into smaller parts
+
+## Integration with Development Workflow
+
+After successful testing, offer to:
+
+1. **Document test cases**: "Should I add this example to the README?"
+2. **Refine prompts**: "I noticed {issue}, shall I adjust the system prompt?"
+3. **Update routing**: "Want me to add '{keyword}' to routing.yaml for this agent?"
+4. **Add reference data**: "This would benefit from reference data about {topic}"
+
+## Advanced: Batch Testing
+
+If user provides multiple test objectives:
+
+**User**: "Test the workflow with these: 1) {obj1}, 2) {obj2}, 3) {obj3}"
+
+**You**: Run each test and create a summary table:
+
+```
+Batch Test Results:
+
+| Objective | Test Type | Selected Agent | Status | Quality |
+|-----------|-----------|----------------|--------|---------|
+| {obj1}    | Workflow  | agent1         | ✓      | 4/5     |
+| {obj2}    | Workflow  | agent2         | ✓      | 5/5     |
+| {obj3}    | Workflow  | catchall       | ✓      | 3/5     |
+
+Observations:
+- Routing accuracy: 100% (all selected appropriate agents)
+- agent2 consistently produces highest quality output
+- catchall objective {obj3} might benefit from specialized agent
+
+Recommendations:
+- Consider creating specialized agent for {obj3} type tasks
+- agent2 prompt could be used as template for other agents
+```
+
+## Remember
+
+- **Direct agent test** (`--agent` flag) = Test agent prompt in isolation
+- **Full workflow test** (no `--agent` flag) = Test routing + agent together
+- Always explain which type of test you're running
+- Make testing conversational and educational
+- Help users understand what's happening under the hood
+- Proactively suggest improvements based on results

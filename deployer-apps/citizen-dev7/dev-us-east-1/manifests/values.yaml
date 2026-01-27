@@ -1,0 +1,23 @@
+image:
+  repository: mckinsey-citizen-dev7-docker-local.jfrog.io/citizen-dev7-starter-app
+  tag: latest
+  pullPolicy: IfNotPresent
+cloudflareBaseDomain: cf.platform.mckinsey.cloud
+pmckinstanceName: citizen-dev7
+ingressClass: nginx
+labels:
+  app.kubernetes.io/namespace-owner: "lrah-control-plane"
+  app.kubernetes.io/lrah-user-product-id: 22391
+  app.kubernetes.io/lrah-user-evironment-id: citizen-dev7-b93a9
+imagePullSecrets:
+  - name: jfrog-citizen-dev7-b93a9-secret
+env:
+  NODE_ENV: production
+vaultSecrets:
+  - name: lrah-secret-generic
+    secretStoreName: citizen-dev7
+    refreshInterval: "1h"
+    secretPath: "deployer-k8s-paas/citizen-dev7-b93a9/app-secrets"
+    secretKey:
+      - AI_GATEWAY_INSTANCE_ID
+      - AI_GATEWAY_API_KEY

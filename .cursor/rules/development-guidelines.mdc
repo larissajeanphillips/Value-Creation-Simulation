@@ -1,0 +1,138 @@
+---
+alwaysApply: true
+---
+
+# Deployer K8s PaaS Development Guidelines
+
+This repository uses the **Deployer K8s PaaS** service from Platform McKinsey. All deployments are automated via GitHub Actions - no manual deployment commands are needed.
+
+## Safe to Modify
+
+These areas are intended for citizen developer customization:
+
+### Application Source Code
+- `deployer-apps/<instance>/src/` - Your application code
+
+#### Agent Workspace Framework (if using the agent template)
+The `src/` directory contains a multi-agent framework for building domain-specific AI agents:
+
+**Safe to modify:**
+- `agents/*.py` (except `base.py`) - Custom agent implementations
+- `configs/prompts/*.system.txt` - Agent system prompts
+- `configs/routing.yaml` - Agent routing rules and keywords
+- `configs/settings.yaml` - AI Gateway config and model assignments
+- `reference/` - Domain-specific reference data for agents
+- `workflows/workflow.py` - Agent initialization and routing logic only
+- `SETUP.md` - Questionnaire for generating new agents
+
+**Do not modify (framework files):**
+- `agents/base.py` - Base agent classes
+- `llm/client.py` - LLM abstraction layer
+- `scripts/run_workflow.py` - CLI entry point
+- `scripts/model_catalog.py` - Model catalog utility
+
+#### Chat UI (`ui/` directory)
+A React chat interface for interacting with agents:
+
+**Safe to modify:**
+- `ui/src/components/` - React UI components
+- `ui/src/services/api.ts` - Backend API client
+- `ui/tailwind.config.js` - Theme customization
+- `api.py` - FastAPI backend wrapper
+
+**To run locally (without Docker):**
+```bash
+# Terminal 1: Start backend
+uvicorn api:app --reload --port 3000
+
+# Terminal 2: Start UI
+cd ui && npm install && npm run dev
+```
+
+#### Local Development with Docker
+
+The `Dockerfile` in `src/` builds both the React UI and Python backend. For local development with hot reloading, use the convenience script:
+
+```bash
+# From deployer-apps/<instance>/src/ directory
+./scripts/docker-dev.sh          # Start with hot reload
+./scripts/docker-dev.sh --build  # Rebuild image first
+```
+
+The script automatically:
+- Loads credentials from `.env` file
+- Builds the Docker image if needed
+- Mounts local directories for hot reloading
+- Starts the container on port 3000
+
+**Prerequisites:**
+- Docker installed and running
+- `.env` file with `AI_GATEWAY_INSTANCE_ID` and `AI_GATEWAY_API_KEY`
+
+**Volume mounts enable hot reloading for:**
+- `agents/` - Agent implementations (changes reflect on next request)
+- `configs/` - Prompts, routing, settings (changes reflect on next request)
+- `workflows/` - Workflow logic
+- `reference/` - Reference data files
+- `api.py` - API endpoints
+
+**Note:** UI changes require rebuilding the image since the React app is pre-built. For UI development, use the non-Docker approach above.
+
+**To start local Docker development automatically**, run:
+```bash
+cd deployer-apps/<instance>/src && ./scripts/docker-dev.sh
+```
+
+### Infrastructure Configuration (Terraform)
+- `deployer-apps/<instance>/<env>-<region>/iac/main.tf` - **USER CONFIGURATION section only**
+  - `postgresql_databases` - Add/configure databases
+  - `s3_buckets` - Add/configure S3 buckets
+  - `sqs_queues` - Add/configure SQS queues
+
+### Helm Values
+- `deployer-apps/<instance>/<env>-<region>/manifests/values.yaml`
+  - `image.tag` - Container image version
+  - `env` - Environment variables
+  - `replicas` - Number of pod replicas
+
+## Do Not Modify
+
+These areas are managed by the platform and changes may be overwritten or break deployments:
+
+### GitHub Workflows
+- `.github/workflows/` - All workflow files are centrally managed. Any modifications will be overwritten.
+
+### Platform Configuration in Terraform
+Never edit these variables in `iac/main.tf`:
+- `eks_oidc_provider_url`
+- `user_environment_id`
+- `pmck_instance_id`
+
+### Core Helm Templates
+- `manifests/templates/_helpers.tpl` - Template helpers
+- Other files in `manifests/templates/` - Modify only if advanced customization is required
+
+## Key Conventions
+
+1. **Never hardcode secrets** - Use GitHub repository secrets. They are synced to Kubernetes via ExternalSecrets.
+
+2. **Follow existing naming patterns** - When adding Terraform resources (databases, buckets, queues), follow the naming conventions shown in the existing examples.
+
+3. **Environment promotion** - Use the "Deployer Promote Environment" workflow to promote changes between dev → stg → prod.
+
+4. **Deployment trigger** - Merging to `main` automatically triggers deployment via ArgoCD sync.
+
+## Quick Reference: Common Tasks
+
+| Task | Where to make changes |
+|------|----------------------|
+| Add a new agent | Fill out `SETUP.md`, then ask Cursor to generate |
+| Modify agent behavior | `configs/prompts/{agent_name}.system.txt` |
+| Change agent routing | `configs/routing.yaml` |
+| Add reference data | `reference/{agent_name}/` directory |
+| Customize chat UI | `ui/src/components/` |
+| Modify API endpoints | `api.py` |
+| Add environment variable | `manifests/values.yaml` → `env` section |
+| Create S3 bucket | `iac/main.tf` → `s3_buckets` block |
+| Create database | `iac/main.tf` → `postgresql_databases` block |
+| Add a secret | GitHub repo settings → Secrets, then run "Deploy secrets" workflow |

@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "minimal-app.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- include "minimal-app.labels" . | nindent 4 }}
+  {{- range $key, $val := .Values.labels }}
+  {{- $key | nindent 4 }}: {{ $val | quote }}
+  {{- end}}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: app-{{ .Release.Namespace }}.{{ .Values.cloudflareBaseDomain }},{{ .Values.pmckinstanceName }}.sbx.apps.mckinsey.com
+    external-dns.alpha.kubernetes.io/ttl: "60"
+    kubernetes.io/ingress.class: {{ .Values.ingressClass }}
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: app-{{ .Release.Namespace }}.{{ .Values.cloudflareBaseDomain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ include "minimal-app.fullname" . }}
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  - host: {{ .Values.pmckinstanceName }}.sbx.apps.mckinsey.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ include "minimal-app.fullname" . }}
+            port:
+              number: 80
+        path: /
+        pathType: Prefix

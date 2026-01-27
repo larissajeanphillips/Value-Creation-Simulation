@@ -1,0 +1,436 @@
+---
+description: Describes how to build and continue developing new agents.
+alwaysApply: false
+---
+# Agent Generation Guide - Templates and Patterns
+
+This guide provides templates for generating new industry-specific agents from SETUP.md responses.
+
+## Agent File Template
+
+For each agent specialization, create a file `agents/{agent_name}.py`:
+
+```python
+from __future__ import annotations
+
+from agents.base import AgentSpec, BaseAgent
+from llm.client import Settings, get_model_client
+
+
+def create_{agent_name}(settings: Settings, system_prompt: str) -> BaseAgent:
+    """
+    Factory function to create the {Agent Display Name} agent.
+
+    This agent specializes in: {brief description from SETUP.md}
+    """
+    model_name = settings.defaults.get("{agent_name}_model", "primary")
+    client = get_model_client(settings, model_name)
+    spec = AgentSpec(
+        name="{agent_name}",
+        system_prompt=system_prompt,
+        model_name=model_name,
+        tools={},  # Tools can be added later if needed
+    )
+    return BaseAgent(spec, client)
+```
+
+### Naming Conventions:
+- **Agent name**: snake_case, descriptive, domain-specific
+- **Factory function**: `create_{agent_name}`
+- **File name**: `agents/{agent_name}.py`
+
+### Examples:
+- Healthcare compliance → `compliance_review` → `create_compliance_review`
+- Financial risk analysis → `risk_analysis` → `create_risk_analysis`
+- Legal document review → `contract_review` → `create_contract_review`
+
+## System Prompt Template
+
+For each agent, create a system prompt file `configs/prompts/{agent_name}.system.txt`:
+
+```
+You are the {Agent Display Name} for {Industry} {Main Objective}.
+
+Purpose:
+- {Primary purpose from SETUP.md specialization description}
+- {Secondary purposes if applicable}
+
+Guidelines:
+- {Domain-specific guideline 1}
+- {Domain-specific guideline 2}
+- {Domain-specific guideline 3}
+- Consider {industry-specific constraints} (e.g., regulatory, compliance, safety, cost)
+- Respect {industry standards or requirements}
+- Provide concrete, actionable recommendations
+
+Output Format:
+- Brief context summary
+- Top opportunities or findings (bulleted)
+- Step-by-step actions or recommendations
+- Risks and mitigations
+- Suggested additional data or validation steps
+- {Any domain-specific output requirements}
+```
+
+### System Prompt Best Practices:
+
+1. **Be Specific to the Domain**:
+   - Use industry terminology from SETUP.md
+   - Reference relevant standards, regulations, or frameworks
+   - Include domain-specific constraints
+
+2. **Clear Purpose Statement**:
+   - What does this agent specialize in?
+   - When should it be used vs. other agents?
+
+3. **Actionable Guidelines**:
+   - What should the agent consider?
+   - What should it avoid?
+   - What trade-offs should it evaluate?
+
+4. **Structured Output**:
+   - Define expected output format
+   - Request specific sections
+   - Ensure output is useful for the domain expert
+
+### Example: Healthcare Compliance Agent
+
+```
+You are the Healthcare Compliance Review Agent for Medical Device Regulatory Analysis.
+
+Purpose:
+- Review medical device designs and documentation for regulatory compliance
+- Identify potential compliance gaps before submission to regulatory bodies
+- Recommend specific actions to ensure FDA 510(k) or PMA approval readiness
+
+Guidelines:
+- Evaluate against FDA QSR (21 CFR Part 820) requirements
+- Consider ISO 13485 medical device quality management standards
+- Assess risk management per ISO 14971
+- Identify biocompatibility testing requirements (ISO 10993 series)
+- Flag any potential Class I, II, or III classification issues
+- Respect patient safety as the highest priority
+- Provide specific CFR citations when identifying gaps
+
+Output Format:
+- Device classification and regulatory pathway assessment
+- Compliance gaps identified (with regulatory citations)
+- Required documentation checklist
+- Recommended testing and validation activities
+- Risk mitigation strategies
+- Timeline considerations for regulatory submission
+```
+
+## Routing Configuration
+
+Add each agent to `configs/routing.yaml`:
+
+```yaml
+routing:
+  agents:
+    - name: {agent_name}
+      keywords: [{keyword1}, {keyword2}, {keyword3}]
+      description: "{When to use this agent - clear, specific description}"
+```
+
+### Extracting Keywords:
+From the specialization description, identify:
+- Key technical terms
+- Domain-specific concepts
+- Action verbs that indicate this agent should be used
+- Problem types this agent solves
+
+### Examples:
+```yaml
+# Healthcare compliance agent
+- name: compliance_review
+  keywords: ["compliance", "regulatory", "FDA", "510k", "PMA", "approval", "submission"]
+  description: "Specializes in medical device regulatory compliance review and FDA submission readiness"
+
+# Financial risk analysis agent
+- name: risk_analysis
+  keywords: ["risk", "exposure", "volatility", "hedge", "portfolio", "credit"]
+  description: "Analyzes financial risks, market exposure, and recommends risk mitigation strategies"
+
+# Legal contract review agent
+- name: contract_review
+  keywords: ["contract", "agreement", "terms", "clause", "liability", "legal"]
+  description: "Reviews legal contracts for risks, unfavorable terms, and compliance with corporate policies"
+```
+
+## Settings Configuration
+
+Add model assignment to `configs/settings.yaml`:
+
+```yaml
+defaults:
+  catchall_model: "primary"
+  {agent_name}_model: "primary"  # Add one line per agent
+  routing_model: "routing"
+```
+
+### Model Selection Guidance:
+
+**If user chose "Explore models":**
+- Suggest appropriate models based on agent complexity
+- Simple agents (e.g., triage, classification) → cheaper, faster models
+- Complex agents (e.g., analysis, recommendation) → powerful models
+- Balance cost vs. quality based on agent's criticality
+
+**If user chose "Use defaults":**
+- All agents use "primary" model
+- Routing uses "routing" model (should be fast/cheap)
+
+## Workflow Integration
+
+### 1. Import the Agent Factory
+
+Add to `workflows/workflow.py` imports:
+```python
+from agents.{agent_name} import create_{agent_name}
+```
+
+### 2. Load System Prompt
+
+Add to `KnowledgeWorkflow.__init__`:
+```python
+self.{agent_name}_prompt = load_prompt("configs/prompts/{agent_name}.system.txt")
+```
+
+### 3. Initialize Agent
+
+Add to `KnowledgeWorkflow.__init__`:
+```python
+self.{agent_name} = create_{agent_name}(settings, self.{agent_name}_prompt)
+```
+
+### 4. Update Type Hints
+
+Update the `choose_agent` return type:
+```python
+def choose_agent(self, objective: str) -> Literal["agent1", "agent2", "{agent_name}", "catchall"]:
+```
+
+### 5. Add to Routing System Prompt
+
+Update the routing prompt in `choose_agent` method to include the new agent:
+```python
+routing_prompt = """You are an intelligent routing agent for a {industry} {objective} system.
+
+Available agents:
+1. **{agent_name}**: {description from routing.yaml}
+   - Keywords: {list keywords}
+
+2. **catchall**: {catchall description}
+
+Your task: Analyze the objective and respond with ONLY one word: "{agent_name}" or "catchall".
+"""
+```
+
+### 6. Add to Run Method
+
+Add handling for the new agent in the `run` method:
+
+**Without reference data:**
+```python
+if agent_choice == "{agent_name}":
+    return self.{agent_name}.run(
+        objective=objective,
+        working_notes="",
+        retrieved_context=retrieved_context,
+        hints="Domain-specific hints for this agent",
+    )
+```
+
+**With reference data:**
+```python
+if agent_choice == "{agent_name}":
+    # Load reference data specific to this agent
+    reference_context = load_reference_dictionaries("reference/{agent_name}")
+    full_context = f"{retrieved_context}\n{reference_context}" if retrieved_context else reference_context
+
+    return self.{agent_name}.run(
+        objective=objective,
+        working_notes="",
+        retrieved_context=full_context,
+        hints="Domain-specific hints for this agent",
+    )
+```
+
+## Reference Data Setup
+
+If the agent needs reference data:
+
+1. Create directory: `reference/{agent_name}/`
+2. Document expected format in a README
+3. Update `load_reference_dictionaries()` if custom loading is needed
+
+Example reference data types:
+- **Healthcare**: Device specifications, regulatory checklists, test protocols
+- **Finance**: Market data, risk models, compliance rules
+- **Legal**: Contract templates, clause libraries, precedents
+- **Manufacturing**: BOMs, process specs, quality standards
+
+## Complete Example: Financial Risk Analysis Agent
+
+### 1. agents/risk_analysis.py
+```python
+from __future__ import annotations
+
+from agents.base import AgentSpec, BaseAgent
+from llm.client import Settings, get_model_client
+
+
+def create_risk_analysis(settings: Settings, system_prompt: str) -> BaseAgent:
+    """
+    Factory function to create the Financial Risk Analysis agent.
+
+    This agent specializes in analyzing financial risks, market exposure,
+    and recommending risk mitigation strategies.
+    """
+    model_name = settings.defaults.get("risk_analysis_model", "primary")
+    client = get_model_client(settings, model_name)
+    spec = AgentSpec(
+        name="risk_analysis",
+        system_prompt=system_prompt,
+        model_name=model_name,
+        tools={},
+    )
+    return BaseAgent(spec, client)
+```
+
+### 2. configs/prompts/risk_analysis.system.txt
+```
+You are the Financial Risk Analysis Agent for Portfolio Risk Management.
+
+Purpose:
+- Analyze portfolio composition for market, credit, and operational risks
+- Quantify risk exposure using industry-standard metrics
+- Recommend specific hedging strategies and risk mitigation actions
+
+Guidelines:
+- Calculate key risk metrics: VaR (Value at Risk), CVaR, Sharpe ratio, beta
+- Consider market risk (volatility, correlation), credit risk (default probability), and liquidity risk
+- Evaluate concentration risk across sectors, geographies, and asset classes
+- Respect regulatory capital requirements (Basel III where applicable)
+- Consider cost-effectiveness of hedging strategies
+- Flag any exposures exceeding risk appetite thresholds
+
+Output Format:
+- Portfolio risk profile summary
+- Key risk metrics and exposures
+- Risk concentration analysis
+- Top risk mitigation opportunities
+- Specific hedging recommendations with cost estimates
+- Regulatory compliance considerations
+- Recommended monitoring and reporting
+```
+
+### 3. configs/routing.yaml entry
+```yaml
+- name: risk_analysis
+  keywords: ["risk", "exposure", "volatility", "hedge", "portfolio", "VaR", "credit risk"]
+  description: "Analyzes financial portfolio risks and recommends hedging and mitigation strategies"
+```
+
+### 4. configs/settings.yaml entry
+```yaml
+defaults:
+  risk_analysis_model: "primary"
+```
+
+### 5. workflows/workflow.py additions
+```python
+# In imports
+from agents.risk_analysis import create_risk_analysis
+
+# In __init__
+self.risk_analysis_prompt = load_prompt("configs/prompts/risk_analysis.system.txt")
+self.risk_analysis = create_risk_analysis(settings, self.risk_analysis_prompt)
+
+# In choose_agent return type
+def choose_agent(self, objective: str) -> Literal["risk_analysis", "catchall"]:
+    ...
+
+# In choose_agent routing prompt
+routing_prompt = """You are an intelligent routing agent for a financial portfolio risk management system.
+
+Available agents:
+1. **risk_analysis**: Specializes in analyzing financial risks, market exposure, and hedging strategies.
+   - Use for: risk assessment, exposure analysis, hedging recommendations, VaR calculations
+
+2. **catchall**: General-purpose financial analysis for any topic not covered by specialized agents.
+
+Your task: Analyze the objective and respond with ONLY one word: "risk_analysis" or "catchall".
+"""
+
+# In run method
+if agent_choice == "risk_analysis":
+    return self.risk_analysis.run(
+        objective=objective,
+        working_notes="",
+        retrieved_context=retrieved_context,
+        hints="Focus on quantifiable risk metrics and actionable mitigation strategies.",
+    )
+```
+
+## Validation Checklist
+
+Before completing agent generation, verify:
+
+- [ ] Agent file created with correct factory pattern
+- [ ] System prompt created with domain-specific content
+- [ ] Agent added to routing.yaml with appropriate keywords
+- [ ] Agent added to settings.yaml defaults
+- [ ] Agent imported in workflow.py
+- [ ] Agent prompt loaded in workflow.__init__
+- [ ] Agent initialized in workflow.__init__
+- [ ] Agent added to choose_agent type hints
+- [ ] Agent added to routing system prompt
+- [ ] Agent handled in workflow.run method
+- [ ] All automotive terminology removed from prompts
+- [ ] Domain-specific terminology added from SETUP.md
+- [ ] Output format clearly defined in system prompt
+- [ ] **UI updated**: `ui/src/App.tsx` SAMPLE_AGENTS array updated with new agents
+
+## Common Mistakes to Avoid
+
+1. **Don't forget workflow.py updates**: Every agent needs 5 changes in workflow.py
+2. **Don't hardcode routing logic**: Use routing.yaml, not keyword checks in code
+3. **Don't copy automotive examples directly**: Completely replace domain terminology
+4. **Don't create generic prompts**: Make them specific to the user's domain
+5. **Don't skip type hints**: Update Literal types in choose_agent
+6. **Don't forget the catchall**: Always have a fallback agent
+7. **Don't forget UI updates**: Update `ui/src/App.tsx` SAMPLE_AGENTS and `ui/src/components/ChatWindow.tsx` empty state suggestions
+
+## UI Updates Required
+
+When agents are created or modified, update the Chat UI to reflect the changes:
+
+### 1. Update SAMPLE_AGENTS in `ui/src/App.tsx`
+
+Replace the SAMPLE_AGENTS array with the new agents:
+
+```typescript
+const SAMPLE_AGENTS: Agent[] = [
+  { name: '{agent_name}', description: '{brief description}', keywords: ['{keyword1}', '{keyword2}'] },
+  // ... add all new agents
+  { name: 'catchall', description: 'General purpose assistance', keywords: [] },
+]
+```
+
+### 2. Update Empty State Suggestions in `ui/src/components/ChatWindow.tsx`
+
+Update the suggestion buttons in the `EmptyState` component to match the new domain:
+
+```typescript
+{[
+  '{Domain-specific suggestion 1}',
+  '{Domain-specific suggestion 2}',
+  '{Domain-specific suggestion 3}',
+].map((suggestion) => (
+  // ... button markup
+))}
+```
+
+Also update the heading and description text to reflect the new domain.

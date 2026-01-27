@@ -1,0 +1,52 @@
+# Agent Routing Configuration
+#
+# This file defines how objectives are routed to specialized agents.
+# The routing system uses keywords and descriptions to select the best agent for each task.
+#
+# EXAMPLE: This configuration shows automotive cost optimization agents
+# Replace these with your own industry-specific agents
+
+routing:
+  agents:
+    # Specialized agent for electrical architecture
+    - name: electricalarch
+      keywords:
+        - electrical
+        - architecture
+        - ECU
+        - wiring
+        - harness
+        - controller
+        - domain controller
+        - zonal
+        - CAN bus
+      description: >-
+        Specializes in electrical architecture cost optimization.
+        Use for objectives related to ECUs (Electronic Control Units),
+        electrical systems, wiring harnesses, domain controllers,
+        zonal architectures, or electrical component consolidation.
+
+    # Default fallback agent
+    - name: catchall
+      keywords: []  # Empty keywords = matches everything not caught by other agents
+      description: >-
+        General-purpose cost optimization agent for any automotive
+        component or system. Use when no specialized agent matches
+        the objective.
+
+# How Routing Works:
+#
+# 1. Keyword Matching: If the objective contains any keywords from an agent's list,
+#    that agent is prioritized
+#
+# 2. LLM-Based Routing: If no clear keyword match, the routing system uses an LLM
+#    to analyze the objective and select the best agent based on descriptions
+#
+# 3. Fallback: If routing is uncertain, defaults to the catchall agent
+#
+# Best Practices:
+# - List agents from most specific to least specific
+# - Put catchall agent last (it should always have empty keywords)
+# - Use clear, distinct keywords that don't overlap too much
+# - Write descriptions that explain WHEN to use each agent
+# - Include domain-specific terminology in keywords

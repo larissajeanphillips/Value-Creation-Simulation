@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+ui/node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build artifacts (will be created during build)
+ui/dist/
+*.egg-info/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+.cursor/
+
+# Documentation (not needed in image)
+README.md
+SETUP.md
+AGENTS.md
+*.md
+
+# Environment files (secrets should be injected at runtime)
+.env
+.env.*
+
+# Test and coverage
+.nyc_output/
+coverage/
+.coverage
+*.log
+npm-debug.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Data outputs (runtime generated)
+data/outputs/*
+!data/outputs/.gitkeep
