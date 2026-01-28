@@ -1,0 +1,26 @@
+{
+  "name": "citdev-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for citizen developer operations - user management, deployments, and operational tasks",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test src/**/*.test.js"
+  },
+  "keywords": [
+    "mcp",
+    "citizen-developer",
+    "user-management",
+    "operations"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

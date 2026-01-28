@@ -1,0 +1,10 @@
+{
+  "providers": {
+    "default": {
+      "issuer": "https://auth.mckinsey.id/auth/realms/r",
+      "clientId": "your-client-id",
+      "stackId": "your-stack-id",
+      "scopes": ["openid", "profile", "email"]
+    }
+  }
+}

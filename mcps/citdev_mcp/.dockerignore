@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+*.test.js
+**/__tests__/
+
+# Local config (users should mount their own)
+.citdev-auth.json
+
+# Token storage (should never be in image)
+.citdev/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.*

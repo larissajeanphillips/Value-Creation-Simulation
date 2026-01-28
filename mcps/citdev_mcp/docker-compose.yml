@@ -1,0 +1,38 @@
+# CitDev MCP Server - Docker Compose
+#
+# Token cache is ephemeral - destroyed when container stops.
+# Each session requires fresh authentication via browser.
+#
+# Usage:
+#   docker compose run --rm citdev-mcp  # Run once (interactive)
+#   docker compose build                 # Rebuild image
+
+services:
+  citdev-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: citdev-mcp:latest
+    container_name: citdev-mcp
+    
+    # Mount authentication config only (tokens stay in container)
+    volumes:
+      - ./.citdev-auth.json:/app/.citdev-auth.json:ro
+    
+    # MCP uses stdio - need interactive terminal
+    stdin_open: true
+    tty: true
+    
+    # Security settings
+    security_opt:
+      - no-new-privileges:true
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
