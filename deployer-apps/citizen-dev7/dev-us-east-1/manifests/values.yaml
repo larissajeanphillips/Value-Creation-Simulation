@@ -15,7 +15,7 @@ env:
   NODE_ENV: production
 vaultSecrets:
   - name: lrah-secret-generic
-    secretStoreName: citizen-dev7
+    secretStoreName: citizendev7
     refreshInterval: "1h"
     secretPath: "deployer-k8s-paas/citizen-dev7-b93a9/app-secrets"
     secretKey:
