@@ -35,8 +35,8 @@ Activate when user says:
 1. Context: What are you building for?
 2. Description: Describe your app
 3. Features: Multi-select feature types
-4. Visual: Optional image/description
-5. Existing Code: Build on/supplement/match existing code (optional)
+4. Visual Inspiration: Images, design links, or description (optional)
+5. Existing Code: GitHub repos, local code, or snippets (optional)
 6. Existing Data: Data files, database, or examples (optional)
 7. Name: What to call the app
 8. Runtime: Docker or local
@@ -144,18 +144,19 @@ Use AskQuestion with multi-select:
 }
 ```
 
-### Step 4: Visual Inspiration
+### Step 4: Visual & Design Inspiration
 
 Use AskQuestion:
 
 ```json
 {
-  "title": "Visual Inspiration (Optional)",
+  "title": "Visual & Design Inspiration (Optional)",
   "questions": [{
     "id": "visual",
-    "prompt": "Do you have any visual inspiration?\n\nA sketch, screenshot, or example helps me match your vision.",
+    "prompt": "Do you have any visual inspiration?\n\nScreenshots, mockups, or reference images help me match your vision.",
     "options": [
-      { "id": "image", "label": "Yes, I have an image to share" },
+      { "id": "images", "label": "Yes, I have images to share" },
+      { "id": "links", "label": "Yes, I have website or design links" },
       { "id": "describe", "label": "I'll describe what I want" },
       { "id": "skip", "label": "No, use your best judgment" }
     ]
@@ -163,9 +164,49 @@ Use AskQuestion:
 }
 ```
 
-**If image:** "Please share your image. I'll use it for layout, colors, and style inspiration."
+**If images:** 
 
-**If describe:** "Describe the look you're going for. Examples: 'Clean like Notion', 'Professional with blue', 'Modern with shadows'"
+"Share your inspiration images! You can:
+
+**Paste or drag images directly into this chat:**
+- Screenshots of apps you like
+- UI mockups or wireframes
+- Design inspiration from Dribbble, Behance, etc.
+- Photos of sketches on paper
+
+**Share multiple images** - I'll extract design patterns from all of them:
+- Layout and structure
+- Color palette and theming
+- Typography and spacing
+- Component styles (buttons, cards, forms)
+- Navigation patterns
+
+Just paste/drop as many images as you'd like!"
+
+**If links:**
+
+"Share links to websites or designs you'd like to draw inspiration from:
+
+**Examples:**
+- `https://dribbble.com/shots/...` - Dribbble designs
+- `https://www.behance.net/gallery/...` - Behance projects
+- `https://example-app.com` - Live websites you admire
+- `https://ui8.net/...`, `https://figma.com/community/...` - UI kits
+
+Just paste the URLs and I'll analyze them for:
+- Visual style and aesthetics
+- Layout patterns
+- Component design
+- Color schemes
+
+You can share multiple links!"
+
+**Processing inspiration:**
+- **Images:** Analyze each image for colors, layout, typography, component styles
+- **Links:** Fetch and analyze the page/design for visual patterns
+- **Combine insights:** If multiple sources, identify common themes and create a unified style guide
+
+**If describe:** "Describe the look you're going for. Examples: 'Clean like Notion', 'Professional with blue', 'Modern with shadows', 'Minimal like Linear', 'Colorful like Figma'"
 
 ### Step 5: Existing Code Reference
 
@@ -176,44 +217,95 @@ Use AskQuestion:
   "title": "Build on Existing Code (Optional)",
   "questions": [{
     "id": "existing_code",
-    "prompt": "Do you want to build on top of, supplement, or match the style of any existing code?",
+    "prompt": "Do you want to build on top of, or draw inspiration from, any existing code?",
     "options": [
-      { "id": "extend", "label": "Yes, I want to extend/build on existing code" },
-      { "id": "supplement", "label": "Yes, I want to create something that works alongside existing code" },
-      { "id": "match_style", "label": "Yes, I want to match the style/patterns of existing code" },
+      { "id": "github", "label": "Yes, I have a GitHub repo or link to share" },
+      { "id": "local", "label": "Yes, I have code on my computer" },
+      { "id": "paste", "label": "Yes, I'll paste some code snippets" },
       { "id": "none", "label": "No, starting fresh" }
     ]
   }]
 }
 ```
 
-**If extend, supplement, or match_style:**
+**If github:**
 
-"Please share the existing code you'd like me to reference:
+"Paste your GitHub links! You can share:
 
-**Options:**
-- **Local folder path** - e.g., `/Users/you/projects/my-app` or `~/Documents/my-project`
-- **GitHub URL** - e.g., `https://github.com/org/repo` or `github.com/org/repo/tree/branch/folder`
-- **Paste code snippets** - Share key files or patterns directly in chat
+**Repository links:**
+- `https://github.com/org/repo` - Full repository
+- `https://github.com/org/repo/tree/main/src` - Specific folder
+- `https://github.com/org/repo/blob/main/src/App.tsx` - Specific file
 
-I'll analyze the code to understand:
-- File structure and naming conventions
-- Component patterns and architecture
-- Styling approach (CSS, Tailwind, etc.)
-- State management patterns
-- API integration patterns
+**Multiple repos are fine!** I'll analyze patterns across all of them.
 
-This helps me create code that fits seamlessly with your existing work."
+**What I'll look for:**
+- Project structure and file organization
+- Component architecture and patterns
+- Styling approach (Tailwind, CSS Modules, styled-components)
+- State management (Zustand, Redux, Context)
+- TypeScript patterns and types
+- Naming conventions
 
-**Processing the reference:**
-- **Local path:** Read the directory structure, key config files (package.json, tsconfig.json, tailwind.config.js), and sample components to understand patterns
-- **GitHub URL:** Use web fetch to retrieve repository structure and key files
-- **Code snippets:** Analyze the shared code for patterns, naming conventions, and style
+Just paste the links and I'll clone the style!"
 
-**Store the analysis for later use:**
-- Document the coding style, patterns, and conventions discovered
-- Apply these patterns when generating new components
-- Ensure consistency with imports, file organization, and naming
+**If local:**
+
+"Share the path to your code:
+
+**Examples:**
+- `/Users/you/projects/my-app`
+- `~/Documents/my-project`
+- `./relative/path/from/workspace`
+
+I'll read the directory structure and key files to understand:
+- How you organize components
+- Your coding style and conventions
+- Patterns I should follow
+
+You can share multiple paths if you want me to draw from several projects."
+
+**If paste:**
+
+"Paste code snippets you'd like me to use as reference:
+
+**Great things to share:**
+- A component that shows your preferred structure
+- Your Tailwind config or CSS patterns
+- TypeScript types or interfaces
+- API client code or hooks
+- Any patterns you want me to replicate
+
+Just paste directly into the chat - I'll extract the style and patterns!"
+
+**Processing code references:**
+
+For **GitHub URLs:**
+1. Use WebFetch to retrieve repository contents
+2. Analyze package.json for dependencies and scripts
+3. Read key config files (tsconfig, tailwind.config, vite.config)
+4. Sample 3-5 components to understand patterns
+5. Document the coding style for use during implementation
+
+For **Local paths:**
+1. Read directory structure with LS
+2. Read package.json and config files
+3. Sample key components and utilities
+4. Extract patterns and conventions
+
+For **Pasted code:**
+1. Analyze structure, naming, and style
+2. Identify patterns to replicate
+3. Note any libraries or utilities used
+
+**Create a Style Profile:**
+After analyzing, create a mental style guide including:
+- File naming: `kebab-case.tsx` vs `PascalCase.tsx`
+- Component structure: functional, arrow functions, exports
+- Import style: absolute (`@/`) vs relative
+- Styling: Tailwind classes, CSS modules, styled-components
+- State: hooks, stores, patterns
+- TypeScript: strict mode, interface vs type
 
 ### Step 6: Existing Data
 

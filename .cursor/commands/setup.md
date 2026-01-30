@@ -47,7 +47,7 @@ Use AskQuestion:
 - After PRD is complete, return here and continue from Step 1 to apply the configuration
 
 **If "quick" selected:**
-- Continue with Steps 1-7 below
+- Continue with Steps 1-8 below
 
 ### Step 1: Context - What are you building for?
 
@@ -124,7 +124,80 @@ Use AskQuestion with multi-select:
 }
 ```
 
-### Step 4: Visual Inspiration (Optional)
+### Step 4: Reference Code or Data (Optional)
+
+Use AskQuestion:
+
+```json
+{
+  "title": "Reference Code or Data (Optional)",
+  "questions": [
+    {
+      "id": "reference",
+      "prompt": "Do you have existing code, data, or a repo you want me to reference?\n\nThis helps me match existing patterns, use real data structures, or build on what you already have.",
+      "options": [
+        { "id": "local_folder", "label": "Yes, a folder on my computer" },
+        { "id": "git_repo", "label": "Yes, a Git repository (GitHub, GitLab, etc.)" },
+        { "id": "none", "label": "No, start fresh" }
+      ]
+    }
+  ]
+}
+```
+
+**If "local_folder" selected:**
+
+Ask in chat:
+"Please provide the path to the folder you want me to reference.
+
+You can:
+- Drag and drop the folder into this chat
+- Or type/paste the full path (e.g., `/Users/you/projects/my-app` or `C:\Projects\my-app`)
+
+I'll analyze the code structure, data formats, and patterns to incorporate into your new app."
+
+Wait for the path, then:
+1. Use the Read and LS tools to explore the folder structure
+2. Identify key patterns: file naming, code style, data schemas, etc.
+3. Note these in the PLAN.md for reference during implementation
+
+**If "git_repo" selected:**
+
+Ask in chat:
+"Please provide the Git repository URL.
+
+Examples:
+- `https://github.com/username/repo-name`
+- `git@github.com:username/repo-name.git`
+
+If it's a private repo, make sure you have access configured (SSH key or token)."
+
+Wait for the URL, then:
+```bash
+# Clone to a temp directory for reference
+git clone --depth 1 [REPO_URL] /tmp/reference-repo 2>&1 || echo "CLONE_FAILED"
+```
+
+If clone succeeds:
+1. Explore the repo structure with LS and Read tools
+2. Identify relevant patterns, components, or data structures
+3. Note these in the PLAN.md for reference during implementation
+
+If clone fails (private repo or invalid URL):
+"I couldn't access that repository. This might be because:
+- It's a private repo and I don't have access
+- The URL has a typo
+
+You can:
+1. Make the repo public temporarily
+2. Clone it locally and give me the local path instead
+3. Skip this step and describe what you want me to reference"
+
+**If "none" selected:**
+
+Continue to Step 5.
+
+### Step 5: Visual Inspiration (Optional)
 
 Use AskQuestion:
 
@@ -162,7 +235,7 @@ Examples:
 - 'Professional with a blue color scheme'
 - 'Modern with lots of white space and subtle shadows'"
 
-### Step 5: App Name
+### Step 6: App Name
 
 Ask in chat:
 
@@ -172,7 +245,7 @@ This will appear in the browser tab and header.
 
 Examples: 'Client Portal', 'Feedback Tracker', 'Project Dashboard'"
 
-### Step 6: How to Run
+### Step 7: How to Run
 
 First, explain the options in chat:
 
@@ -202,7 +275,7 @@ Then use AskQuestion with a simple choice:
 }
 ```
 
-### Step 6b: Docker Setup (if Docker selected)
+### Step 7b: Docker Setup (if Docker selected)
 
 **First, check if Docker is running:**
 ```bash
@@ -282,7 +355,7 @@ Verify with a command:
 docker info > /dev/null 2>&1 && echo "Docker confirmed running!"
 ```
 
-If verified, proceed to Step 7 (Start the App).
+If verified, proceed to Step 8 (Start the App).
 
 **If "no" or "help":**
 
@@ -303,13 +376,88 @@ If verified, proceed to Step 7 (Start the App).
 
 Once Docker is running, let me know and we'll continue."
 
-### Step 7: Start the App (Auto-trigger)
+### Step 8: Start the App (Auto-trigger)
 
-Once Docker is confirmed running, **automatically start the app**:
+Once Docker is confirmed running, **automatically start the app**.
+
+**IMPORTANT: Check if AI features were selected in Step 3.**
+
+#### If "chatbot" was NOT selected (frontend-only app):
+
+The app doesn't need the Python backend or AI Gateway credentials. Use Docker to run just the UI:
 
 "Docker is ready! Starting your app now..."
 
 Run the following commands:
+```bash
+cd deployer-apps/citizen-dev7/src/ui
+
+# Build and run with Docker using a Node.js image
+docker run --rm -d \
+  --name citizen-dev-ui \
+  -p 3000:5173 \
+  -v "$(pwd)":/app \
+  -w /app \
+  node:20-alpine \
+  sh -c "npm install && npm run dev -- --host 0.0.0.0"
+```
+
+Wait a few seconds for npm install to complete, then verify it's running:
+```bash
+sleep 10 && curl -s http://localhost:3000 > /dev/null && echo "APP_READY" || echo "STILL_STARTING"
+```
+
+If "STILL_STARTING", wait a bit longer (up to 60 seconds for first run) and check again.
+
+Once ready, open the browser:
+```bash
+# macOS
+open http://localhost:3000
+
+# Windows  
+start http://localhost:3000
+
+# Linux
+xdg-open http://localhost:3000
+```
+
+Tell the user:
+"**Your app is live!** I've opened it in your browser at http://localhost:3000
+
+Your app runs in Docker with hot reloading - any code changes will appear automatically."
+
+#### If "chatbot" WAS selected (needs AI backend):
+
+The app needs the full Python backend with AI Gateway. Check for credentials first:
+
+```bash
+cd deployer-apps/citizen-dev7/src
+cat .env 2>/dev/null | grep -E "^AI_GATEWAY" || echo "NO_CREDENTIALS"
+```
+
+**If "NO_CREDENTIALS" or missing values:**
+
+Tell the user:
+"Your app includes AI chatbot features, which require AI Gateway credentials.
+
+**To set up AI Gateway:**
+1. Go to Platform McKinsey > AI Gateway
+2. Create or get your instance ID and API key
+3. Create a `.env` file in `deployer-apps/citizen-dev7/src/` with:
+   ```
+   AI_GATEWAY_INSTANCE_ID=your-instance-id
+   AI_GATEWAY_API_KEY=your-api-key
+   ```
+
+For now, I'll start the app without the AI features. The chatbot will show placeholder responses until you add credentials.
+
+Let me know when you've added the credentials and I'll restart with full AI support!"
+
+Then start the frontend-only Docker (same as above).
+
+**If credentials exist:**
+
+Run the full Docker setup:
 ```bash
 cd deployer-apps/citizen-dev7/src
 chmod +x scripts/docker-dev.sh
@@ -340,7 +488,7 @@ xdg-open http://localhost:3000
 Tell the user:
 "**Your app is live!** I've opened it in your browser at http://localhost:3000"
 
-## After Collecting All Inputs (Steps 1-5)
+## After Collecting All Inputs (Steps 1-6)
 
 ### MANDATORY: Switch to Plan Mode and Create PLAN.md
 
@@ -362,9 +510,10 @@ Write a detailed plan to `deployer-apps/citizen-dev7/src/ui/PLAN.md` with:
 
 - **Header**: App name, status (Awaiting approval), date
 - **Overview table**: App name, purpose, description
+- **Reference Sources** (if provided in Step 4): Table with source type, path/URL, and what patterns/data will be used from it
 - **Components to Create**: Table with component name, file path, description
 - **Files to Modify**: Table with file and changes
-- **Sample Data**: What will be generated with examples
+- **Sample Data**: What will be generated with examples (or note if using real data from reference)
 - **Styling Approach**: Layout, colors, component styles, typography
 - **Implementation Order**: Numbered list of build sequence
 - **Approval section**: Instructions for confirming or requesting changes
@@ -469,9 +618,9 @@ As you write code, tell them what you're doing:
 
 **Your app is ready!** Now let's get it running..."
 
-### THEN Ask About Runtime (Step 6)
+### THEN Ask About Runtime (Step 7)
 
-Only after the code is written, proceed to Step 6 (Docker vs Local choice).
+Only after the code is written, proceed to Step 7 (Docker vs Local choice).
 
 ### Offer to Start
 
@@ -494,8 +643,10 @@ After code is built and runtime is configured, ask:
 ```
 
 **If yes:** 
-- If Docker selected: Run `./scripts/docker-dev.sh`
-- If local selected: Provide instructions for `npm run dev` in ui/ and `uvicorn api:app` in backend
+- If Docker selected: Follow Step 7 logic (frontend-only vs full backend based on chatbot selection)
+- If local selected: 
+  - For frontend-only: `cd ui && npm install && npm run dev`
+  - For full backend: Terminal 1: `uvicorn api:app --reload --port 3000`, Terminal 2: `cd ui && npm run dev`
 
 **If no:**
 - Explain they can start anytime with `/launch`
@@ -527,24 +678,31 @@ Just describe what you want to change!"
 
 ## Critical Instructions
 
-1. **MANDATORY: CREATE PLAN.md** - After collecting inputs, you MUST:
+1. **TRACK FEATURE SELECTIONS** - After Step 3, remember whether "chatbot" was selected:
+   - If chatbot selected → App needs AI backend → Requires AI Gateway credentials
+   - If chatbot NOT selected → Frontend-only → No credentials needed, simpler Docker setup
+   
+2. **MANDATORY: CREATE PLAN.md** - After collecting inputs, you MUST:
    - Switch to Plan Mode using `SwitchMode(target_mode_id: "plan")`
    - Create `ui/PLAN.md` with the detailed implementation plan
    - Wait for explicit user confirmation
    - Update PLAN.md status to "Approved" once confirmed
    - DO NOT write any code until user confirms the plan
    
-2. **BE CONVERSATIONAL** - This is a friendly wizard, not a technical form
-3. **WAIT FOR RESPONSES** - Don't rush through steps
-4. **HANDLE IMAGES** - If user shares an image, analyze it for design inspiration
-5. **ACTUALLY WRITE CODE** - After user confirms the plan:
+3. **BE CONVERSATIONAL** - This is a friendly wizard, not a technical form
+4. **WAIT FOR RESPONSES** - Don't rush through steps
+5. **HANDLE IMAGES** - If user shares an image, analyze it for design inspiration
+6. **ACTUALLY WRITE CODE** - After user confirms the plan:
    - Create new component files in `ui/src/components/`
    - Edit `ui/src/App.tsx` to add navigation and routes
    - Update `ui/package.json` and `ui/index.html` with app name
    - Modify `ui/tailwind.config.js` for colors if needed
    - Generate sample data files if needed
    - DO NOT just describe what to do - actually make the file changes!
-6. **SHOW PROGRESS** - Tell the user what you're creating as you go
-7. **BUILD BEFORE DOCKER** - All code changes happen BEFORE starting Docker
-8. **OFFER TO START** - After code is written, guide them through Docker/running
-9. **TAILOR NEXT STEPS** - Show relevant suggestions based on their choices
+7. **SHOW PROGRESS** - Tell the user what you're creating as you go
+8. **BUILD BEFORE DOCKER** - All code changes happen BEFORE starting Docker
+9. **OFFER TO START** - After code is written, guide them through Docker/running
+10. **USE CORRECT DOCKER APPROACH** - Based on chatbot selection:
+    - No chatbot → Simple `node:20-alpine` container for frontend only
+    - With chatbot → Full `docker-dev.sh` script (requires AI Gateway credentials)
+11. **TAILOR NEXT STEPS** - Show relevant suggestions based on their choices
