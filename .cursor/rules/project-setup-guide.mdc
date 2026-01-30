@@ -5,7 +5,19 @@ alwaysApply: false
 
 # Project Setup Guide
 
-This rule defines how to run the `/setup` wizard - a conversational, step-by-step process that gathers context about what the user is building and customizes the project accordingly.
+This rule defines how to run the `/setup` wizard - a conversational, step-by-step process that gathers context about what the user is building, creates an implementation plan for approval, and then customizes the project accordingly.
+
+## CRITICAL: Plan-First Requirement
+
+**After gathering all user inputs, you MUST:**
+
+1. **Create a Cursor plan file** - Write to `~/.cursor/plans/[app_name]_[hex].plan.md`
+2. **Use proper format** - YAML frontmatter with `name`, `overview`, `todos`, `isProject: false`
+3. **Include architecture** - Mermaid diagram showing app structure
+4. **Wait for user confirmation** - User clicks "Build this" or confirms in chat
+5. **Only then build** - Implement following the plan's todo list
+
+**DO NOT skip the planning step. DO NOT write code until user confirms.**
 
 ## Trigger
 
@@ -19,17 +31,46 @@ Activate when user says:
 ## Flow Overview
 
 ```
+0. Approach: Quick Start or Plan First (PRD)
 1. Context: What are you building for?
 2. Description: Describe your app
 3. Features: Multi-select feature types
 4. Visual: Optional image/description
-5. Name: What to call the app
-6. Runtime: Docker or local
-7. Build: Apply customizations
-8. Start: Launch the app
+5. Existing Code: Build on/supplement/match existing code (optional)
+6. Existing Data: Data files, database, or examples (optional)
+7. Name: What to call the app
+8. Runtime: Docker or local
+9. **PLAN: Create .plan.md file, user clicks "Build this"**
+10. Build: Apply customizations (only after plan confirmed)
+11. Start: Launch the app + auto-open browser
 ```
 
 ## Step-by-Step Implementation
+
+### Step 0: Choose Your Approach
+
+Use AskQuestion:
+
+```json
+{
+  "title": "Let's set up your app!",
+  "questions": [{
+    "id": "approach",
+    "prompt": "How would you like to get started?",
+    "options": [
+      { "id": "quick", "label": "Quick Start - I'm just playing around" },
+      { "id": "prd", "label": "Detailed Plan - I'm building something real and need proper requirements" }
+    ]
+  }]
+}
+```
+
+**If "prd" selected:**
+- Read and follow the PRD generator skill at `.cursor/skills/prd-generator/SKILL.md`
+- After PRD is complete, return here and continue from Step 1
+
+**If "quick" selected:**
+- Continue with Steps 1-8 below
 
 ### Step 1: Context
 
@@ -126,7 +167,120 @@ Use AskQuestion:
 
 **If describe:** "Describe the look you're going for. Examples: 'Clean like Notion', 'Professional with blue', 'Modern with shadows'"
 
-### Step 5: App Name
+### Step 5: Existing Code Reference
+
+Use AskQuestion:
+
+```json
+{
+  "title": "Build on Existing Code (Optional)",
+  "questions": [{
+    "id": "existing_code",
+    "prompt": "Do you want to build on top of, supplement, or match the style of any existing code?",
+    "options": [
+      { "id": "extend", "label": "Yes, I want to extend/build on existing code" },
+      { "id": "supplement", "label": "Yes, I want to create something that works alongside existing code" },
+      { "id": "match_style", "label": "Yes, I want to match the style/patterns of existing code" },
+      { "id": "none", "label": "No, starting fresh" }
+    ]
+  }]
+}
+```
+
+**If extend, supplement, or match_style:**
+
+"Please share the existing code you'd like me to reference:
+
+**Options:**
+- **Local folder path** - e.g., `/Users/you/projects/my-app` or `~/Documents/my-project`
+- **GitHub URL** - e.g., `https://github.com/org/repo` or `github.com/org/repo/tree/branch/folder`
+- **Paste code snippets** - Share key files or patterns directly in chat
+
+I'll analyze the code to understand:
+- File structure and naming conventions
+- Component patterns and architecture
+- Styling approach (CSS, Tailwind, etc.)
+- State management patterns
+- API integration patterns
+
+This helps me create code that fits seamlessly with your existing work."
+
+**Processing the reference:**
+- **Local path:** Read the directory structure, key config files (package.json, tsconfig.json, tailwind.config.js), and sample components to understand patterns
+- **GitHub URL:** Use web fetch to retrieve repository structure and key files
+- **Code snippets:** Analyze the shared code for patterns, naming conventions, and style
+
+**Store the analysis for later use:**
+- Document the coding style, patterns, and conventions discovered
+- Apply these patterns when generating new components
+- Ensure consistency with imports, file organization, and naming
+
+### Step 6: Existing Data
+
+Use AskQuestion:
+
+```json
+{
+  "title": "Existing Data (Optional)",
+  "questions": [{
+    "id": "existing_data",
+    "prompt": "Do you have any existing data you'd like to build this app around?",
+    "options": [
+      { "id": "files", "label": "Yes, I have data files (CSV, Excel, JSON, etc.)" },
+      { "id": "database", "label": "Yes, I have a database or API" },
+      { "id": "examples", "label": "Yes, I can share some example data" },
+      { "id": "none", "label": "No, generate sample data for me" }
+    ]
+  }]
+}
+```
+
+**If files:**
+
+"Please share your data files. You can:
+- **Drag and drop** files directly into this chat
+- **Provide file paths** - e.g., `/Users/you/Documents/data.csv`
+- **Share a folder path** - e.g., `~/Downloads/project-data/`
+
+I'll store them in `ui/src/data/` and analyze them to:
+- Understand your data structure and field names
+- Create appropriate TypeScript types
+- Build UI components that match your data
+- Generate realistic sample data that matches your schema"
+
+**If database:**
+
+"Tell me about your database or API:
+- **Database type** - PostgreSQL, MySQL, MongoDB, etc.
+- **API endpoint** - REST API URL or GraphQL endpoint
+- **Sample response** - Paste an example of the data structure
+
+I'll create API clients and types that match your data source."
+
+**If examples:**
+
+"Please share some example data - you can paste it directly in chat:
+- A few rows from a spreadsheet
+- A sample JSON object
+- Field names and example values
+
+I'll use this to understand your data structure and create matching components."
+
+**Processing user data:**
+- **Files:** Copy to `ui/src/data/` folder, parse structure, generate TypeScript interfaces
+- **Database/API:** Document connection details (no secrets!), create API client stubs
+- **Examples:** Parse structure, create types, generate expanded sample data
+
+**Data folder structure:**
+```
+ui/src/data/
+├── raw/              # Original user-provided files
+├── types.ts          # TypeScript interfaces for data
+├── sample-data.ts    # Generated sample data matching schema
+└── README.md         # Documents data sources and structure
+```
+
+### Step 7: App Name
 
 Ask in chat:
 
@@ -134,25 +288,35 @@ Ask in chat:
 
 Examples: 'Client Portal', 'Feedback Tracker', 'Project Dashboard'"
 
-### Step 6: Runtime Choice
+### Step 8: Runtime Choice
 
-Use AskQuestion:
+First, explain the options in chat:
+
+"**How would you like to run your app?**
+
+I can run your app in two ways:
+
+**Docker** (Recommended) - Think of it as a 'container' that has everything your app needs built in. You install Docker once, and everything just works. No other software needed. *Best for most people.*
+
+**Local** - Runs directly on your computer using Node.js and Python. *Best for developers who already have these tools.*"
+
+Then use AskQuestion with a simple choice:
 
 ```json
 {
-  "title": "How would you like to run your app?",
+  "title": "Choose how to run",
   "questions": [{
     "id": "runtime",
-    "prompt": "How do you want to preview your app?\n\n**Option 1: Docker (Recommended)**\nDocker is an app that runs your project in a safe 'bubble' on your computer. You install it once, then everything just works - no other software needed.\nBest for: Most people, especially if you're not a developer.\n\n**Option 2: Run directly on your computer**\nThis runs the app using software installed on your computer. You'll need Node.js and Python installed.\nBest for: Developers who already have these tools.",
+    "prompt": "Which option works for you?",
     "options": [
-      { "id": "docker", "label": "Docker (Recommended) - Easiest, install one app and done" },
-      { "id": "local", "label": "Run directly - For developers with Node.js/Python" }
+      { "id": "docker", "label": "Docker (Recommended)" },
+      { "id": "local", "label": "Local (Node.js/Python)" }
     ]
   }]
 }
 ```
 
-### Step 6b: Docker Setup (if Docker selected)
+### Step 8b: Docker Setup (if Docker selected)
 
 **Check if Docker is running:**
 ```bash
@@ -199,9 +363,136 @@ cd deployer-apps/citizen-dev7/src
 ./scripts/docker-dev.sh
 ```
 
-## After Collecting Inputs
+## After Collecting Inputs (Steps 0-7)
 
-### Apply Customizations
+### MANDATORY: Create Cursor Plan File (.plan.md)
+
+**Before building anything, you MUST create a Cursor-native plan file.**
+
+Cursor has a built-in plan format that renders with:
+- A formatted header with title and description
+- A **"Build this"** button that executes the plan
+- Architecture diagrams (Mermaid)
+- Structured implementation tasks with checkboxes
+
+#### Step A: Create the Plan File
+
+Write a `.plan.md` file to `~/.cursor/plans/[app_name_snake_case]_[random_8char_hex].plan.md`
+
+The file MUST have this structure:
+
+```markdown
+---
+name: Build [App Name]
+overview: [One sentence describing what this app does and its main features]
+todos:
+  - id: setup-types
+    content: Create TypeScript interfaces for [domain objects]
+    status: pending
+  - id: setup-data
+    content: Create sample data with realistic [domain-specific] content
+    status: pending
+  - id: setup-store
+    content: Create Zustand store with state management
+    status: pending
+  - id: create-navigation
+    content: Create Navigation component with sidebar
+    status: pending
+  - id: create-dashboard
+    content: Create Dashboard with [specific features]
+    status: pending
+  - id: create-[feature]
+    content: Create [FeatureComponent] with [functionality]
+    status: pending
+  - id: update-app
+    content: Update App.tsx with layout and routing
+    status: pending
+  - id: cleanup
+    content: Remove unused components, update package.json/index.html
+    status: pending
+isProject: false
+---
+
+# Build [App Name]
+
+## Current State
+
+[Describe what exists and what needs to be created]
+
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph layout [App Layout]
+        App[App.tsx]
+        Nav[Navigation]
+        Main[Main Content Area]
+    end
+    
+    subgraph views [Views]
+        Dashboard
+        [Feature1]
+        [Feature2]
+    end
+    
+    subgraph data [Data Layer]
+        Store[Zustand Store]
+        Types[TypeScript Types]
+    end
+    
+    App --> Nav
+    App --> Main
+    Main --> Dashboard
+    Main --> [Feature1]
+    Dashboard --> Store
+```
+
+## Implementation Details
+
+### 1. [Component Name]
+[Details about what this component does]
+
+### 2. [Next Component]
+[Details...]
+
+## File Structure After Implementation
+
+```
+src/
+  components/
+    [List components]
+  data/
+    types.ts
+    sample-data.ts
+  store.ts
+  App.tsx
+```
+```
+
+#### Step B: Tell User About the Plan
+
+After creating the file, tell the user:
+
+"I've created an implementation plan that you can view in Cursor's Plans panel. 
+
+Look for **'Build [App Name]'** - it has a **'Build this'** button that will execute the plan.
+
+You can:
+- Click **'Build this'** to start building
+- Review the architecture and implementation details first
+- Ask me to modify the plan if you want changes"
+
+#### Step C: Wait for User to Confirm
+
+The user can either:
+1. Click the "Build this" button in the plan UI
+2. Say "build it", "yes", "looks good" in chat
+
+**DO NOT proceed until user confirms or clicks Build.**
+
+#### Step D: Apply Customizations
+
+Once confirmed, apply customizations:
 
 1. **Set app name** in package.json, index.html, headers
 2. **Use description** to name pages and generate sample data
@@ -251,8 +542,14 @@ Tailored to their selections:
 
 ## Critical Instructions
 
-1. **BE CONVERSATIONAL** - Friendly wizard, not a form
-2. **WAIT FOR RESPONSES** - Don't rush
-3. **HANDLE IMAGES** - If shared, analyze for design inspiration
-4. **ACTUALLY BUILD** - Make real changes to the codebase
-5. **OFFER TO START** - Don't leave them wondering what's next
+1. **MANDATORY: CREATE .plan.md FILE** - After collecting inputs:
+   - Create a Cursor plan file at `~/.cursor/plans/[app_name]_[hex].plan.md`
+   - Use YAML frontmatter with `name`, `overview`, `todos`, `isProject: false`
+   - Include Mermaid architecture diagram in the body
+   - Wait for user to click "Build this" button or confirm in chat
+   - DO NOT write any code until user confirms
+2. **BE CONVERSATIONAL** - Friendly wizard, not a form
+3. **WAIT FOR RESPONSES** - Don't rush
+4. **HANDLE IMAGES** - If shared, analyze for design inspiration
+5. **ACTUALLY BUILD** - After plan is confirmed, make real changes to the codebase
+6. **OFFER TO START** - Don't leave them wondering what's next

@@ -6,9 +6,48 @@ This command will be available in chat with `/setup`
 
 ## Overview
 
-This wizard helps users configure their web app through a conversational, step-by-step process. It gathers context about what they're building and then customizes the project accordingly.
+This wizard helps users configure their web app through a conversational, step-by-step process. It gathers context about what they're building, creates an implementation plan for approval, and then customizes the project accordingly.
+
+## CRITICAL: Plan-First Requirement
+
+**After gathering all user inputs (Steps 0-5), you MUST:**
+
+1. **Switch to Plan Mode** - Use `SwitchMode(target_mode_id: "plan")`
+2. **Create `ui/PLAN.md`** - Write the implementation plan to a proper markdown file
+3. **Wait for explicit user confirmation** - Do NOT proceed until user says "yes", "looks good", etc.
+4. **Update PLAN.md status** - Change from "Awaiting approval" to "Approved"
+5. **Only then build** - Switch back to Agent mode and implement the confirmed plan
+
+**DO NOT skip the planning step. DO NOT start writing code until user confirms.**
 
 ## Step-by-Step Flow
+
+### Step 0: Choose Your Path
+
+Use AskQuestion:
+
+```json
+{
+  "title": "Let's set up your app!",
+  "questions": [
+    {
+      "id": "approach",
+      "prompt": "How would you like to get started?",
+      "options": [
+        { "id": "quick", "label": "Quick Start - I'm just playing around" },
+        { "id": "prd", "label": "Detailed Plan - I'm building something real and need proper requirements" }
+      ]
+    }
+  ]
+}
+```
+
+**If "prd" selected:**
+- Read and follow the PRD generator skill at `.cursor/skills/prd-generator/SKILL.md`
+- After PRD is complete, return here and continue from Step 1 to apply the configuration
+
+**If "quick" selected:**
+- Continue with Steps 1-7 below
 
 ### Step 1: Context - What are you building for?
 
@@ -135,18 +174,28 @@ Examples: 'Client Portal', 'Feedback Tracker', 'Project Dashboard'"
 
 ### Step 6: How to Run
 
-Use AskQuestion:
+First, explain the options in chat:
+
+"**How would you like to run your app?**
+
+I can run your app in two ways:
+
+**Docker** (Recommended) - Think of it as a 'container' that has everything your app needs built in. You install Docker once, and everything just works. No other software needed. *Best for most people.*
+
+**Local** - Runs directly on your computer using Node.js and Python. *Best for developers who already have these tools.*"
+
+Then use AskQuestion with a simple choice:
 
 ```json
 {
-  "title": "How would you like to run your app?",
+  "title": "Choose how to run",
   "questions": [
     {
       "id": "runtime",
-      "prompt": "How do you want to preview your app?\n\n**Option 1: Docker (Recommended)**\nDocker is an app that runs your project in a safe \"bubble\" on your computer.\nYou install it once, then everything just works - no other software needed.\nBest for: Most people, especially if you're not a developer.\n\n**Option 2: Run it directly on your computer**\nThis runs the app using software installed on your computer.\nYou'll need Node.js and Python installed.\nBest for: Developers who already have these tools set up.",
+      "prompt": "Which option works for you?",
       "options": [
-        { "id": "docker", "label": "Docker (Recommended) - Easiest, install one app and you're done" },
-        { "id": "local", "label": "Run directly - For developers with Node.js/Python already installed" }
+        { "id": "docker", "label": "Docker (Recommended)" },
+        { "id": "local", "label": "Local (Node.js/Python)" }
       ]
     }
   ]
@@ -273,22 +322,72 @@ Tell the user:
 This takes 2-3 minutes the first time (it's downloading everything your app needs).
 After that, it starts in just a few seconds.
 
-**When it's ready:**
-- Open your browser to: **http://localhost:3000**
-- You'll see your app running!
-
 I'll let you know when it's ready..."
 
-Monitor the Docker build output and let them know when complete.
+Monitor the Docker build output. Once the app is running (you see the server is ready), **automatically open the browser**:
+
+```bash
+# macOS
+open http://localhost:3000
+
+# Windows
+start http://localhost:3000
+
+# Linux
+xdg-open http://localhost:3000
+```
+
+Tell the user:
+"**Your app is live!** I've opened it in your browser at http://localhost:3000"
 
 ## After Collecting All Inputs (Steps 1-5)
 
-### IMPORTANT: Build the Code FIRST (Before Docker)
+### MANDATORY: Switch to Plan Mode and Create PLAN.md
 
-After collecting app name, description, features, and visual inspiration - **immediately start writing code**.
+After collecting app name, description, features, and visual inspiration - **DO NOT start writing code yet**.
+
+**Step A: Switch to Plan Mode**
+
+Use the SwitchMode tool:
+```
+SwitchMode(target_mode_id: "plan", explanation: "Creating an implementation plan for your review before I start building")
+```
 
 Tell the user:
-"**Perfect! I'm now building your app based on what you told me...**"
+"Before I start building, let me create a plan so you can review exactly what I'm going to create."
+
+**Step B: Create PLAN.md File**
+
+Write a detailed plan to `deployer-apps/citizen-dev7/src/ui/PLAN.md` with:
+
+- **Header**: App name, status (Awaiting approval), date
+- **Overview table**: App name, purpose, description
+- **Components to Create**: Table with component name, file path, description
+- **Files to Modify**: Table with file and changes
+- **Sample Data**: What will be generated with examples
+- **Styling Approach**: Layout, colors, component styles, typography
+- **Implementation Order**: Numbered list of build sequence
+- **Approval section**: Instructions for confirming or requesting changes
+
+**Step C: Tell User to Review**
+
+"I've created a detailed implementation plan at `ui/PLAN.md`. Please review it and let me know:
+- **'yes'** to proceed with building
+- **'change X'** to adjust something
+- **'add Y'** for additional features"
+
+**Step D: Wait for User Response**
+
+**DO NOT proceed until user explicitly confirms** ("yes", "looks good", "proceed", "go ahead", etc.)
+
+If user requests changes, update PLAN.md and ask again.
+
+**Step E: Update Status and Build**
+
+Once user confirms:
+1. Update PLAN.md status from "Awaiting approval" to "Approved - [Date]"
+2. Switch back to Agent mode
+3. Tell the user: "**Perfect! I'm now building your app based on the confirmed plan...**"
 
 Then **actually create/modify these files**:
 
@@ -428,17 +527,24 @@ Just describe what you want to change!"
 
 ## Critical Instructions
 
-1. **BE CONVERSATIONAL** - This is a friendly wizard, not a technical form
-2. **WAIT FOR RESPONSES** - Don't rush through steps
-3. **HANDLE IMAGES** - If user shares an image, analyze it for design inspiration
-4. **ACTUALLY WRITE CODE** - This is critical! After collecting inputs:
+1. **MANDATORY: CREATE PLAN.md** - After collecting inputs, you MUST:
+   - Switch to Plan Mode using `SwitchMode(target_mode_id: "plan")`
+   - Create `ui/PLAN.md` with the detailed implementation plan
+   - Wait for explicit user confirmation
+   - Update PLAN.md status to "Approved" once confirmed
+   - DO NOT write any code until user confirms the plan
+   
+2. **BE CONVERSATIONAL** - This is a friendly wizard, not a technical form
+3. **WAIT FOR RESPONSES** - Don't rush through steps
+4. **HANDLE IMAGES** - If user shares an image, analyze it for design inspiration
+5. **ACTUALLY WRITE CODE** - After user confirms the plan:
    - Create new component files in `ui/src/components/`
    - Edit `ui/src/App.tsx` to add navigation and routes
    - Update `ui/package.json` and `ui/index.html` with app name
    - Modify `ui/tailwind.config.js` for colors if needed
    - Generate sample data files if needed
    - DO NOT just describe what to do - actually make the file changes!
-5. **SHOW PROGRESS** - Tell the user what you're creating as you go
-6. **BUILD BEFORE DOCKER** - All code changes happen BEFORE starting Docker
-7. **OFFER TO START** - After code is written, guide them through Docker/running
-8. **TAILOR NEXT STEPS** - Show relevant suggestions based on their choices
+6. **SHOW PROGRESS** - Tell the user what you're creating as you go
+7. **BUILD BEFORE DOCKER** - All code changes happen BEFORE starting Docker
+8. **OFFER TO START** - After code is written, guide them through Docker/running
+9. **TAILOR NEXT STEPS** - Show relevant suggestions based on their choices

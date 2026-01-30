@@ -7,11 +7,30 @@ alwaysApply: false
 
 This rule defines how to process the setup wizard inputs and customize the project.
 
+## CRITICAL: Plan-First Workflow
+
+**MANDATORY**: After gathering user inputs, you MUST:
+1. **Create a Cursor plan file** at `~/.cursor/plans/[app_name]_[hex].plan.md`
+2. **Use the proper format** - YAML frontmatter with `name`, `overview`, `todos`, `isProject`
+3. **Include architecture diagram** - Mermaid flowchart showing app structure
+4. **Wait for user confirmation** - User clicks "Build this" button or confirms in chat
+5. **Only then** begin implementation following the plan's todos
+
+**DO NOT skip the planning step. DO NOT start writing code until the user confirms the plan.**
+
 ## Trigger
 
 Activated when user runs `/setup` command or says "set up my app", "configure my app", etc.
 
 ## Workflow Steps
+
+### 0. Choose Approach
+
+Before detailed questions, offer the user a choice:
+- **Quick Start**: Simple prompts, get building fast
+- **Plan First (PRD)**: Create a detailed blueprint before building
+
+If PRD selected, use the prd-generator skill, then return here.
 
 ### 1. Gather Context (via setup.md command)
 
@@ -20,6 +39,8 @@ The setup command collects:
 - **Description**: Free text describing what the app does
 - **Features**: Multi-select of feature types
 - **Visual inspiration**: Image or text description (optional)
+- **Existing code reference**: Local paths or GitHub URLs to build on/supplement/match (optional)
+- **Existing data**: Data files, database connections, or example data (optional)
 - **App name**: What to call the app
 - **Runtime**: Docker or local development
 
@@ -93,6 +114,79 @@ If user provided visual inspiration:
 - "Modern" → Gradients, shadows, smooth animations
 - "Colorful" → Vibrant accent colors, playful elements
 
+#### Existing Code Integration
+
+If user provided existing code references:
+
+**From local path:**
+- Read directory structure using LS tool
+- Analyze key config files (package.json, tsconfig.json, tailwind.config.js, vite.config.ts)
+- Read sample components to understand patterns
+- Extract naming conventions, file organization, import patterns
+
+**From GitHub URL:**
+- Use WebFetch to retrieve repository structure
+- Analyze README, package.json, and key source files
+- Identify tech stack and architectural patterns
+
+**Apply discovered patterns:**
+- **Extend mode**: Create components that integrate directly with existing codebase
+  - Match import paths and module structure
+  - Use same state management patterns
+  - Follow existing API client patterns
+- **Supplement mode**: Create standalone modules that can work alongside
+  - Use compatible but potentially different patterns
+  - Ensure no naming conflicts
+  - Design clear interfaces between new and existing code
+- **Match style mode**: Apply coding conventions without direct integration
+  - Copy naming conventions (camelCase, PascalCase, etc.)
+  - Match file/folder organization patterns
+  - Use same component structure (hooks, props patterns)
+  - Apply same styling approach (Tailwind classes, CSS patterns)
+
+**Document in plan:**
+Include a "Code Consistency" section in the implementation plan showing:
+- Discovered patterns from reference code
+- How new code will align with those patterns
+- Any deviations and why they're necessary
+
+#### User Data Integration
+
+If user provided existing data:
+
+**Data folder structure:**
+```
+ui/src/data/
+├── raw/              # Original user-provided files (CSV, JSON, Excel)
+├── types.ts          # TypeScript interfaces derived from data
+├── sample-data.ts    # Sample data matching user's schema
+└── README.md         # Documents data sources and structure
+```
+
+**Processing data files:**
+- Copy user files to `ui/src/data/raw/`
+- Parse file structure (CSV headers, JSON keys, Excel columns)
+- Generate TypeScript interfaces in `types.ts`
+- Create sample data that matches the schema
+
+**Processing database/API references:**
+- Document connection details (never store secrets!)
+- Create API client stubs in `ui/src/services/`
+- Generate types from sample responses
+- Add placeholder data for development
+
+**Apply data to UI:**
+- Use field names from data in table headers
+- Match data types to appropriate UI components (dates → date pickers, numbers → charts)
+- Generate realistic sample data that matches schema and domain
+- Create data hooks in `ui/src/hooks/useData.ts`
+
+**Document in plan:**
+Include a "Data Structure" section showing:
+- Fields and types discovered
+- How data will be displayed in UI
+- Sample data that will be generated
+
 #### Navigation
 
 Create navigation based on selected features:
@@ -128,41 +222,199 @@ Adjust based on purpose:
 - Simpler initial state
 - Encourage experimentation
 
-### 4. Build Plan (Plan Mode)
+### 4. MANDATORY: Create Cursor Plan File (.plan.md)
 
-**BEFORE writing any code**, switch to Plan Mode to create an implementation plan:
+**THIS STEP IS REQUIRED - DO NOT SKIP**
 
-1. **Switch to Plan Mode** using the SwitchMode tool with target_mode_id: "plan"
-2. **Explain to user**: "Before I start building, let me create a plan so you can review what I'm going to create."
+After collecting all user inputs (Steps 1-3), you MUST create a Cursor-native plan file.
 
-The plan should include:
+#### About Cursor Plan Files
 
-**Architecture Overview:**
-- List of components to create
-- How they connect together
-- Data flow between components
+Cursor has a built-in plan format that renders with:
+- A formatted header with title and description
+- A "Build this" button that executes the plan
+- Architecture diagrams (Mermaid)
+- Structured implementation tasks with checkboxes
 
-**Files to Create/Modify:**
-- New component files with descriptions
-- Existing files that need updates
-- Configuration changes
+These files:
+- Use the `.plan.md` extension
+- Have YAML frontmatter with `name`, `overview`, and `todos`
+- Are stored in `~/.cursor/plans/` (Cursor manages this automatically)
 
-**Implementation Order:**
-- Which files to create first (dependencies)
-- Logical build sequence
-- Checkpoints for user review
+#### Step 4a: Create the Plan File
 
-**Sample Data Strategy:**
-- What sample data will be generated
-- How it relates to their app description
-- Realistic names, dates, values to use
+**Write the plan file** to `~/.cursor/plans/[app_name_snake_case]_[random_8char_hex].plan.md`
 
-**Styling Approach:**
-- Color scheme based on inspiration
-- Layout structure (sidebar vs top-nav)
-- Component styling patterns
+Use this exact format:
 
-After presenting the plan, ask the user to confirm before proceeding. Once confirmed, switch back to Agent mode and begin implementation.
+```markdown
+---
+name: Build [App Name]
+overview: [One sentence describing what this app does and its main features]
+todos:
+  - id: setup-types
+    content: Create TypeScript interfaces for [domain objects]
+    status: pending
+  - id: setup-data
+    content: Create sample data with realistic [domain-specific] content
+    status: pending
+  - id: setup-store
+    content: Create Zustand store with state management for [main features]
+    status: pending
+  - id: create-navigation
+    content: Create Navigation component with sidebar and routing
+    status: pending
+  - id: create-dashboard
+    content: Create Dashboard with [specific features like charts, stats, etc.]
+    status: pending
+  - id: create-[feature1]
+    content: Create [Feature1Component] with [specific functionality]
+    status: pending
+  - id: create-[feature2]
+    content: Create [Feature2Component] with [specific functionality]
+    status: pending
+  - id: update-app
+    content: Update App.tsx with layout, routing, and all components
+    status: pending
+  - id: cleanup
+    content: Remove unused components and update package.json/index.html
+    status: pending
+isProject: false
+---
+
+# Build [App Name]
+
+## Current State
+
+The existing template has:
+
+- Chat UI components (to be replaced)
+- FastAPI backend (keep for API)
+- Tailwind CSS styling (use for new components)
+
+**Files to create:**
+
+- `src/data/types.ts` - TypeScript interfaces
+- `src/data/sample-data.ts` - Sample data
+- `src/store.ts` - Zustand store
+- `src/components/[Component1].tsx`
+- `src/components/[Component2].tsx`
+- [etc.]
+
+**Files to modify:**
+
+- `src/App.tsx` - Replace chat with new layout
+- `package.json` - Update name
+- `index.html` - Update title
+
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph layout [App Layout]
+        App[App.tsx]
+        Nav[Navigation]
+        Main[Main Content Area]
+    end
+    
+    subgraph views [Views]
+        Dashboard
+        [Feature1]
+        [Feature2]
+        [Feature3]
+    end
+    
+    subgraph data [Data Layer]
+        Store[Zustand Store]
+        Types[TypeScript Types]
+        SampleData[Sample Data]
+    end
+    
+    App --> Nav
+    App --> Main
+    Main --> Dashboard
+    Main --> [Feature1]
+    Main --> [Feature2]
+    Main --> [Feature3]
+    Dashboard --> Store
+    [Feature1] --> Store
+    [Feature2] --> Store
+    [Feature3] --> Store
+```
+
+## Implementation Details
+
+### 1. Data Layer (types.ts, sample-data.ts)
+
+Define TypeScript interfaces for:
+- [List main domain objects with key fields]
+
+Create sample data with:
+- [Describe realistic sample data that matches user's domain]
+
+### 2. State Management (store.ts)
+
+Zustand store with:
+- [List main state slices]
+- [List key actions/setters]
+
+### 3. [Component Name]
+
+[Description of what this component does]
+- [Key feature 1]
+- [Key feature 2]
+- [Key feature 3]
+
+### 4. [Continue for each component...]
+
+## Key Libraries to Use
+
+- `recharts` - Charts and visualizations
+- `@tanstack/react-table` - Data tables
+- `@dnd-kit/core` - Drag and drop
+- `date-fns` - Date formatting
+- `lucide-react` - Icons
+- `tailwindcss` - Styling
+
+## File Structure After Implementation
+
+```
+src/
+  components/
+    [Component1].tsx
+    [Component2].tsx
+    [Component3].tsx
+    Navigation.tsx
+  data/
+    types.ts
+    sample-data.ts
+  store.ts
+  App.tsx
+```
+```
+
+#### Step 4b: Tell User About the Plan
+
+After creating the file, tell the user:
+
+"I've created an implementation plan that you can view in Cursor's Plans panel. 
+
+Look for **'Build [App Name]'** - it has a **'Build this'** button that will execute the plan.
+
+You can:
+- Click **'Build this'** to start building
+- Review the architecture and implementation details first
+- Ask me to modify the plan if you want changes"
+
+#### Step 4c: Wait for User to Click Build or Confirm
+
+The user can either:
+1. Click the "Build this" button in the plan UI (Cursor will handle execution)
+2. Say "build it", "yes", "looks good" etc. in chat
+
+**DO NOT proceed until user explicitly confirms or clicks Build.**
+
+If user requests changes, create a new plan file with the updates.
 
 ### 5. Start the App
 
@@ -185,7 +437,24 @@ cd deployer-apps/citizen-dev7/src/ui
 npm install && npm run dev
 ```
 
-### 6. Provide Next Steps
+### 6. Auto-Open Browser
+
+Once the app is running (server shows ready), **automatically open the browser**:
+
+```bash
+# macOS
+open http://localhost:3000
+
+# Windows  
+start http://localhost:3000
+
+# Linux
+xdg-open http://localhost:3000
+```
+
+Tell the user: "**Your app is live!** I've opened it in your browser."
+
+### 7. Provide Next Steps
 
 After app is running, provide tailored guidance:
 
@@ -201,6 +470,11 @@ deployer-apps/citizen-dev7/src/
 ├── ui/
 │   ├── src/
 │   │   ├── components/     # UI components (modify based on features)
+│   │   ├── data/           # User data and generated types
+│   │   │   ├── raw/        # Original user-provided files
+│   │   │   ├── types.ts    # TypeScript interfaces for data
+│   │   │   ├── sample-data.ts  # Sample data matching schema
+│   │   │   └── README.md   # Data source documentation
 │   │   ├── hooks/          # Custom React hooks
 │   │   ├── services/       # API clients
 │   │   ├── stores/         # Zustand stores
@@ -214,13 +488,15 @@ deployer-apps/citizen-dev7/src/
 
 ## Critical Instructions
 
-1. **PLAN FIRST** - After collecting user inputs, switch to Plan Mode before writing any code:
-   - Use SwitchMode tool with target_mode_id: "plan"
-   - Present a clear implementation plan
-   - Wait for user confirmation before building
-   - This gives users visibility into what will be created
+1. **MANDATORY: CREATE .plan.md FILE** - This is NOT optional. After collecting user inputs:
+   - You MUST create a Cursor plan file at `~/.cursor/plans/[app_name]_[hex].plan.md`
+   - The file MUST have YAML frontmatter with `name`, `overview`, `todos`, and `isProject`
+   - The file MUST include a Mermaid architecture diagram
+   - You MUST wait for user to click "Build this" or confirm in chat
+   - You MUST NOT write any code until user confirms
+   - If you skip this step, the workflow is broken
 
-2. **WRITE CODE AFTER PLAN APPROVAL** - Once user confirms the plan, create/edit files:
+2. **WRITE CODE ONLY AFTER PLAN APPROVAL** - Once user confirms the plan, create/edit files:
    - Use the Write tool to create new component files
    - Use the StrReplace tool to modify existing files
    - DO NOT just describe what files should contain - actually write them!
