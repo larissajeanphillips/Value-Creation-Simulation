@@ -1,5 +1,22 @@
 # add-lessons-learned
 
-Do a root cause analysis of what just happened, and add to the lessons learned documentation and cursor rules so this issue doesn't happen again.
+Document a lesson learned or solution to a recurring problem.
 
 This command will be available in chat with /add-lessons-learned
+
+## Usage
+
+When you encounter a problem that:
+- Took significant time to solve
+- Might happen again
+- Has a non-obvious solution
+
+Use this command to document it in `docs/LESSONS_LEARNED.md` or `docs-templates/LESSONS_LEARNED_TEMPLATE.md`.
+
+## Format
+
+The AI will prompt for:
+1. **Problem**: What went wrong
+2. **Solution**: How you fixed it
+3. **Prevention**: How to avoid it in the future
+4. **Category**: Build/Deploy, Database, API, Frontend, etc.

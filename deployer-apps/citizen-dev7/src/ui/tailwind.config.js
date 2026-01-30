@@ -7,48 +7,57 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Merriweather', 'Georgia', 'serif'],
+        // McKinsey Typography
+        display: ['Bower', 'Georgia', 'Times New Roman', 'serif'],
+        sans: ['McKinseySans', 'Helvetica Neue', 'Arial', 'system-ui', 'sans-serif'],
+        serif: ['Georgia', 'Times New Roman', 'serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       colors: {
-        // McKinsey Deep Blue palette
+        // McKinsey Brand Colors (from mckinsey.com)
         mck: {
-          blue: {
-            50: '#e8f4fc',
-            100: '#d1e9f9',
-            200: '#a3d3f3',
-            300: '#75bded',
-            400: '#47a7e7',
-            500: '#0077b6', // Primary McKinsey blue
-            600: '#005f92',
-            700: '#00476e',
-            800: '#002f4a',
-            900: '#001726',
-            950: '#000b13',
-          },
-          // Electric blue accent for interactive elements
-          electric: {
-            400: '#2196f3',
-            500: '#1976d2',
-            600: '#1565c0',
-          },
+          // Primary brand blue - vibrant electric blue for CTAs
+          blue: '#2251FF',
+          // Electric blue for hover states
+          electric: '#0060FF',
+          // Deep navy - primary dark background
+          navy: '#051C2C',
+          // Dark navy - secondary dark sections
+          'dark-navy': '#0A2540',
+        },
+        // McKinsey Blue palette (shades)
+        'mck-blue': {
+          50: '#EEF3FF',
+          100: '#DCE7FF',
+          200: '#B9CFFF',
+          300: '#96B7FF',
+          400: '#5C8FFF',
+          500: '#2251FF', // Primary McKinsey blue
+          600: '#1A41CC',
+          700: '#133199',
+          800: '#0D2166',
+          900: '#061033',
+          950: '#03081A',
         },
         // Surface colors - light theme
         surface: {
           primary: '#ffffff',
-          secondary: '#f8f9fa',
+          secondary: '#f7f7f7',
           tertiary: '#f1f3f4',
-          border: '#e0e0e0',
+          border: '#e5e5e5',
           borderLight: '#eeeeee',
         },
         // Text colors
         text: {
-          primary: '#1a1a1a',
+          primary: '#051C2C',
           secondary: '#4a4a4a',
-          tertiary: '#6b6b6b',
-          muted: '#9e9e9e',
+          tertiary: '#6b7280',
+          muted: '#9ca3af',
         },
+      },
+      borderRadius: {
+        'card': '22px',
+        'pill': '9999px',
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',

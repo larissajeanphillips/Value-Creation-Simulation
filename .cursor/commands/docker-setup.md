@@ -1,144 +1,175 @@
 # docker-setup
 
-Launch the Docker setup wizard for the Agent Workspace starter template.
+Help users get Docker set up and running.
 
 This command will be available in chat with `/docker-setup`
 
-When triggered, immediately:
+## Overview
 
-1. **Check Docker Status** - Verify Docker is installed and running
-2. **Configure Environment** - Help set up `.env` file with AI Gateway credentials
-3. **Start Application** - Optionally launch Docker container
-4. **Provide Next Steps** - Guide user through first-time setup
+This command helps users install and configure Docker Desktop. It's focused on getting them up and running with minimal technical jargon.
 
-## Step 1: Check Docker
+## Step 1: Explain Docker Simply
 
-Check if Docker is available:
+"**What is Docker?**
+
+Imagine you want to bake a cake, but instead of gathering all the ingredients yourself, someone hands you a complete kit with everything pre-measured and ready to go.
+
+**Docker is like that kit for your app.** It bundles everything your app needs into one package that 'just works' - you don't need to install programming languages or other tools on your computer.
+
+**Why use Docker?**
+- **Simpler** - Install one app (Docker) instead of many
+- **Safer** - Your app runs in its own protected space
+- **Reliable** - Works the same on every computer
+
+**The only thing you need:** Docker Desktop (a free app)"
+
+## Step 2: Check Docker Status
+
+Run this command to check if Docker is installed and running:
+
 ```bash
 docker --version && docker ps > /dev/null 2>&1 && echo "Docker is running" || echo "Docker not running"
 ```
 
-If Docker is not running:
-- Inform user they need to start Docker Desktop
-- Provide download link if Docker is not installed
+### If Docker is installed and running:
 
-## Step 2: Collect AI Gateway Credentials
+"Docker is ready to go! 
 
-Use AskQuestion to collect credentials interactively:
+You can start your app with:
+```bash
+./scripts/docker-dev.sh
+```
+
+Then open http://localhost:3000 in your browser."
+
+### If Docker is not installed or not running:
+
+Use AskQuestion:
 
 ```json
 {
-  "title": "Docker Setup - AI Gateway Configuration",
+  "title": "Docker Setup",
   "questions": [
     {
-      "id": "has_credentials",
-      "prompt": "Do you have your AI Gateway credentials ready?\n\nYou can get these from Platform McKinsey > AI Gateway service.\n\nYou'll need:\n- Instance ID\n- API Key (format: clientID:clientSecret)",
+      "id": "docker_status",
+      "prompt": "Docker doesn't seem to be running.\n\nDo you have Docker Desktop installed?",
       "options": [
-        { "id": "yes", "label": "Yes, I have my credentials ready" },
-        { "id": "no", "label": "No, I need to get them first" },
-        { "id": "skip", "label": "Skip for now - I'll configure later" }
+        { "id": "installed", "label": "Yes, it's installed but might not be running" },
+        { "id": "not_installed", "label": "No, I need to install it" },
+        { "id": "not_sure", "label": "I'm not sure" }
       ]
     }
   ]
 }
 ```
 
-If user selects "yes":
-- Ask for Instance ID
-- Ask for API Key
-- Create `.env` file automatically
+## Step 3: Handle Response
 
-If user selects "no":
-- Provide instructions on how to get credentials
-- Offer to help again later
+### If "Yes, installed but not running"
 
-If user selects "skip":
-- Create `.env` from `.env.example` with placeholders
-- Inform user they need to edit it before running
+"Docker Desktop needs to be running for your app to start.
 
-## Step 3: Create .env File
+**How to start Docker Desktop:**
 
-If credentials provided:
+**Mac:**
+1. Open Finder
+2. Go to Applications
+3. Double-click 'Docker'
+4. Wait for the whale icon to appear in your menu bar (top right)
+5. When it stops animating, Docker is ready!
+
+**Windows:**
+1. Open the Start menu
+2. Search for 'Docker Desktop'
+3. Click to open it
+4. Wait for the icon in your system tray to show 'Docker Desktop is running'
+
+Once it's running, let me know and we'll start your app!"
+
+### If "No, need to install"
+
+"**Installing Docker Desktop**
+
+Docker Desktop is free for personal and small team use.
+
+**Step 1: Download**
+- **McKinsey users:** [Docker for Business](https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&table=pc_software_cat_item&sys_id=157a289187c6c1d0011e52c83cbb35ef)
+- **Alternative:** [Podman Desktop](https://platform.mckinsey.com/team/no-team/create-service/d4a3647c-10ee-44da-848d-b7a52610f633)
+
+**Step 2: Install**
+1. Open the downloaded file
+2. Follow the installation prompts
+3. You may need to restart your computer
+
+**Step 3: Start Docker**
+1. Open Docker Desktop from your Applications (Mac) or Start menu (Windows)
+2. Wait for it to fully start (the whale icon will stop animating)
+
+**Step 4: Come back here**
+Once Docker is running, let me know and we'll start your app!
+
+**Note:** Installation might take 5-10 minutes and may require admin permissions."
+
+### If "I'm not sure"
+
+"No problem! Let me help you check.
+
+**On Mac:**
+1. Look at your menu bar (top right of screen)
+2. Do you see a whale icon? 🐳
+3. If yes → Docker is installed (might just need to be started)
+4. If no → We'll need to install it
+
+**On Windows:**
+1. Look at your system tray (bottom right, near the clock)
+2. Do you see a whale icon?
+3. Or: Open Start menu and search for 'Docker'
+
+What do you see?"
+
+## Step 4: After Docker is Running
+
+Once Docker is confirmed running:
+
+"Docker is ready.
+
+**Starting your app:**
 ```bash
-cd deployer-apps/<instance-name>/src
-cat > .env << EOF
-AI_GATEWAY_INSTANCE_ID=<instance_id>
-AI_GATEWAY_API_KEY=<api_key>
-EOF
+cd deployer-apps/citizen-dev7/src
+./scripts/docker-dev.sh
 ```
 
-If skipped:
-```bash
-cd deployer-apps/<instance-name>/src
-cp .env.example .env
-# Inform user to edit .env before running
-```
+**What happens:**
+- First time: Builds the app (takes 2-3 minutes)
+- After that: Starts almost instantly
+- Your app will be at http://localhost:3000
 
-## Step 4: Offer to Start Docker
+Would you like me to start it now?"
 
-Ask if user wants to start the app now:
+If yes, run the docker-dev.sh script.
 
-```json
-{
-  "title": "Ready to Start?",
-  "questions": [
-    {
-      "id": "start_now",
-      "prompt": "Would you like to start the application now?\n\nThe Docker container will:\n- Build the image (first time only, ~2-3 minutes)\n- Start the app on http://localhost:3000\n- Enable hot reloading for agents and configs",
-      "options": [
-        { "id": "yes", "label": "Yes, start it now" },
-        { "id": "no", "label": "No, I'll start it later" }
-      ]
-    }
-  ]
-}
-```
+## Troubleshooting
 
-If "yes":
-- **Actually run** `./scripts/docker-dev.sh` (not in background - let user see output)
-- Navigate to correct directory first
-- Make script executable if needed
-- Inform user the app will be available at http://localhost:3000 after build completes
+**"Docker is taking forever to start"**
+→ First start can take a few minutes, especially on slower machines
+→ Make sure you have at least 4GB of free RAM
+→ Try restarting Docker Desktop
 
-If "no":
-- Provide instructions for starting later
-- Show the command: `./scripts/docker-dev.sh`
+**"Permission denied" error**
+→ On Mac: You may need to grant Docker access in System Settings > Privacy
+→ On Windows: Make sure you're running as an administrator for installation
 
-## Step 5: Confirm Success
+**"Port 3000 is already in use"**
+→ Another app is using that port
+→ Either close the other app or ask me to use a different port
 
-Provide a summary:
-
-```
-✅ Docker setup complete!
-
-📁 Configuration:
-   • .env file created at: deployer-apps/<instance-name>/src/.env
-   • Docker image: agent-chat
-
-🚀 To start the app:
-   cd deployer-apps/<instance-name>/src
-   ./scripts/docker-dev.sh
-
-🌐 App will be available at: http://localhost:3000
-
-📚 Next steps:
-   • Customize agents: Edit SETUP.md and regenerate
-   • Add reference data: Place files in reference/{agent_name}/
-   • See QUICKSTART.md for detailed instructions
-```
-
-## Error Handling
-
-- **Docker not installed**: Provide download link and clear instructions
-- **Docker not running**: Ask user to start Docker Desktop
-- **Missing credentials**: Offer to help get them or skip for now
-- **Script not executable**: Fix permissions automatically
-- **Port 3000 in use**: Suggest alternative port or help identify what's using it
+**"Not enough disk space"**
+→ Docker needs a few GB of free space
+→ Try clearing some files and trying again
 
 ## Critical Instructions
 
-1. **Check Docker FIRST** - Don't proceed if Docker isn't available
-2. **Create .env automatically** - Don't ask user to manually create files
-3. **Provide clear feedback** - Explain what's happening at each step
-4. **Handle errors gracefully** - Guide user to solutions
-5. **Offer to start** - But don't force it if user wants to configure more first
+1. **BE PATIENT** - Docker installation can take time
+2. **NO AI GATEWAY HERE** - AI Gateway setup is handled by `/add-ai`, not this command
+3. **ACTUALLY CHECK** - Run the docker command to verify status
+4. **OFFER HELP** - If they get stuck, walk them through step by step

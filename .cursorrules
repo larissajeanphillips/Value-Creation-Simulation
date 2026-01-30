@@ -1,0 +1,109 @@
+# Cursor Rules (bootstrap)
+
+Use these as the minimal "entry point" for AI work in this project.
+
+## Source of Truth
+
+- **Engineering rules**: `.cursor/rules/` directory (see development-guidelines.mdc)
+- **UI/UX Style Guide**: `ui/STYLE_GUIDE.md` and `ui/DESIGN_TOKENS.md` (create these if needed)
+- **Code Templates**: `code-templates/` - Component, hook, store templates
+- **Documentation**: `docs/` folder - consult before changes, update when you make changes
+- **Backlog**: `docs/backlog/BACKLOG.md` - capture out-of-scope ideas here
+
+## Project Information
+
+**Project Name**: Citizen Dev7
+**Repository**: [YOUR_GITHUB_REPO_URL]
+**Team**: [YOUR_TEAM_NAME]
+
+## Local Development
+
+### Docker-First Development (Recommended)
+
+**No Node.js, Python, or build tools needed locally!**
+
+| Service | Port | URL |
+|---------|------|-----|
+| Full Stack (Docker) | 3000 | http://localhost:3000 |
+
+### Starting Development with Docker
+
+```bash
+# Navigate to application source
+cd deployer-apps/citizen-dev7/src
+
+# Start with Docker (builds UI + runs backend)
+./scripts/docker-dev.sh
+
+# Or rebuild image first
+./scripts/docker-dev.sh --build
+```
+
+**What Docker provides:**
+- ✅ Pre-built React UI (no Node.js/esbuild needed locally)
+- ✅ Python backend with all dependencies
+- ✅ Hot reloading for backend code (agents, configs, API)
+- ✅ Everything runs in one container
+- ✅ **No elevated permissions needed** - Docker handles all build tools
+- ✅ Works the same on macOS, Windows, Linux
+
+### Alternative: Local Development (Optional)
+
+If you want faster UI iteration without Docker:
+
+```bash
+# Terminal 1: Backend
+cd deployer-apps/citizen-dev7/src
+uvicorn api:app --reload --port 3000
+
+# Terminal 2: Frontend (requires Node.js locally)
+cd deployer-apps/citizen-dev7/src/ui
+npm install
+npm run dev
+```
+
+## Non-Negotiables
+
+- **Docker-first**: Prefer Docker development to avoid local dependency issues
+- **UI consistency**: Always match `ui/STYLE_GUIDE.md` patterns (create if needed)
+- **Code consistency**: Match existing conventions (TypeScript strict, `@/` imports, Tailwind + `cn()`)
+- **Performance**: Do not introduce UI-blocking synchronous loops
+- **Security**: Never commit secrets; validate untrusted inputs
+- **Documentation**: Consult relevant docs before changes; update docs when behavior changes
+
+## Quick Doc Lookup
+
+| Change Type | Consult | Update |
+|-------------|---------|--------|
+| New component | `code-templates/frontend/` | - |
+| New API route | `code-templates/backend/` | - |
+| UI patterns | `ui/STYLE_GUIDE.md` | - |
+| Bug fix (recurring) | - | `docs/LESSONS_LEARNED.md` |
+| Out-of-scope idea | `docs/backlog/BACKLOG.md` | `docs/backlog/BACKLOG.md` |
+| User-visible change | - | `CHANGELOG.md` |
+
+## Tech Stack
+
+### Frontend
+- React 18 + TypeScript
+- Vite (built in Docker, no local install needed)
+- Tailwind CSS
+- Zustand (if needed)
+
+### Backend
+- Python 3.11+
+- FastAPI
+- Multi-agent framework
+- AI Gateway integration
+
+### Development
+- **Docker** - Primary development environment (no local Node.js/Python needed)
+- Kubernetes - Production deployment via Deployer K8s PaaS
+
+## Key Features
+
+- **Docker-first development**: No local Node.js, esbuild, or Python setup required
+- **Hot reload**: Backend changes (Python files) reload automatically
+- **Pre-built UI**: React app is built in Docker, no local npm needed
+- **Agent framework**: Multi-agent AI workspace for domain-specific agents
+- **Templates**: Code templates, docs templates, config templates for rapid development

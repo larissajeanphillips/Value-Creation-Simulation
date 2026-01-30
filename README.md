@@ -1,181 +1,256 @@
-# Deployer K8s PaaS (Deployment and App Configuration repository)
+# Citizen Dev7 - Multi-Agent Chat Application Starter
 
-## About
-Welcome to your repository which got created by requesting an instance of the
-**Deployer K8s PaaS** service in Platform McKinsey (PMcK).<br/>
-This repository comes with pre-defined GitHub Action (GHA) workflows that enable you
-to deploy your application to a shared Kubernetes (K8s) cluster as well
-as deploying infrastructure in a shared AWS account (eg. S3, RDS).<br/>
-Depending on whether you selected the starter template option during provisioning,
-your repository may include a sample application to help you get started.
-Read more about the [repository structure](#repository-structure) and [sample application](#sample-application) below.
+A comprehensive starter template for building modern React + FastAPI applications with Docker-first development. **No Node.js, Python, or build tools needed locally** - everything runs in Docker!
 
-## Documentation
-Documentation about the **Deployer K8s PaaS** service can be found in [Platform McKinsey Knowledge Base](https://platform.mckinsey.com/knowledge-base/service-guide/852265408/deployer-k8s-paas).<br/>
-Below are some articles to start with:
-* [Deployer-K8s-PaaS architecture diagram](https://platform.mckinsey.com/knowledge-base/service-guide/1029898526/deployer-k8s-paas-application-architecture)
-* [Getting Started guide](https://platform.mckinsey.com/knowledge-base/service-guide/1054572739/getting-started)
+## 🚀 Quick Start (Docker - Recommended)
 
-Please also check our [HowTo articles](https://platform.mckinsey.com/knowledge-base/service-guide/1144328085/how-tos) that address typical scenarios like creating/configuring/consuming S3 buckets and databases etc.
-
-## Repository structure
-Your repository contains the following key directories:
-
-* **`.github/workflows/`** - Managed CD workflows that enable application & infrastructure deployment
-* **`deployer-apps/<instance-name>/`** - Application-specific files:
-  * `src/` - (Optional) Your application source code, if you selected the starter template
-  * `<environment>-<region>/manifests/` - Helm charts and Kubernetes manifests for deploying your application
-  * `<environment>-<region>/iac/` - Terraform infrastructure configuration files for AWS resources (S3, RDS, etc.)
-
-## GitHub Action workflows
-Your repository includes managed GHA workflows that enable you to deploy and manage your application with minimum effort.<br/>
-These workflows are managed centrally and should not be edited by the customer (all changes to these workflow files may be overwritten at any time).<br/>
-
-### Deployment Workflows
-* **[instance name]-[environment]-Deploy All**: Executes all deployment workflows (sync application, update secrets, and deploy infrastructure)
-* **[instance name]-[environment]-Deploy infra**: Deploys AWS infrastructure as configured in `./deployer-apps/<instance-name>/<environment>-<region>/iac/`
-* **[instance name]-[environment]-Deploy secrets**: Creates K8s secrets based on GitHub repository secrets. See [documentation](https://platform.mckinsey.com/knowledge-base/service-guide/1043824755/how-to-use-secrets-in-your-application)
-* **[instance name]-[environment]-Sync argo app**: Force synchronizes your application manifests from `./deployer-apps/<instance-name>/<environment>-<region>/manifests/` to your K8s namespace
-
-### Additional Workflows
-* **Deployer Promote Environment**: Promotes configuration changes between environments (dev → stg → prod) by creating a Pull Request
-* **Security scan**: Automatically scans code for security vulnerabilities on pull requests and manual triggers
-
-
-## Starter Template Application
-
-This repository includes a **Multi-Agent Chat Application** starter template built with:
-- **Backend**: FastAPI (Python) with multi-agent framework
-- **Frontend**: React + TypeScript + Tailwind CSS
-- **Containerization**: Multi-stage Docker build
-- **Deployment**: Kubernetes manifests and Docker CI/CD workflow
-
-The starter template includes:
-- Multi-agent AI workspace framework for building domain-specific agents
-- React chat UI for interacting with agents
-- Health/status API endpoints
-- Hot-reload development setup with Docker
-- Ready to deploy and customize
-
-### Quick Start with Starter Template
-
-**🚀 Run with Docker - No dependencies needed!**
-
-**📖 For detailed setup instructions, see [STARTER_TEMPLATE_SETUP.md](./STARTER_TEMPLATE_SETUP.md)**
-
-**Quick start (2 minutes):**
+**No dependencies needed except Docker Desktop!**
 
 ```bash
-# 1. Configure credentials
-cd deployer-apps/<instance-name>/src
+# 1. Navigate to application source
+cd deployer-apps/citizen-dev7/src
+
+# 2. Configure credentials (if using agents)
 cp .env.example .env
 # Edit .env with your AI Gateway credentials
 
-# 2. Start the app
+# 3. Start the app
 ./scripts/docker-dev.sh
 
-# 3. Open http://localhost:3000
+# 4. Open http://localhost:3000
 ```
 
-**That's it!** The Docker setup includes everything:
-- ✅ Pre-built React UI (no Node.js needed)
-- ✅ Python backend with dependencies (no Python setup needed)  
-- ✅ Hot reloading for agents and configs
-- ✅ Works the same on any machine
+**That's it!** The Docker setup includes:
+- ✅ Pre-built React UI (no Node.js/esbuild needed locally)
+- ✅ Python backend with all dependencies (no Python setup needed)
+- ✅ Hot reloading for backend code (agents, configs, API)
+- ✅ Everything runs in one container
+- ✅ **No elevated permissions required** - Docker handles all build tools
+- ✅ Works the same on macOS, Windows, Linux
 
-**Prerequisites:** Just Docker Desktop - no other tools required!
+## What's Included
 
-For more details, see:
-- **Quick start guide**: `deployer-apps/<instance-name>/src/START_HERE.md`
-- **Full documentation**: `deployer-apps/<instance-name>/src/README.md`
-- **Setup guide**: `deployer-apps/<instance-name>/src/QUICKSTART.md`
+| Folder | Description |
+|--------|-------------|
+| `.cursor/rules/` | Cursor AI rules for consistent code generation |
+| `.cursor/commands/` | Custom Cursor commands (`/launch`, `/commit`, etc.) |
+| `code-templates/` | React components, hooks, Express routes, FastAPI patterns |
+| `docs-templates/` | Documentation structure templates (architecture, backlog, changelog) |
+| `config-templates/` | Frontend and backend configuration templates |
+| `ui/` | Style guide and design tokens |
+| `deployer-apps/citizen-dev7/src/` | Application source code |
+| `deployer-apps/citizen-dev7/src/ui/` | React frontend (built in Docker) |
 
-**Application URL Template**: `https://app-<k8s_namespace>.<cloudflare_domain>`, where:
+## Project Structure
 
-* `<k8s_namespace>` is the Kubernetes namespace your application is hosted in. You can obtain this from the Platform McKinsey instance details: `Kubernetes namespace name` field
-* `<cloudflare_domain>` is the Cloudflare base domain, which you can find in the `deployer-apps/<instance-name>/<environment>-<region>/manifests/values.yaml` file. The default template uses `cf.platform.mckinsey.cloud`
+```
+citizen-dev7/
+├── .cursor/
+│   ├── rules/           # Cursor AI rules (.mdc files)
+│   └── commands/        # Custom Cursor commands
+├── .cursorrules         # Bootstrap rules for Cursor
+├── code-templates/      # Component, hook, store, API templates
+├── config-templates/    # Frontend/backend configs
+├── docs-templates/      # Documentation templates
+├── ui/                  # Style guide, design tokens
+├── deployer-apps/
+│   └── citizen-dev7/
+│       ├── src/         # Application source
+│       │   ├── ui/       # React frontend
+│       │   ├── agents/  # Multi-agent framework
+│       │   ├── api.py   # FastAPI backend
+│       │   └── scripts/ # Docker dev script
+│       └── dev-us-east-1/ # K8s deployment configs
+└── README.md
+```
 
-Check the [HowTo articles](https://platform.mckinsey.com/knowledge-base/service-guide/1144328085/how-tos) to
-discover how to customize this URL further.
+## Tech Stack
 
-## Access application logs in Dynatrace
-Applications running on Deployer K8s PaaS are sending their logs to the Firm’s Observability system (Dynatrace). In order to grant users access to these logs, Dynatrace is leveraging the ProductID which is assigned to a specific application.
+### Frontend
+- **React 18** + TypeScript
+- **Vite** (built in Docker, no local install needed)
+- **Tailwind CSS** for styling
+- **Zustand** for state management (if needed)
 
-Check the [HowTo articles](https://platform.mckinsey.com/knowledge-base/service-guide/1170245292/how-to-access-application-logs-in-dynatrace-for-applications-hosted-on-deployer-k8s-paas) to discover how to
-get access on application logs in Dynatrace.
+### Backend
+- **Python 3.12** + FastAPI
+- **Multi-agent framework** for domain-specific AI agents
+- **AI Gateway** integration for enterprise LLM access
 
-## Setup local development environment
+### Development
+- **Docker** - Primary development environment
+  - **No local Node.js needed** - UI builds in Docker
+  - **No local Python needed** - Backend runs in Docker
+  - **No esbuild/build tools needed** - Everything in Docker
+- **Hot reload** - Backend changes reflect immediately
+- **Kubernetes** - Production deployment via Deployer K8s PaaS
 
-In order to start developing your application locally, you may want to install
-some standard tooling (if not done already).
+## Key Features
 
-### Install Docker
-Install [Docker for Business](https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&table=pc_software_cat_item&sys_id=157a289187c6c1d0011e52c83cbb35ef) and enable the Kubernetes option.
+### 🐳 Docker-First Development
 
-As an alternative to Docker, you may want to install [Podman Desktop](https://platform.mckinsey.com/team/no-team/create-service/d4a3647c-10ee-44da-848d-b7a52610f633) instead.
+**The core philosophy**: No local dependencies required!
 
-### Install Kubernetes tooling
+- **React UI**: Built in Docker using Node.js 22 Alpine
+- **Python Backend**: Runs in Docker with all dependencies
+- **Build Tools**: esbuild, npm, pip - all in Docker
+- **Hot Reload**: Backend code changes reflect immediately
+- **One Command**: `./scripts/docker-dev.sh` starts everything
+
+**Benefits:**
+- ✅ No Node.js installation needed
+- ✅ No Python installation needed
+- ✅ No build tool setup (esbuild, etc.)
+- ✅ No permission issues (Windows users especially benefit)
+- ✅ Consistent environment across all machines
+- ✅ Easy onboarding - just Docker Desktop
+
+### 🤖 Multi-Agent Framework
+
+Built-in framework for creating domain-specific AI agents:
+
+- **Agent System**: Specialized agents for different tasks
+- **Routing**: Automatic agent selection based on user objectives
+- **Reference Data**: Domain-specific knowledge integration
+- **AI Gateway**: Enterprise LLM access via McKinsey's AI Gateway
+
+See `deployer-apps/citizen-dev7/src/SETUP.md` to generate your own agents.
+
+### 📚 Templates & Guides
+
+- **Code Templates**: React components, hooks, Zustand stores, API routes
+- **Documentation Templates**: Architecture docs, backlog, changelog, lessons learned
+- **Config Templates**: Tailwind, Vite, TypeScript configs
+- **Style Guide**: Design tokens, component patterns, UI guidelines
+
+## Development Workflow
+
+### Docker Development (Recommended)
+
 ```bash
-brew install helm kubectl
+cd deployer-apps/citizen-dev7/src
+
+# Start with hot reload
+./scripts/docker-dev.sh
+
+# Rebuild image (if UI changes)
+./scripts/docker-dev.sh --build
 ```
 
-### Configure pulling images
-To pull images from OneFirm Artifactory ([JFrog](https://mckinsey.jfrog.io/ui/login/)), you need to create a secret in your local K8s cluster as shown below:
-```bash
-kubectl create secret docker-registry regcred -n <namespace> \
-  --docker-server=mckinsey-<productname>-docker.jfrog.io \
-  --docker-username=<Firstname_Lastname@mckinsey.com> \ 
-  --docker-password=<API-Token> \ 
-  --docker-email=<Firstname_Lastname@mckinsey.com>
-```
+**What gets hot reloaded:**
+- ✅ `api.py` - API endpoints
+- ✅ `agents/` - Agent implementations
+- ✅ `configs/` - Configuration files
+- ✅ `workflows/` - Workflow logic
+- ✅ `reference/` - Reference data
 
-### Install Helm chart
-In order to deploy your application to your locally running K8s cluster, execute the below command:
-```bash
-# Replace <instance-name>, <environment>, and <region> with your actual values
-helm install app ./deployer-apps/<instance-name>/<environment>-<region>/manifests
-```
+**Note:** UI changes require rebuild (`--build` flag)
 
-## Pre-commit
-Pre-commit hooks run a set of actions (defined in a [config file](./.pre-commit-config.yaml))
-on all new/changed files that are part of a commit.<br/>
-In case any of the hooks detected a failure, it will cancel the commit and prevent
-you from pushing to the remote repository.<br/>
-Using pre-commit hooks is a best practice and thus recommended to use.
+### Local Development (Optional)
 
-### Install pre-commit binary
-```bash
-brew install pre-commit
-```
-
-### Install pre-commit hooks
-After you cloned the repository, you have to run the below command in the repository root directory to install/activate the pre-commit hooks
-configured in the [config file](./.pre-commit-config.yaml).
-```bash
-pre-commit install
-```
-
-**NOTE:** 
-* The pre-commit [config file](./.pre-commit-config.yaml) that is deployed along with this repository requires some dependencies to be installed for the pre-commit hooks to work (see below).
-* The Terraform pre-commit hooks are disabled by default, as they require you to have access to the Firm's Terraform Enterprise (TFE) solution. If you have access to TFE and would like to leverage the Terraform pre-commit hooks, simply uncomment the respective section in the [config file](./.pre-commit-config.yaml).
-
-### Install GitGuardian
-```bash
-brew install ggshield
-
-# to authenticate:
-ggshield auth login
-```
-
-### Install Terraform tools
-**Note:** The Terraform pre-commit hooks are disabled by default, as they require you to have access to the Firm's Terraform Enterprise (TFE) solution. If you have access to TFE and would like to leverage the Terraform pre-commit hooks, simply uncomment the respective section in the [config file](./.pre-commit-config.yaml).
+If you want faster UI iteration without Docker:
 
 ```bash
-brew install tfenv tflint terraform_docs
+# Terminal 1: Backend
+cd deployer-apps/citizen-dev7/src
+uvicorn api:app --reload --port 3000
 
-# to select Terraform version:
-tfenv use 1.9.3
-
-# to authenticate to Terraform Enterprise:
-terraform login terraform.mckinsey.cloud
+# Terminal 2: Frontend (requires Node.js locally)
+cd deployer-apps/citizen-dev7/src/ui
+npm install
+npm run dev
 ```
+
+## Using with Cursor AI
+
+Cursor AI has access to all the rules in `.cursor/rules/`. Try these prompts:
+
+- "Create a new component following the templates"
+- "Generate an API route for user authentication"
+- "Add a new Zustand store for user state"
+- "Follow the style guide for this component"
+
+### Available Commands
+
+- `/welcome` - Getting started guide
+- `/setup` - Docker setup wizard
+- `/launch` - Start the application
+- `/commit` - Commit changes with Conventional Commits
+- `/add-lessons-learned` - Document a solution
+
+## Available Templates
+
+### Code Templates (`code-templates/`)
+
+| Template | Description |
+|----------|-------------|
+| `COMPONENT_TEMPLATE.tsx` | React component with props, memoization |
+| `HOOK_TEMPLATE.ts` | Custom hook with loading/error states |
+| `ZUSTAND_STORE_TEMPLATE.ts` | State store with persistence |
+| `API_ROUTE_TEMPLATE.ts` | Express route with validation |
+| `EXPRESS_SERVER_TEMPLATE.ts` | Express server setup |
+| `DATABASE_CLIENT_TEMPLATE.ts` | PostgreSQL client |
+
+### Documentation Templates (`docs-templates/`)
+
+| Template | Description |
+|----------|-------------|
+| `ARCHITECTURE_TEMPLATE.md` | System architecture docs |
+| `BACKLOG_TEMPLATE.md` | Feature backlog |
+| `CHANGELOG_TEMPLATE.md` | Version changelog |
+| `LESSONS_LEARNED_TEMPLATE.md` | Team learnings |
+
+## Prerequisites
+
+**Required:**
+- **Docker Desktop** - [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- **Git** 2.30+
+
+**Optional (only if not using Docker):**
+- Node.js 20.x LTS (for local UI development)
+- Python 3.12+ (for local backend development)
+- Cursor IDE (for AI-assisted development)
+
+## Deployment
+
+This project uses **Deployer K8s PaaS** for production deployment:
+
+- **Automated CI/CD**: GitHub Actions workflows
+- **Kubernetes**: Helm charts for deployment
+- **Infrastructure**: Terraform for AWS resources (S3, RDS, etc.)
+
+See `STARTER_TEMPLATE_SETUP.md` for deployment instructions.
+
+## Documentation
+
+- **Quick Start**: `deployer-apps/citizen-dev7/src/START_HERE.md`
+- **Full Guide**: `deployer-apps/citizen-dev7/src/README.md`
+- **Agent Setup**: `deployer-apps/citizen-dev7/src/SETUP.md`
+- **Windows Setup**: `deployer-apps/citizen-dev7/src/WINDOWS_SETUP.md`
+- **Style Guide**: `ui/STYLE_GUIDE.md`
+- **Design Tokens**: `ui/DESIGN_TOKENS.md`
+
+## Version
+
+**Citizen Dev7 Starter v1.0.0**
+
+Created: January 2026
+
+---
+
+## Why Docker-First?
+
+This starter template prioritizes Docker-first development because:
+
+1. **No Local Dependencies**: Developers don't need Node.js, Python, or build tools installed
+2. **Consistent Environment**: Same setup works on macOS, Windows, Linux
+3. **Easy Onboarding**: New team members just need Docker Desktop
+4. **No Permission Issues**: Windows users avoid elevated permission problems
+5. **Production Parity**: Development environment matches production (Docker)
+
+The Dockerfile uses multi-stage builds:
+- **Stage 1**: Build React UI with Node.js (in Docker)
+- **Stage 2**: Install Python dependencies (in Docker)
+- **Stage 3**: Runtime with pre-built UI and Python backend
+
+This means you can develop without installing any build tools locally!

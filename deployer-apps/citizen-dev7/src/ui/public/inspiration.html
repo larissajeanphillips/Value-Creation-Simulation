@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Inspiration Gallery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'mck-blue': '#2251FF',
+            'mck-electric': '#0060FF',
+            'mck-navy': '#051C2C',
+            'mck-dark-navy': '#0A2540',
+          },
+          borderRadius: {
+            'card': '22px',
+            'pill': '9999px',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+    
+    body { 
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; 
+    }
+    
+    .font-display {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    }
+    
+    .card:hover { 
+      transform: translateY(-4px); 
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); 
+    }
+    
+    .card { 
+      transition: all 0.2s ease; 
+    }
+    
+    /* Gradient accent line for cards */
+    .card-accent {
+      position: relative;
+    }
+    
+    .card-accent::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 24px;
+      right: 24px;
+      height: 3px;
+      background: linear-gradient(90deg, #2251FF, #0060FF);
+      border-radius: 0 0 4px 4px;
+    }
+  </style>
+</head>
+<body class="bg-mck-navy min-h-screen">
+  
+  <!-- Hero Section -->
+  <div class="bg-mck-navy text-white pt-10 pb-8">
+    <div class="max-w-6xl mx-auto px-6">
+      <!-- McKinsey Logo -->
+      <div class="flex justify-center mb-10">
+        <img src="logo-mckinsey.jpeg" alt="McKinsey & Company" class="h-[120px] w-auto" />
+      </div>
+      <div class="text-center">
+        <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-semibold mb-6">
+          What will you <span class="text-mck-blue">build</span>?
+        </h1>
+        <p class="text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
+          Here are examples of apps you can create. Just describe what you want and the AI will build it for you.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery Section -->
+  <div class="bg-[#F7F7F7] py-16">
+    <div class="max-w-6xl mx-auto px-6">
+
+      <!-- Gallery Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Dashboard -->
+        <div class="card card-accent bg-white rounded-[22px] p-6 shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-mck-blue/10 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-mck-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-mck-navy mb-2">Project Dashboard</h3>
+          <p class="text-gray-500 text-sm mb-4 leading-relaxed">Track project status, milestones, and team progress with charts and metrics.</p>
+          <div class="bg-mck-navy/5 rounded-[12px] p-3 text-sm text-mck-navy/70 italic">
+            "Build a dashboard showing project status with progress bars and a timeline"
+          </div>
+        </div>
+
+        <!-- Client Portal -->
+        <div class="card card-accent bg-white rounded-[22px] p-6 shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-emerald-500/10 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-mck-navy mb-2">Client Portal</h3>
+          <p class="text-gray-500 text-sm mb-4 leading-relaxed">Give clients a place to view deliverables, track progress, and communicate.</p>
+          <div class="bg-mck-navy/5 rounded-[12px] p-3 text-sm text-mck-navy/70 italic">
+            "Create a portal where clients can see their project updates and download reports"
+          </div>
+        </div>
+
+        <!-- Feedback Tool -->
+        <div class="card card-accent bg-white rounded-[22px] p-6 shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-violet-500/10 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-mck-navy mb-2">Feedback Collector</h3>
+          <p class="text-gray-500 text-sm mb-4 leading-relaxed">Gather workshop feedback, survey responses, or customer reviews.</p>
+          <div class="bg-mck-navy/5 rounded-[12px] p-3 text-sm text-mck-navy/70 italic">
+            "Make a form to collect feedback after workshops with ratings and comments"
+          </div>
+        </div>
+
+        <!-- Data Explorer -->
+        <div class="card card-accent bg-white rounded-[22px] p-6 shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-amber-500/10 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-mck-navy mb-2">Data Explorer</h3>
+          <p class="text-gray-500 text-sm mb-4 leading-relaxed">Filter, sort, and analyze data with an interactive table and export to Excel.</p>
+          <div class="bg-mck-navy/5 rounded-[12px] p-3 text-sm text-mck-navy/70 italic">
+            "Build a tool to browse and filter our customer data with search and export"
+          </div>
+        </div>
+
+        <!-- AI Assistant -->
+        <div class="card card-accent bg-white rounded-[22px] p-6 shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-mck-blue/10 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-mck-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-mck-navy mb-2">AI Assistant</h3>
+          <p class="text-gray-500 text-sm mb-4 leading-relaxed">A chatbot that answers questions about your products, services, or documents.</p>
+          <div class="bg-mck-navy/5 rounded-[12px] p-3 text-sm text-mck-navy/70 italic">
+            "Create a chatbot that can answer questions about our company policies"
+          </div>
+        </div>
+
+        <!-- Request Tracker -->
+        <div class="card card-accent bg-white rounded-[22px] p-6 shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-cyan-500/10 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-mck-navy mb-2">Request Tracker</h3>
+          <p class="text-gray-500 text-sm mb-4 leading-relaxed">Submit and track requests, approvals, or tickets with status updates.</p>
+          <div class="bg-mck-navy/5 rounded-[12px] p-3 text-sm text-mck-navy/70 italic">
+            "Build a system where people can submit requests and see their status"
+          </div>
+        </div>
+
+        <!-- Team Directory -->
+        <div class="card card-accent bg-white rounded-[22px] p-6 shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-indigo-500/10 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-mck-navy mb-2">Team Directory</h3>
+          <p class="text-gray-500 text-sm mb-4 leading-relaxed">A searchable directory of team members with photos, roles, and contact info.</p>
+          <div class="bg-mck-navy/5 rounded-[12px] p-3 text-sm text-mck-navy/70 italic">
+            "Create a team page showing everyone's photo, name, and role"
+          </div>
+        </div>
+
+        <!-- File Sharing -->
+        <div class="card card-accent bg-white rounded-[22px] p-6 shadow-sm border border-gray-100">
+          <div class="w-12 h-12 bg-amber-400/10 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-mck-navy mb-2">File Sharing</h3>
+          <p class="text-gray-500 text-sm mb-4 leading-relaxed">Upload and share documents with your team or clients securely.</p>
+          <div class="bg-mck-navy/5 rounded-[12px] p-3 text-sm text-mck-navy/70 italic">
+            "Build a place where we can upload files and share download links"
+          </div>
+        </div>
+
+        <!-- Custom Idea - Dark Card -->
+        <div class="card bg-gradient-to-br from-mck-navy to-mck-dark-navy rounded-[22px] p-6 shadow-lg border border-mck-blue/20">
+          <div class="w-12 h-12 bg-mck-blue/20 rounded-[12px] flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-mck-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Your Idea</h3>
+          <p class="text-white/60 text-sm mb-4 leading-relaxed">Have something else in mind? Just describe it and the AI will build it.</p>
+          <div class="bg-white/10 rounded-[12px] p-3 text-sm text-white/70 italic">
+            "I want to build..." - describe anything you can imagine
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer CTA Section -->
+  <div class="bg-mck-navy py-16">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="bg-mck-dark-navy rounded-[22px] p-10 text-center border border-mck-blue/10">
+        <h2 class="font-display text-3xl md:text-4xl font-semibold text-white mb-4">Ready to build?</h2>
+        <p class="text-white/70 mb-6 text-lg">Go back to Cursor and describe what you want to create.</p>
+        <p class="text-white/50 text-sm">
+          Just say something like: <span class="text-mck-blue font-medium">"I want to build a [type of app] that [what it does]"</span>
+        </p>
+        <div class="mt-8">
+          <span class="inline-flex items-center gap-2 rounded-full bg-mck-blue px-6 py-3 text-white font-medium text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            Start building in Cursor
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -14,8 +14,9 @@ WORKDIR /app/ui
 COPY ui/package.json ui/package-lock.json ./
 
 # Install dependencies with cache mount for faster rebuilds
+# Use npm install to handle lock file updates automatically
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --ignore-scripts
+    npm install --ignore-scripts
 
 # Copy source and build
 COPY ui/ ./
@@ -77,7 +78,7 @@ COPY --chown=appuser:appuser api.py ./
 COPY --from=ui-builder --chown=appuser:appuser /app/ui/dist ./ui/dist
 
 # Create data directories
-RUN mkdir -p data/outputs \
+RUN mkdir -p data/outputs data/excel \
     && chown -R appuser:appuser /app/data
 
 # Switch to non-root user

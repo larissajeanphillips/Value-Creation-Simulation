@@ -1,200 +1,100 @@
 ---
-description: Welcome guide for new users getting started with the project creation kit
-alwaysApply: false
+description: Welcome guide for new users - auto-triggers on first interaction
+alwaysApply: true
 ---
 
-# Welcome - Getting Started Guide
+# Welcome Guide - Auto-Trigger
 
-When a user types "/welcome" or asks "how do I get started", "what is this project", "help me get started", or similar introductory questions, provide them with a comprehensive onboarding guide.
+When a conversation starts with no prior context, OR when a user types "/welcome", "how do I get started", "what is this project", "help me get started", "I'm new here", "where do I start", or "getting started", provide the welcome message below.
 
-## Trigger Phrases
+## Trigger Conditions
 
-Activate this guide when user says:
-- "/welcome"
-- "How do I get started?"
-- "What is this project?"
-- "Help me get started"
-- "I'm new here"
-- "Where do I start?"
-- "Getting started"
+1. **Auto-trigger**: First message in a new conversation (no prior context)
+2. **Manual trigger**: User says any of the trigger phrases above
 
 ## Welcome Message
 
-Respond with the following structured welcome message:
+Respond with this welcoming, inspirational message:
 
 ---
 
-## Welcome to the New Project Creation Kit! 
+# Welcome to Your Web App Builder!
 
-This is a starter template that helps you quickly create new React + TypeScript + Vite projects with Cursor AI support already configured.
+You're about to build something real - a professional web application that you can share with clients, colleagues, or the world. **No coding experience required.**
 
-### What This Kit Does
+## What You Can Create
 
-This template provides:
-- **Pre-configured Cursor AI rules** - Coding standards, commit messages, and best practices
-- **Code templates** - Ready-to-use React components, hooks, and stores
-- **Design system** - Style guide and design tokens for consistent UI
-- **Deployment configs** - Docker and AWS ECS templates
-- **Automation scripts** - Create new projects with a single command
+Imagine describing what you want and watching it appear:
 
-### Quick Start - Just Use Cursor (Easiest)
+**"Create a dashboard that shows our project status with charts"**
+→ You get an interactive dashboard with real visualizations
 
-No installs required - just clone and start coding with Cursor's built-in AI.
+**"Add a form where clients can submit requests"**
+→ You get a polished form with validation and confirmation messages
 
-**Step 1: Clone the Repository**
-```bash
-git clone https://github.com/McK-Internal/citizen-dev5.git
-```
+**"Make it look more modern with a dark theme"**
+→ The entire app transforms instantly
 
-**Step 2: Open in Cursor**
-- `File` → `Open Folder` → Select `citizen-dev5`
+**"Build a page that lists all our team members with their photos"**
+→ You get a beautiful team directory
 
-**That's it!** Cursor's AI is ready to help you explore, edit, and build. Try:
-- Ask Cursor: "Explain the project structure"
-- Ask Cursor: "How do I add a new agent?"
-- Type `/welcome` for this guide anytime
+This isn't a template you fill in. This is **you describing what you want** and an AI building it for you, piece by piece.
 
 ---
 
-### Quick Start - Docker (Preview the UI)
+## How It Works
 
-If you want to **preview the chat UI**, use Docker. Only requires Docker installed.
+You're in **Cursor** - an AI-powered code editor. This chat window is your command center.
 
-**Step 1: Clone and Navigate**
-```bash
-git clone https://github.com/McK-Internal/citizen-dev5.git
-cd citizen-dev5/deployer-apps/citizen-dev5/src
-```
+Just talk naturally:
+- "Add a page that shows a list of clients"
+- "Make the header blue and add our logo"
+- "Create a button that exports data to Excel"
+- "This looks wrong - the table should be wider"
 
-**Step 2: Run with Docker**
-```bash
-./scripts/docker-dev.sh
-```
-
-Open http://localhost:3000 in your browser.
-
-**Getting Docker:**
-- McKinsey users: [Docker for Business](https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&table=pc_software_cat_item&sys_id=157a289187c6c1d0011e52c83cbb35ef)
-- Alternative: [Podman Desktop](https://platform.mckinsey.com/team/no-team/create-service/d4a3647c-10ee-44da-848d-b7a52610f633)
+The AI writes the code. You see the results. Iterate until it's perfect.
 
 ---
 
-### Optional: Embed a Chatbot in Your Webapp
-
-If you want the agents to actually respond to messages (not just preview the UI), you'll need AI Gateway credentials:
-
-```bash
-cat > .env << 'EOF'
-AI_GATEWAY_INSTANCE_ID=your_instance_id
-AI_GATEWAY_API_KEY=your_api_key
-EOF
-```
-
-Get credentials from [Platform McKinsey → AI Gateway](https://platform.mckinsey.com). This connects your app to LLMs (GPT, Claude, etc.) through McKinsey's enterprise gateway.
-
----
-
-### Quick Start - Local Development (Alternative)
-
-If you prefer local development without Docker:
-
-**Step 1: Create Your New Project**
-
-Type in chat:
-```
-Set up a new project
-```
-
-This launches an interactive wizard that asks you:
-- Project name
-- Where to save it
-- Optional: description, GitHub repo, team name
-
-**Step 2: Navigate to Your New Project**
-
-Once created, open your new project folder in Cursor:
-- `File` → `Open Folder` → Select your new project
-
-**Step 3: Start Development**
-
-In your project's terminal:
-```bash
-npm run dev
-```
-
-Then open http://localhost:5173 in your browser.
-
-### Available Slash Commands
+## Quick Commands
 
 | Command | What it does |
 |---------|--------------|
-| `/welcome` | This guide - getting started info |
-| `/commit` | Commit your changes to git |
-| `/commit-locally` | Commit without pushing |
-| `/push` | Push changes to GitHub |
-| `/launch` | Launch the webapp with Docker |
-| `/restart` | Stop and restart the Docker container |
-| `/review-code` | Run a code review checklist |
-| `/add-lessons-learned` | Document issues for future reference |
-
-### Docker Commands
-
-| Command | What it does |
-|---------|--------------|
-| `./scripts/docker-dev.sh` | Start app with hot reloading |
-| `./scripts/docker-dev.sh --build` | Rebuild image and start |
-| `docker logs agent-chat-dev` | View container logs |
-
-### Key Files to Know
-
-| File | Purpose |
-|------|---------|
-| `.cursorrules` | Project-level AI configuration |
-| `ui/STYLE_GUIDE.md` | UI patterns and components |
-| `ui/DESIGN_TOKENS.md` | Colors, fonts, spacing |
-| `code-templates/` | Reusable code patterns |
-| `docs-templates/` | Documentation templates |
-| `scripts/setup-automation.ts` | Project creation script |
-
-### Project Structure After Setup
-
-Your new project will include:
-```
-your-project/
-├── src/
-│   ├── components/     # React components
-│   ├── hooks/          # Custom React hooks
-│   ├── stores/         # Zustand state stores
-│   ├── lib/            # Utility functions
-│   └── types/          # TypeScript types
-├── .cursor/rules/      # AI coding standards
-├── docs/               # Project documentation
-└── ui/                 # Design system docs
-```
-
-### Tech Stack
-
-Projects created with this kit use:
-- **React 18** - UI framework
-- **TypeScript** - Type-safe JavaScript
-- **Vite** - Fast build tool
-- **Tailwind CSS** - Utility-first styling
-- **Zustand** - Simple state management
-
-### Need Help?
-
-- **Docker issues?** Make sure Docker is running, then try `./scripts/docker-dev.sh --build`
-- **Setup issues?** Check `docs-templates/CURSOR_SETUP_PROMPT.md`
-- **Coding questions?** Just ask me in chat
-- **Design patterns?** See `ui/STYLE_GUIDE.md`
+| `/setup` | Configure your app (start here!) |
+| `/launch` | Start your app in the browser |
+| `/help` | All commands, shortcuts, and tips |
+| `/faq` | Common questions answered |
+| `/commit` | Save your changes |
 
 ---
 
-Ready to get started? Just clone the repo and open it in Cursor!
+## Tips for Success
 
-## Critical Instructions
+1. **Be specific** - "Add a blue Submit button in the top right" beats "add a button"
+2. **Iterate** - Start simple, then refine. "Make it bigger. Now add a shadow."
+3. **You can't break it** - Everything is saved. We can always undo.
+
+---
+
+## Ready?
+
+Just tell me what you want to build. Be as specific or as vague as you like.
+
+**Try saying:**
+- "I want to build a client portal where they can see project status"
+- "Create a dashboard with charts showing sales by region"
+- "Help me make a tool for collecting feedback from workshop participants"
+
+Or type `/setup` for a guided experience.
+
+**The only limit is what you can describe.**
+
+---
+
+## Critical Instructions for AI
 
 1. **ALWAYS provide the full welcome message** - Don't abbreviate or skip sections
-2. **BE ENCOURAGING** - This is for new users, keep the tone friendly and helpful
+2. **BE ENCOURAGING** - This is for new users who may be intimidated by technology
 3. **OFFER NEXT STEPS** - End with a clear call to action
 4. **ANSWER FOLLOW-UP QUESTIONS** - Be ready to explain any part in more detail
+5. **If user seems confused about Cursor itself** - Explain that they're chatting with an AI that can write and edit code for them

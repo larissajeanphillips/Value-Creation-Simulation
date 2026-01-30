@@ -1,344 +1,202 @@
 ---
-description: Describes how to initialize the workflow when setting up a new project using this template.
+description: Setup workflow for configuring the web app based on user selections
 alwaysApply: false
 ---
-# Setup Workflow - Instructions for Processing SETUP.md
 
-When the user says they've filled out `SETUP.md` or asks you to "generate agents from SETUP.md", follow these steps to create their industry-specific agent workspace.
+# Setup Workflow
 
-## Step 1: Read and Validate SETUP.md
+This rule defines how to process the setup wizard inputs and customize the project.
 
-1. Read `SETUP.md` to get the user's responses
-2. Validate that all required fields are filled:
-   - Industry/Domain
-   - Main Objective
-   - Agent Specializations (3-5)
-   - AI Gateway Configuration (base URL, credentials, instance ID)
-   - Model Selection Preference
+## Trigger
 
-## Step 2: Configure AI Gateway and Models
+Activated when user runs `/setup` command or says "set up my app", "configure my app", etc.
 
-### AI Gateway URL Pattern
+## Workflow Steps
 
-**CRITICAL**: The base URL format is:
+### 1. Gather Context (via setup.md command)
+
+The setup command collects:
+- **Purpose**: Client project / Internal tool / Personal / Other
+- **Description**: Free text describing what the app does
+- **Features**: Multi-select of feature types
+- **Visual inspiration**: Image or text description (optional)
+- **App name**: What to call the app
+- **Runtime**: Docker or local development
+
+### 2. Apply Customizations
+
+Based on collected inputs, modify the project:
+
+#### App Name & Branding
+
+Update these files with the app name:
+- `ui/package.json` - name field
+- `ui/index.html` - title tag
+- `ui/src/App.tsx` - header component (if applicable)
+
+#### Feature Scaffolding
+
+For each selected feature, add the appropriate components:
+
+**Dashboard & Charts:**
 ```
-https://{provider}.prod.ai-gateway.quantumblack.com/{instance_id}
+ui/src/components/Dashboard.tsx - Main dashboard page
+ui/src/components/charts/ - Chart components (Bar, Line, Pie)
 ```
 
-**IMPORTANT - `/v1` Suffix:**
-- For `openai_compatible` provider: ADD `/v1` to the end of the base URL
-- For all other providers (anthropic, aws-bedrock, azure, etc.): NO `/v1` suffix
-
-Available providers:
-- `openai` - For OpenAI models (needs `/v1` suffix)
-- `anthropic` - For Anthropic/Claude models (NO `/v1`)
-- `aws-bedrock` - For AWS Bedrock models (NO `/v1`)
-- `azure` - For Azure OpenAI (NO `/v1`)
-- `vertexai` - For Google Vertex AI (NO `/v1`)
-- `cohere` - For Cohere models (NO `/v1`)
-- `perplexity` - For Perplexity models (NO `/v1`)
-
-**For model catalog API** (fetching available models):
+**Forms & Data Entry:**
 ```
-https://api.prod.ai-gateway.quantumblack.com/v1/catalog/models
+ui/src/components/Forms.tsx - Form page
+ui/src/components/forms/ - Form components (Input, Select, etc.)
 ```
 
-### If user chose "Explore models and optimize selection":
+**Data Analytics:**
+```
+ui/src/components/DataTable.tsx - Filterable data table
+ui/src/components/filters/ - Filter components
+```
 
-1. Use the provided credentials to fetch available models:
-   ```bash
-   python scripts/model_catalog.py \
-     --base-url "https://api.prod.ai-gateway.quantumblack.com" \
-     --api-key "their_api_key" \
-     --instance-id "their_instance_id" \
-     --suggest
-   ```
+**AI Chatbot:**
+- Already exists in template - keep as-is
+- Add placeholder responses if AI Gateway not configured
 
-2. Analyze the output and recommend:
-   - **Routing model**: Cheapest fast model (e.g., gpt-5-mini, claude-3-haiku)
-   - **Primary analysis model**: Powerful model appropriate for the domain complexity
-   - **Optional specialized models**: If certain agents need different capabilities
+**File Upload/Download:**
+```
+ui/src/components/FileUpload.tsx - Upload component
+ui/src/components/FileList.tsx - File display
+```
 
-3. Update `configs/settings.yaml` with:
-   - AI Gateway credentials: Instance ID and API Key (use ${...} references)
-   - Selected models with appropriate base URLs (URLs contain ${AI_GATEWAY_INSTANCE_ID})
-   - Model assignments for each agent
+**User Login:**
+```
+ui/src/components/Login.tsx - Login page
+ui/src/components/ProtectedRoute.tsx - Auth wrapper
+```
 
-   **Example for mixed providers:**
-   ```yaml
-   models:
-     primary:
-       provider: openai_compatible
-       base_url: "https://openai.prod.ai-gateway.quantumblack.com/${AI_GATEWAY_INSTANCE_ID}/v1"  # Note /v1 for OpenAI
-       api_key: "${AI_GATEWAY_API_KEY}"
-       model: "gpt-5-chat-latest"
-       temperature: 0.2
-       max_tokens: 2048
+**Connect to External Data:**
+```
+ui/src/services/api.ts - API client helpers
+ui/src/hooks/useData.ts - Data fetching hooks
+```
 
-     routing:
-       provider: openai_compatible
-       base_url: "https://openai.prod.ai-gateway.quantumblack.com/${AI_GATEWAY_INSTANCE_ID}/v1"  # Note /v1 for OpenAI
-       api_key: "${AI_GATEWAY_API_KEY}"
-       model: "gpt-5-mini-2025-08-07"
-       temperature: 0.1
-       max_tokens: 50
+#### Visual Styling
 
-     # If using Anthropic for specialized tasks
-     specialist:
-       provider: anthropic
-       base_url: "https://anthropic.prod.ai-gateway.quantumblack.com/${AI_GATEWAY_INSTANCE_ID}"  # NO /v1 for Anthropic
-       api_key: "${AI_GATEWAY_API_KEY}"
-       model: "claude-3-5-sonnet-20241022"
-       temperature: 0.2
-       max_tokens: 4096
-   ```
+If user provided visual inspiration:
 
-### If user chose "Use recommended defaults":
+**From image:**
+- Extract dominant colors and apply to Tailwind config
+- Match layout structure (sidebar vs top-nav)
+- Use similar component styles (shadows, rounded corners, etc.)
 
-1. Update `configs/settings.yaml` with:
-   - AI Gateway credentials: Instance ID and API Key (use ${...} references)
-   - Default to latest GPT model (e.g., gpt-5-chat-latest) for all agents
-   - Use gpt-5-mini for routing
-   - Base URL: `https://openai.prod.ai-gateway.quantumblack.com/${AI_GATEWAY_INSTANCE_ID}/v1` (the URL contains ${AI_GATEWAY_INSTANCE_ID}, note the `/v1` suffix for OpenAI)
+**From description:**
+- "Minimal" → Clean whites, subtle grays, lots of whitespace
+- "Corporate/Professional" → Blues, structured layout, clear hierarchy
+- "Modern" → Gradients, shadows, smooth animations
+- "Colorful" → Vibrant accent colors, playful elements
 
-   **Example:**
-   ```yaml
-   models:
-     primary:
-       provider: openai_compatible
-       base_url: "https://openai.prod.ai-gateway.quantumblack.com/${AI_GATEWAY_INSTANCE_ID}/v1"
-       api_key: "${AI_GATEWAY_API_KEY}"
-       model: "gpt-5-chat-latest"
-       temperature: 0.2
-       max_tokens: 2048
+#### Navigation
 
-     routing:
-       provider: openai_compatible
-       base_url: "https://openai.prod.ai-gateway.quantumblack.com/${AI_GATEWAY_INSTANCE_ID}/v1"
-       api_key: "${AI_GATEWAY_API_KEY}"
-       model: "gpt-5-mini-2025-08-07"
-       temperature: 0.1
-       max_tokens: 50
+Create navigation based on selected features:
+- If 3+ features → Use sidebar navigation
+- If 1-2 features → Use simple top navigation
+- Name nav items based on user's app description
 
-   defaults:
-     catchall_model: "primary"
-     routing_model: "routing"
-   ```
+#### Sample Data
 
-**Important - Environment Variables:**
+Generate sample data that matches their use case:
+- Use context from their description
+- Include realistic names, dates, values
+- Enough data to show how features work
 
-The `.env` file should contain ONLY these two credentials:
+### 3. Polish Level
+
+Adjust based on purpose:
+
+**Client Project:**
+- Professional copy (no placeholder text like "Lorem ipsum")
+- Polished micro-interactions
+- Consistent spacing and alignment
+- Error states and loading states
+
+**Internal Tool:**
+- Functional focus
+- Clear but simple styling
+- Fewer animations
+- Direct, practical labels
+
+**Personal/Learning:**
+- Include code comments explaining how things work
+- Simpler initial state
+- Encourage experimentation
+
+### 4. Start the App
+
+After customization:
+
+**Docker (Recommended):**
 ```bash
-AI_GATEWAY_INSTANCE_ID=your_instance_id
-AI_GATEWAY_API_KEY=your_api_key
+cd deployer-apps/citizen-dev7/src
+./scripts/docker-dev.sh
 ```
 
-In `settings.yaml`, these credentials are **referenced within other values**:
-```yaml
-# The base_url is NOT an environment variable itself
-# It's a string that CONTAINS ${AI_GATEWAY_INSTANCE_ID}
-base_url: "https://openai.prod.ai-gateway.quantumblack.com/${AI_GATEWAY_INSTANCE_ID}/v1"
-api_key: "${AI_GATEWAY_API_KEY}"  # This IS an environment variable reference
-```
-
-**DO NOT** add `base_url` as a variable to the `.env` file.
-
-## Step 3: Generate Agent Files
-
-For each agent specialization the user specified:
-
-1. **Create agent file** in `agents/{agent_name}.py`
-   - Use the template from `agent-generation-guide.md`
-   - Replace `{agent_name}` with a snake_case version of the specialization name
-   - Follow the factory pattern exactly
-
-2. **Create system prompt** in `configs/prompts/{agent_name}.system.txt`
-   - Adapt the domain knowledge from SETUP.md
-   - Include the user's main objective and specialization description
-   - Remove any automotive-specific terminology
-   - Add industry-specific terminology from the user's responses
-   - See `agent-generation-guide.md` for prompt structure
-
-3. **Add to routing.yaml**
-   - Extract keywords from the specialization description
-   - Add a clear description of when to use this agent
-
-4. **Add to settings.yaml defaults**
-   - Add `{agent_name}_model: "primary"` entry
-
-5. **Update workflow.py**
-   - Import the new agent factory
-   - Add agent initialization in `__init__`
-   - Add prompt loading
-   - Update the routing logic in `choose_agent` to include the new agent
-   - Update type hints to include the new agent name
-   - If the agent needs reference data, add loading logic in `run` method
-
-## Step 4: Create Catchall Agent
-
-ALWAYS create or update a `catchall` agent that serves as the default fallback:
-
-1. Create/update `agents/catchall.py`
-2. Create/update `configs/prompts/catchall.system.txt` with generic domain knowledge
-3. Ensure routing.yaml lists catchall as the last agent (fallback)
-
-## Step 5: Clean Up Example Code
-
-1. **Remove or clearly mark automotive examples**:
-   - Add comment headers to example files: `# EXAMPLE - Automotive Industry Template`
-   - Update comments to indicate these are templates
-
-2. **Update workflow.py routing**:
-   - Remove hardcoded automotive keyword checks
-   - Ensure routing reads from routing.yaml only
-
-3. **Keep reference data as examples**:
-   - Add a note in `reference/README.md` explaining these are examples
-   - Show the user how to add their own reference data
-
-4. **Update the Chat UI**:
-   - Update `ui/src/App.tsx` SAMPLE_AGENTS array with the new agents
-   - Update `ui/src/components/ChatWindow.tsx` empty state suggestions to match the new domain
-
-## Step 6: Create .env File
-
-**Create `.env` file** with the user's actual credentials:
+**Local Development:**
 ```bash
-# Write to .env file (this is gitignored)
-AI_GATEWAY_INSTANCE_ID=<instance_id_from_SETUP.md>
-AI_GATEWAY_API_KEY=<api_key_from_SETUP.md>
+# Terminal 1: Backend
+cd deployer-apps/citizen-dev7/src
+uvicorn api:app --reload --port 3000
+
+# Terminal 2: Frontend
+cd deployer-apps/citizen-dev7/src/ui
+npm install && npm run dev
 ```
 
-**Important:**
-- Use the actual credentials from SETUP.md
-- This file is in .gitignore and won't be committed
-- If a `.env.example` exists, use it as a reference only; otherwise create `.env` directly
+### 5. Provide Next Steps
 
-## Step 7: Set Up Python Environment Automatically
+After app is running, provide tailored guidance:
 
-**CRITICAL: Cursor must automatically set up the Python environment. The user has no coding knowledge.**
+- What to try first based on their features
+- How to customize further
+- Remind about `/help` for all commands
+- Mention `/add-ai` if they selected chatbot but didn't configure AI Gateway
 
-1. **Check if virtual environment exists**:
-   ```bash
-   # Check for .venv directory
-   if [ -d ".venv" ]; then
-     echo "Virtual environment exists"
-   else
-     echo "Creating virtual environment..."
-  if command -v python >/dev/null 2>&1; then
-    python -m venv .venv
-  else
-    python3 -m venv .venv
-  fi
-   fi
-   ```
+## File Structure Reference
 
-2. **Install dependencies**:
-   ```bash
-   # Install dependencies in the virtual environment
-   .venv/bin/pip install -r requirements.txt  # macOS/Linux
-   # OR
-   .venv\Scripts\pip install -r requirements.txt  # Windows
-   ```
-
-3. **Inform the user**:
-   ```
-   I've set up your Python environment and installed all dependencies. Everything is ready to test!
-   ```
-
-**Important:**
-- Do NOT ask the user to run commands manually
-- Do NOT wait for user confirmation
-- Handle any errors automatically (e.g., if Python is not installed, inform the user clearly)
-- Use the Bash tool to run these commands
-- If you encounter errors, provide clear guidance on what the user needs to do
-
-### Optional Preflight (allowed before agent generation)
-- You may perform Steps 6–7 (create `.env`, set up venv, install requirements) before generating agents if credentials are already present in `SETUP.md`. This can reduce failures during generation and testing.
-
-## Step 8: Provide Setup Summary and Next Steps
-
-After successfully setting up the Python environment, provide:
-
-1. **Summary of what was created**:
-   ```
-   ✅ All done! Here's what I created for you:
-
-   Generated Agents:
-   - {agent_name_1}: {brief description from SETUP.md}
-   - {agent_name_2}: {brief description from SETUP.md}
-   - catchall: Fallback agent for general queries
-
-   Configuration:
-   - System prompts in configs/prompts/
-   - Routing rules in configs/routing.yaml
-   - AI Gateway settings in configs/settings.yaml
-   - Environment file (.env) with your credentials
-
-   Python Environment:
-   - Virtual environment created and activated
-   - All dependencies installed
-
-   You're ready to test! Try one of these:
-   - "Test the {agent_name} agent with: [suggest a relevant objective]"
-   - "Test the full workflow with: [suggest a relevant objective]"
-   ```
-
-2. **Optional next steps to mention**:
-   - Review system prompts in `configs/prompts/` to refine agent behavior
-   - Add reference data to `reference/{agent_name}/` directories
-   - Adjust routing keywords in `configs/routing.yaml` if needed
-
-## Important Guidelines
-
-### DO:
-- Follow the factory pattern exactly for all agents
-- Use environment variables for sensitive credentials
-- Keep framework files (base.py, client.py, run_workflow.py) unchanged
-- Validate that all generated code follows Python best practices
-- Ensure all agents are registered in routing.yaml, settings.yaml, AND workflow.py
-- Remove automotive-specific terminology completely
-
-### DON'T:
-- Don't modify framework code (base.py, llm/client.py, scripts/run_workflow.py, scripts/model_catalog.py)
-- Don't hardcode API keys or credentials in settings.yaml
-- Don't create agents that aren't specified in SETUP.md
-- Don't leave TODO comments in generated code - complete all implementations
-- Don't use direct OpenAI/Anthropic APIs - MUST use AI Gateway
-
-## Example Conversation Flow
-
-**User**: "I've filled out SETUP.md. Please generate my industry-specific agents."
-
-**You (Cursor)**:
-1. "Let me read your SETUP.md..."
-2. [Read and validate]
-3. "I see you're in [industry] with [n] specialized agents. I'll generate these agents for you..."
-4. [If explore mode: fetch and suggest models]
-5. [Generate all files: agents, prompts, routing, settings, .env]
-6. "Agents generated! Now setting up your Python environment..."
-7. [Check for .venv, create if needed]
-8. [Install dependencies with pip]
-9. "✅ All done! Here's what I created: [full summary with agent list]"
-10. "You're ready to test! Try: 'Test the {agent_name} agent with: [example]'"
-
-## Error Handling
-
-If you encounter issues:
-
-- **Missing SETUP.md fields**: Ask user to complete all required sections
-- **AI Gateway connection fails**: Verify credentials and instance ID
-- **Unclear specializations**: Ask user to clarify which agents are needed
-- **Conflicting agent names**: Suggest alternatives or ask user to choose
-- **Python not installed**: Inform user clearly: "Python is not installed. Please install Python 3.8+ from python.org and try again."
-- **pip install fails**: Show the error and suggest: "There was an issue installing dependencies. Please ensure you have an internet connection and try again."
-- **Virtual environment creation fails**: Check Python version and permissions, inform user of the specific issue
-
-## Testing After Generation
-
-Always offer to run a test:
-
-"Would you like me to test one of your new agents? I can run:
 ```
-Test the {agent_name} agent with: [suggest an example objective from their domain]
-```"
+deployer-apps/citizen-dev7/src/
+├── ui/
+│   ├── src/
+│   │   ├── components/     # UI components (modify based on features)
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── services/       # API clients
+│   │   ├── stores/         # Zustand stores
+│   │   └── App.tsx         # Main app (update with navigation)
+│   ├── package.json        # Update name
+│   └── index.html          # Update title
+├── api.py                  # FastAPI backend
+├── agents/                 # AI agents (if using chatbot)
+└── configs/                # Agent configurations
+```
+
+## Critical Instructions
+
+1. **WRITE CODE IMMEDIATELY** - After collecting user inputs, immediately start creating/editing files:
+   - Use the Write tool to create new component files
+   - Use the StrReplace tool to modify existing files
+   - DO NOT just describe what files should contain - actually write them!
+
+2. **SHOW PROGRESS** - As you create each file, tell the user:
+   - "✓ Created Dashboard.tsx with sample charts"
+   - "✓ Updated App.tsx with navigation"
+   - "✓ Applied blue color scheme"
+
+3. **BUILD BEFORE RUNNING** - All code changes must happen BEFORE starting Docker/dev server
+
+4. **USE TEMPLATES** - Reference code-templates/ for component patterns
+
+5. **FOLLOW STYLE GUIDE** - Use patterns from ui/STYLE_GUIDE.md if it exists
+
+6. **GENERATE REALISTIC CONTENT** - Sample data should match their app description:
+   - If they said "project tracking" → use project names, dates, statuses
+   - If they said "customer feedback" → use feedback entries, ratings
+   - Never use "Lorem ipsum" or generic placeholders
+
+7. **COMMIT PROGRESS** - Suggest user run `/commit` after major milestones

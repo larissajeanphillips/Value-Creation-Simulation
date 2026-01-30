@@ -1,36 +1,35 @@
 # commit
 
-Commit changes and push to the repository.
+Commit changes to git using Conventional Commits format.
 
 This command will be available in chat with /commit
 
-When triggered, execute the following steps:
+## Usage
 
-1. **Check current status**:
-   ```bash
-   git status
-   git diff --staged
-   git diff
-   git log --oneline -5
-   ```
+The AI will:
+1. Review staged changes
+2. Generate a commit message following Conventional Commits
+3. Commit the changes
 
-2. **Review the changes** and determine what should be committed
+## Format
 
-3. **Stage relevant files**:
-   ```bash
-   git add <files>
-   ```
+```
+<type>[optional scope]: <description>
 
-4. **Create a commit** using conventional commit format:
-   - `feat:` for new features
-   - `fix:` for bug fixes
-   - `chore:` for maintenance
-   - `docs:` for documentation
-   - `refactor:` for code restructuring
+[optional body]
 
-5. **Push to remote**:
-   ```bash
-   git push
-   ```
+[optional footer(s)]
+```
 
-6. **Confirm success** to the user
+## Types
+
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `perf`: Performance improvements
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+- `build`: Build system changes
+- `ci`: CI/CD changes
