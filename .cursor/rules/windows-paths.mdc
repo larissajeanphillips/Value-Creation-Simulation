@@ -1,0 +1,79 @@
+# Windows Default Installation Paths
+
+When running on Windows, the following tools are typically installed at these locations.
+If commands like `git`, `node`, or `npm` are not found in PATH, check these locations.
+
+## Git
+
+**Default installation path:**
+```
+C:\Program Files\Git\cmd
+C:\Program Files\Git\bin
+```
+
+The `git.exe` executable is located at:
+```
+C:\Program Files\Git\cmd\git.exe
+```
+
+## Node.js
+
+**Default installation path:**
+```
+C:\Program Files\nodejs
+```
+
+The executables are located at:
+```
+C:\Program Files\nodejs\node.exe
+C:\Program Files\nodejs\npm.cmd
+C:\Program Files\nodejs\npx.cmd
+```
+
+## Adding to PATH (for current session)
+
+If tools are installed but not in PATH, you can add them temporarily in PowerShell:
+
+```powershell
+# Add Git to PATH
+$env:Path = "C:\Program Files\Git\cmd;$env:Path"
+
+# Add Node.js to PATH
+$env:Path = "C:\Program Files\nodejs;$env:Path"
+
+# Verify
+git --version
+node --version
+npm --version
+```
+
+## Permanent PATH Fix
+
+Run the included fix script:
+```powershell
+.\scripts\fix-git-path.ps1
+```
+
+Or manually:
+1. Open System Properties > Environment Variables
+2. Edit the User PATH variable
+3. Add: `C:\Program Files\Git\cmd` and `C:\Program Files\nodejs`
+4. Restart PowerShell/terminals
+
+## Common Issues
+
+### "git is not recognized"
+Git is installed but not in PATH. Add `C:\Program Files\Git\cmd` to PATH.
+
+### "node is not recognized"
+Node.js is installed but not in PATH. Add `C:\Program Files\nodejs` to PATH.
+
+### esbuild installation fails
+Windows permission issue. Use:
+```powershell
+npm run install:windows
+```
+Or run the fix script:
+```powershell
+.\scripts\fix-windows-npm.ps1
+```

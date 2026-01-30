@@ -1,0 +1,8 @@
+{
+    "mcpServers": {
+        "citdev": {
+            "command": "./mcps/citdev_mcp/scripts/docker-run.sh",
+            "args": []
+        }
+    }
+}

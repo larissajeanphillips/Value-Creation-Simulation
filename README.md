@@ -7,7 +7,7 @@ This repository comes with pre-defined GitHub Action (GHA) workflows that enable
 to deploy your application to a shared Kubernetes (K8s) cluster as well
 as deploying infrastructure in a shared AWS account (eg. S3, RDS).<br/>
 Depending on whether you selected the starter template option during provisioning,
-your repository may include a sample Next.js application to help you get started.
+your repository may include a sample application to help you get started.
 Read more about the [repository structure](#repository-structure) and [sample application](#sample-application) below.
 
 ## Documentation
@@ -42,15 +42,53 @@ These workflows are managed centrally and should not be edited by the customer (
 * **Security scan**: Automatically scans code for security vulnerabilities on pull requests and manual triggers
 
 
-## Sample application
+## Starter Template Application
 
-If you selected the starter template option, your repository includes a basic Next.js starter application
-to help you get started with deploying on Deployer K8s PaaS.
+This repository includes a **Multi-Agent Chat Application** starter template built with:
+- **Backend**: FastAPI (Python) with multi-agent framework
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Containerization**: Multi-stage Docker build
+- **Deployment**: Kubernetes manifests and Docker CI/CD workflow
 
 The starter template includes:
-- Next.js app with health/status API endpoints
-- Kubernetes manifests and Docker CI/CD workflow
+- Multi-agent AI workspace framework for building domain-specific agents
+- React chat UI for interacting with agents
+- Health/status API endpoints
+- Hot-reload development setup with Docker
 - Ready to deploy and customize
+
+### Quick Start with Starter Template
+
+**🚀 Run with Docker - No dependencies needed!**
+
+**📖 For detailed setup instructions, see [STARTER_TEMPLATE_SETUP.md](./STARTER_TEMPLATE_SETUP.md)**
+
+**Quick start (2 minutes):**
+
+```bash
+# 1. Configure credentials
+cd deployer-apps/<instance-name>/src
+cp .env.example .env
+# Edit .env with your AI Gateway credentials
+
+# 2. Start the app
+./scripts/docker-dev.sh
+
+# 3. Open http://localhost:3000
+```
+
+**That's it!** The Docker setup includes everything:
+- ✅ Pre-built React UI (no Node.js needed)
+- ✅ Python backend with dependencies (no Python setup needed)  
+- ✅ Hot reloading for agents and configs
+- ✅ Works the same on any machine
+
+**Prerequisites:** Just Docker Desktop - no other tools required!
+
+For more details, see:
+- **Quick start guide**: `deployer-apps/<instance-name>/src/START_HERE.md`
+- **Full documentation**: `deployer-apps/<instance-name>/src/README.md`
+- **Setup guide**: `deployer-apps/<instance-name>/src/QUICKSTART.md`
 
 **Application URL Template**: `https://app-<k8s_namespace>.<cloudflare_domain>`, where:
 

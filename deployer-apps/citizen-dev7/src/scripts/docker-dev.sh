@@ -34,31 +34,51 @@ echo ""
 # Change to project directory
 cd "$PROJECT_DIR"
 
-# Load .env file if it exists
+# Check for .env file, create from .env.example if missing
+if [ ! -f ".env" ]; then
+    if [ -f ".env.example" ]; then
+        echo -e "${YELLOW}📝 Creating .env from .env.example${NC}"
+        cp .env.example .env
+        echo -e "${YELLOW}⚠️  Please edit .env and add your AI Gateway credentials${NC}"
+        echo ""
+        echo "Required values:"
+        echo "  - AI_GATEWAY_INSTANCE_ID"
+        echo "  - AI_GATEWAY_API_KEY"
+        echo ""
+        echo "Get these from Platform McKinsey > AI Gateway service"
+        echo ""
+        read -p "Press Enter after you've updated .env, or Ctrl+C to cancel..."
+    else
+        echo -e "${RED}❌ No .env or .env.example file found${NC}"
+        exit 1
+    fi
+fi
+
+# Load .env file
 if [ -f ".env" ]; then
-    echo -e "${YELLOW}📦 Loading environment from .env file${NC}"
+    echo -e "${GREEN}📦 Loading environment from .env file${NC}"
     set -a
     # shellcheck source=/dev/null
     source .env
     set +a
 fi
 
-# Check for required environment variables
-if [ -z "$AI_GATEWAY_INSTANCE_ID" ] || [ -z "$AI_GATEWAY_API_KEY" ]; then
-    echo -e "${RED}❌ Missing required environment variables${NC}"
-    echo ""
-    echo "Please set the following environment variables:"
-    echo "  - AI_GATEWAY_INSTANCE_ID"
-    echo "  - AI_GATEWAY_API_KEY"
-    echo ""
-    echo "You can either:"
-    echo "  1. Create a .env file in the src/ directory"
-    echo "  2. Export them in your shell before running this script"
-    echo ""
-    echo "Example .env file:"
-    echo "  AI_GATEWAY_INSTANCE_ID=your_instance_id"
-    echo "  AI_GATEWAY_API_KEY=your_api_key"
-    exit 1
+# Check for required environment variables (only if using agent framework)
+# For generic webapps, you may not need these - they're only required for agents
+if [ -f "api.py" ] && grep -q "AI_GATEWAY" api.py 2>/dev/null; then
+    if [ -z "$AI_GATEWAY_INSTANCE_ID" ] || [ -z "$AI_GATEWAY_API_KEY" ]; then
+        echo -e "${YELLOW}⚠️  Agent framework detected but missing AI Gateway credentials${NC}"
+        echo ""
+        echo "If you're using the agent framework, please edit .env and set:"
+        echo "  - AI_GATEWAY_INSTANCE_ID"
+        echo "  - AI_GATEWAY_API_KEY"
+        echo ""
+        echo "Get these from Platform McKinsey > AI Gateway service"
+        echo ""
+        echo "If you're building a generic webapp, you can remove agent code from api.py"
+        echo ""
+        read -p "Press Enter to continue anyway, or Ctrl+C to cancel..."
+    fi
 fi
 
 # Check if --build flag is passed or image doesn't exist
@@ -92,28 +112,51 @@ fi
 echo -e "${GREEN}🐳 Starting container with hot reload...${NC}"
 echo ""
 echo "Volume mounts (changes reflect immediately):"
-echo "  - agents/     → Agent implementations"
-echo "  - configs/    → Prompts, routing, settings"
-echo "  - workflows/  → Workflow logic"
-echo "  - reference/  → Reference data"
-echo "  - api.py      → API endpoints"
+echo "  - api.py      → API endpoints (hot reload ✅)"
+echo "  - Any Python files → Backend code (hot reload ✅)"
+if [ -d "agents" ]; then
+  echo "  - agents/     → Agent implementations (hot reload ✅)"
+fi
+if [ -d "configs" ]; then
+  echo "  - configs/    → Configuration files (hot reload ✅)"
+fi
+if [ -d "workflows" ]; then
+  echo "  - workflows/  → Workflow logic (hot reload ✅)"
+fi
+if [ -d "reference" ]; then
+  echo "  - reference/  → Reference data (hot reload ✅)"
+fi
 echo ""
 echo -e "${YELLOW}Note: UI changes require rebuilding (run with --build)${NC}"
+echo -e "${GREEN}Python files auto-reload thanks to uvicorn --reload flag${NC}"
 echo ""
 echo -e "${GREEN}🌐 App will be available at: http://localhost:3000${NC}"
 echo ""
 echo "Press Ctrl+C to stop"
 echo ""
 
+# Build volume mount arguments (only mount directories that exist)
+VOLUME_MOUNTS=(
+    -v "$PROJECT_DIR/api.py:/app/api.py"
+)
+
+# Conditionally mount agent-related directories if they exist
+[ -d "$PROJECT_DIR/agents" ] && VOLUME_MOUNTS+=(-v "$PROJECT_DIR/agents:/app/agents")
+[ -d "$PROJECT_DIR/configs" ] && VOLUME_MOUNTS+=(-v "$PROJECT_DIR/configs:/app/configs")
+[ -d "$PROJECT_DIR/workflows" ] && VOLUME_MOUNTS+=(-v "$PROJECT_DIR/workflows:/app/workflows")
+[ -d "$PROJECT_DIR/reference" ] && VOLUME_MOUNTS+=(-v "$PROJECT_DIR/reference:/app/reference")
+
+# Build environment variable arguments
+ENV_ARGS=()
+[ -n "$AI_GATEWAY_INSTANCE_ID" ] && ENV_ARGS+=(-e "AI_GATEWAY_INSTANCE_ID=$AI_GATEWAY_INSTANCE_ID")
+[ -n "$AI_GATEWAY_API_KEY" ] && ENV_ARGS+=(-e "AI_GATEWAY_API_KEY=$AI_GATEWAY_API_KEY")
+
 # Run container with volume mounts for hot reloading
+# Using --reload flag for uvicorn to enable Python hot reloading
 docker run -it --rm \
     --name "$CONTAINER_NAME" \
     -p 3000:3000 \
-    -v "$PROJECT_DIR/agents:/app/agents" \
-    -v "$PROJECT_DIR/configs:/app/configs" \
-    -v "$PROJECT_DIR/workflows:/app/workflows" \
-    -v "$PROJECT_DIR/reference:/app/reference" \
-    -v "$PROJECT_DIR/api.py:/app/api.py" \
-    -e AI_GATEWAY_INSTANCE_ID="$AI_GATEWAY_INSTANCE_ID" \
-    -e AI_GATEWAY_API_KEY="$AI_GATEWAY_API_KEY" \
-    "$IMAGE_NAME"
+    "${VOLUME_MOUNTS[@]}" \
+    "${ENV_ARGS[@]}" \
+    "$IMAGE_NAME" \
+    uvicorn api:app --host 0.0.0.0 --port 3000 --reload

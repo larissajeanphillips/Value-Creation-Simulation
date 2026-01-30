@@ -1,0 +1,165 @@
+---
+description: Pattern for creating tutorial steps with floating dialogs, highlights, and arrows
+applies_to:
+  - "**/*.tsx"
+  - "**/*.ts"
+tags: [tutorial, ui-patterns, user-experience]
+---
+
+# Tutorial Pattern: Floating Dialog with Highlight
+
+## Overview
+
+When creating tutorial steps or guided walkthroughs, always use the established pattern of floating dialogs with highlighted elements and directional arrows. This creates clear, intuitive guidance for users.
+
+## Key Components
+
+### 1. TutorialHighlight Component
+- Creates a spotlight effect around target elements
+- Automatically calculates optimal dialog position
+- Provides position callbacks for dialog placement
+- Handles responsive updates on scroll/resize
+
+### 2. TutorialOverlay Component  
+- Floating dialog that displays step information
+- Positions dynamically based on highlighted element
+- Renders arrow pointing to highlighted element
+- Supports audio narration and keyboard navigation
+
+### 3. Tutorial Step Definition
+```typescript
+{
+  id: 'unique-step-id',
+  title: 'Step Title',
+  description: 'Clear, concise explanation (2-3 sentences)',
+  target: 'element-identifier', // ID, data attribute, or class
+  section: 'section-id',
+  completed: false,
+}
+```
+
+## Implementation Checklist
+
+When adding a new tutorial step:
+
+1. **Define the step** in `TutorialContext.tsx`
+   - Unique ID
+   - Clear title and description
+   - Target element identifier
+   - Section assignment
+
+2. **Mark the target element** in the component
+   ```tsx
+   // Preferred: Use data attribute
+   <div data-tutorial-target="feature-name">
+     Feature content...
+   </div>
+   ```
+
+3. **Test the highlight**
+   - Verify element is found correctly
+   - Check dialog positioning at different screen sizes
+   - Ensure arrow points correctly to highlighted element
+   - Test scroll and resize behavior
+
+4. **Verify visual design**
+   - Highlight box with pulsing border (#6366f1)
+   - Dialog appears at appropriate distance
+   - Arrow is clearly visible
+   - Dialog doesn't obscure important UI
+
+## Design Standards
+
+### Highlight Box
+- Border: 2px solid #6366f1 (indigo)
+- Border radius: 8px
+- Animated pulse effect
+- Padding: 8px around element
+- Shadow: Multi-layer glow
+
+### Dialog Box
+- Background: #0d0d0d (dark)
+- Border: 1px solid #2a2a2a  
+- Border radius: 12px
+- Width: 400px
+- Z-index: 70
+
+### Arrow
+- Size: 16px triangle
+- Color: #6366f1 (matches highlight)
+- Animated pulse (2s duration)
+- Drop shadow for depth
+- Points directly at highlighted element
+
+## Best Practices
+
+### Targeting
+- Use stable, unique identifiers
+- Prefer `data-tutorial-target` attributes
+- Avoid dynamically generated elements
+- Test at different viewport sizes
+
+### Content
+- Keep descriptions concise (2-3 sentences)
+- Focus on "why" not just "what"
+- Include keyboard shortcuts when relevant
+- Use simple, jargon-free language
+
+### Positioning
+- Default to 'auto' positioning
+- Offset: 80-120px works well
+- Ensure dialog stays in viewport
+- Test on mobile devices
+
+### Accessibility
+- Provide audio narration option
+- Support keyboard navigation
+- Show clear progress indicators
+- Allow users to skip/exit
+
+## Example Usage
+
+```typescript
+// In TutorialContext.tsx
+{
+  id: 'settings-panel',
+  title: 'Settings Panel',
+  description: 'Access Cursor settings to customize your experience. Key sections include General, Models, and Rules.',
+  target: 'settings-panel',
+  section: 'interface-tour',
+  completed: false,
+}
+
+// In your component
+<div data-tutorial-target="settings-panel" className="settings-panel">
+  <h2>Settings</h2>
+  {/* Settings content */}
+</div>
+```
+
+## Common Pitfalls
+
+❌ **Don't**
+- Target elements that might not exist
+- Use generic class names as targets
+- Create overly long descriptions
+- Block critical UI with dialogs
+
+✅ **Do**
+- Use specific, stable identifiers
+- Keep content focused and brief
+- Test positioning thoroughly
+- Ensure dialogs are dismissible
+
+## Reference Files
+
+For implementation details, see:
+- `TUTORIAL_PATTERN.md` - Complete pattern documentation
+- `src/components/TutorialHighlight.tsx` - Highlight implementation
+- `src/components/TutorialOverlay.tsx` - Dialog implementation
+- `src/context/TutorialContext.tsx` - State management
+- `src/components/SetupWizard.tsx` - Reference example
+
+## Questions?
+
+This pattern is established and should be followed consistently. If you need to deviate from it, document why and update both this rule and TUTORIAL_PATTERN.md.

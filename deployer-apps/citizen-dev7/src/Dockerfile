@@ -63,6 +63,8 @@ COPY --from=python-builder /root/.local /home/appuser/.local
 ENV PATH=/home/appuser/.local/bin:$PATH
 
 # Copy application code (ordered by change frequency - least to most)
+# Note: This template includes agent framework directories, but you can
+# build any type of webapp - just replace api.py with your own FastAPI app
 COPY --chown=appuser:appuser llm/ ./llm/
 COPY --chown=appuser:appuser scripts/ ./scripts/
 COPY --chown=appuser:appuser agents/ ./agents/
@@ -94,4 +96,6 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl --fail http://localhost:3000/api/health || exit 1
 
 # Run FastAPI with uvicorn
+# Note: --reload is enabled via docker-dev.sh for development
+# In production, this runs without reload for better performance
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "3000"]

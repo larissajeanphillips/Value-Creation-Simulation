@@ -1,0 +1,216 @@
+---
+description: Interactive project setup wizard for creating new React applications
+alwaysApply: false
+---
+
+# Project Setup Wizard
+
+When a user requests to "set up a new project", "launch the setup guide", "create a new project", or similar, you MUST immediately use the AskQuestion tool to collect project configuration interactively via a modal UI.
+
+## Trigger Phrases
+
+Activate this wizard when user says:
+- "Set up a new project"
+- "Launch the setup guide"
+- "Create a new project"
+- "Start project setup"
+- "I want to create a project"
+- "New project"
+
+## Step 1: Ask Configuration Questions
+
+**Immediately call the AskQuestion tool with user-friendly questions:**
+
+```json
+{
+  "title": "New Project Setup Wizard",
+  "questions": [
+    {
+      "id": "project_name",
+      "prompt": "What would you like to name your project?\n\nThis will be used as the folder name and displayed in the browser tab. Examples: 'client-dashboard', 'sales-analytics', 'team-portal'\n\nNote: Spaces and special characters will be automatically converted (e.g., 'My Cool App' becomes 'my-cool-app')",
+      "options": [
+        { "id": "dashboard", "label": "dashboard" },
+        { "id": "analytics-app", "label": "analytics-app" },
+        { "id": "client-portal", "label": "client-portal" },
+        { "id": "custom", "label": "I'll type my own name after selecting this" }
+      ]
+    },
+    {
+      "id": "location",
+      "prompt": "Where should we create your project folder?\n\nThis is where all your project files will be stored on your computer.",
+      "options": [
+        { "id": "documents", "label": "Documents folder (~/Documents) - Recommended for most users" },
+        { "id": "projects", "label": "Projects folder (~/Projects) - If you have a dedicated projects folder" },
+        { "id": "current", "label": "Current folder - Create project right here in this starter kit location" },
+        { "id": "custom", "label": "Custom location - I'll specify a different folder path" }
+      ]
+    },
+    {
+      "id": "description",
+      "prompt": "Would you like to add a short description for your project?\n\nThis helps document what the project is about. It will appear in the project's configuration files.",
+      "options": [
+        { "id": "skip", "label": "Skip for now - I can add this later" },
+        { "id": "add", "label": "Yes, I'll type a description after selecting this" }
+      ]
+    },
+    {
+      "id": "tutorial",
+      "prompt": "Would you like to include a Tutorial App?\n\nThis is a sample application that demonstrates how to use the project's features. It's helpful for learning but can be removed later.",
+      "options": [
+        { "id": "yes", "label": "Yes, include tutorial - Recommended if you're new to this setup" },
+        { "id": "no", "label": "No, skip tutorial - I want a clean project without examples" }
+      ]
+    },
+    {
+      "id": "github",
+      "prompt": "Do you have a GitHub repository for this project?\n\nGitHub is a website for storing and sharing code. If you already created a repository there, you can link it now. If not, you can skip this and set it up later.",
+      "options": [
+        { "id": "skip", "label": "Skip - I don't have a GitHub repo yet or I'll add it later" },
+        { "id": "add", "label": "Yes - I'll paste my GitHub URL after selecting this" }
+      ]
+    },
+    {
+      "id": "team",
+      "prompt": "What team or group is this project for?\n\nThis is optional and just helps identify who owns the project. Examples: 'Digital Team', 'Client Analytics', 'Product Group'",
+      "options": [
+        { "id": "skip", "label": "Skip - No team name needed" },
+        { "id": "add", "label": "Add team name - I'll type it after selecting this" }
+      ]
+    }
+  ]
+}
+```
+
+## Step 2: Process User Responses
+
+After receiving answers from AskQuestion, process them as follows:
+
+### Mapping Answers to Configuration
+
+| Question ID | Answer | Action |
+|------------|--------|--------|
+| `project_name` | `custom` selected | Ask user to type the project name in chat |
+| `project_name` | Other option | Use the selected label as the project name |
+| `location` | `documents` | Use `~/Documents` |
+| `location` | `projects` | Use `~/Projects` |
+| `location` | `current` | Use current working directory |
+| `location` | `custom` | Ask user to type the path in chat |
+| `description` | `skip` | Leave description empty |
+| `description` | `add` | Ask user to type description in chat |
+| `tutorial` | `yes` | Set `includeTutorial = true` |
+| `tutorial` | `no` | Set `includeTutorial = false` |
+| `github` | `skip` | Leave GitHub URL empty |
+| `github` | `add` | Ask user to paste GitHub URL in chat |
+| `team` | `skip` | Leave team name empty |
+| `team` | `add` | Ask user to type team name in chat |
+
+### Follow-up Questions
+
+If user selected "custom" or "add" options, ask them to provide the value:
+
+**For custom project name:**
+"Please type your project name. Remember: use lowercase letters, numbers, and dashes only (e.g., 'my-awesome-project'):"
+
+**For custom location:**
+"Please type the full folder path where you'd like to create the project (e.g., '/Users/yourname/Work/Projects'):"
+
+**For description:**
+"Please type a short description for your project (1-2 sentences about what it does):"
+
+**For GitHub URL:**
+"Please paste your GitHub repository URL (e.g., 'https://github.com/your-org/your-repo'):"
+
+**For team name:**
+"Please type your team name:"
+
+## Step 3: Execute Project Setup
+
+Once all configuration is collected, execute the setup using the TypeScript automation script or manual steps:
+
+### Option A: Use the Automation Script (Recommended)
+
+Build the command from collected answers:
+
+```bash
+npx tsx scripts/setup-automation.ts \
+  --name "[PROJECT_NAME]" \
+  --location "[PROJECT_LOCATION]" \
+  --description "[DESCRIPTION]" \
+  [--tutorial] \
+  --repo "[GITHUB_URL]" \
+  --team "[TEAM_NAME]"
+```
+
+**Parameter mapping:**
+- `--name`: The sanitized project name (lowercase, dashes)
+- `--location`: The expanded path (e.g., `/Users/username/Documents`)
+- `--description`: The project description (omit if skipped)
+- `--tutorial`: Include this flag only if user selected "yes"
+- `--repo`: The GitHub URL (omit if skipped)
+- `--team`: The team name (omit if skipped)
+
+### Option B: Manual Setup Steps
+
+If the script is not available, follow these steps:
+
+**Step 3: Create Project Directory**
+1. Create folder at `[LOCATION]/[PROJECT_NAME]`
+2. Copy starter kit files (.cursor, code-templates, config-templates, docs-templates → docs, ui, .cursorrules)
+3. Run `git init`
+4. Create `.gitignore`
+
+**Step 4: Open in Cursor**
+- Open the new project folder in Cursor IDE
+
+**Step 5: Set up Project Structure**
+1. Create `src/` folders: components/ui, hooks, stores, lib, types, utils
+2. Create `public/` folder
+3. Copy config templates to create: package.json, tsconfig.json, vite.config.ts, tailwind.config.js, postcss.config.js
+4. Update package.json with project name and description
+5. Create index.html, src/main.tsx, src/App.tsx, src/index.css, src/lib/utils.ts
+6. Update .cursorrules with project name, GitHub URL, and team name
+7. Create .cursor/rules/tech-stack.mdc
+
+**Step 6: Install Dependencies**
+1. Run `npm install`
+2. Verify installation succeeded
+
+## Step 4: Confirm Success
+
+After setup completes, provide a friendly summary:
+
+```
+✅ Your project "[PROJECT_NAME]" has been created!
+
+📁 Location: [FULL_PATH]
+
+🚀 To start working on your project:
+   1. Open a terminal in your project folder
+   2. Run: npm run dev
+   3. Open http://localhost:5173 in your browser
+
+📚 Helpful resources in your project:
+   • ui/STYLE_GUIDE.md - Design patterns and components
+   • docs/ - Project documentation
+   • code-templates/ - Reusable code patterns
+
+Need help? Just ask me anything about your new project!
+```
+
+## Critical Instructions
+
+1. **USE AskQuestion IMMEDIATELY** - Don't just describe the questions, actually call the tool
+2. **BE PATIENT** - Wait for user responses before proceeding
+3. **HANDLE "CUSTOM" OPTIONS** - If user selects options requiring input, ask follow-up questions
+4. **SANITIZE PROJECT NAME** - Convert to lowercase, replace spaces with dashes, remove special characters
+5. **EXPAND PATHS** - Convert `~` to the user's home directory
+6. **PROVIDE CLEAR FEEDBACK** - Tell the user what's happening at each step
+7. **HANDLE ERRORS GRACEFULLY** - If something fails, explain what went wrong in plain language
+
+## Reference Files
+
+- Automation script: `scripts/setup-automation.ts`
+- Config templates: `config-templates/frontend/`
+- Code templates: `code-templates/frontend/`
+- Design system: `ui/DESIGN_TOKENS.md` and `ui/STYLE_GUIDE.md`
+- Full documentation: `docs-templates/CURSOR_SETUP_PROMPT.md`

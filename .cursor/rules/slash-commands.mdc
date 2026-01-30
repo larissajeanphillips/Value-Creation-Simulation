@@ -1,0 +1,116 @@
+---
+description: Slash commands for older Cursor versions that don't support /commands folder
+alwaysApply: false
+---
+
+# Slash Commands (Backward Compatibility)
+
+This rule provides slash command support for older Cursor versions. When a user types any of the following commands, execute the corresponding action.
+
+## /launch
+
+**Trigger:** User types "/launch" or "launch the app" or "start the app"
+
+**Action:** Launch the webapp locally using Docker.
+
+1. Check if Docker is running:
+   ```bash
+   docker info
+   ```
+
+2. Navigate to the app source and run:
+   ```bash
+   cd deployer-apps/citizen-dev5/src && ./scripts/docker-dev.sh
+   ```
+
+3. Tell the user the app will be available at http://localhost:3000
+
+If Docker isn't running, tell them to start Docker Desktop first.
+If the script fails, suggest: `./scripts/docker-dev.sh --build`
+
+---
+
+## /restart
+
+**Trigger:** User types "/restart" or "restart the app"
+
+**Action:** Stop and restart the Docker container.
+
+```bash
+docker stop agent-chat-dev 2>/dev/null
+cd deployer-apps/citizen-dev5/src && ./scripts/docker-dev.sh
+```
+
+---
+
+## /commit
+
+**Trigger:** User types "/commit" or "commit my changes"
+
+**Action:** Commit and push changes to git.
+
+1. Run `git status` and `git diff` to see changes
+2. Stage relevant files with `git add`
+3. Create a commit with a conventional commit message
+4. Push to the remote repository
+
+---
+
+## /commit-locally
+
+**Trigger:** User types "/commit-locally" or "commit without pushing"
+
+**Action:** Same as /commit but skip the push step.
+
+---
+
+## /push
+
+**Trigger:** User types "/push" or "push to github"
+
+**Action:** Push the current branch to the remote repository.
+
+```bash
+git push
+```
+
+---
+
+## /review-code
+
+**Trigger:** User types "/review-code" or "review my code"
+
+**Action:** Perform a code review checklist:
+
+1. Check for linter errors using `ReadLints`
+2. Look for common issues (unused imports, console.logs, TODO comments)
+3. Verify code follows project style guidelines
+4. Suggest improvements
+
+---
+
+## /add-lessons-learned
+
+**Trigger:** User types "/add-lessons-learned" or "document this issue"
+
+**Action:** Help the user document an issue or learning for future reference.
+
+1. Ask what issue or learning they want to document
+2. Create or update a lessons learned file
+3. Include: date, issue description, solution, and prevention tips
+
+---
+
+## /welcome
+
+**Trigger:** User types "/welcome" or "how do I get started" or "what is this project"
+
+**Action:** Provide the full welcome/onboarding guide. See the welcome.mdc rule for the complete message.
+
+---
+
+## /setup
+
+**Trigger:** User types "/setup" or "set up a new project"
+
+**Action:** Launch the interactive project setup wizard using the AskQuestion tool. See setup-workflow.mdc for details.

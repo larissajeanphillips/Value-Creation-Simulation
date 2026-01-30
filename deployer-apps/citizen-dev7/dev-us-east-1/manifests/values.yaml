@@ -1,23 +1,48 @@
+# =============================================================================
+# Helm Values - Template Configuration
+# =============================================================================
+# IMPORTANT: Replace all placeholder values with your actual instance-specific
+# values from Platform McKinsey before deploying.
+# =============================================================================
+
 image:
-  repository: mckinsey-citizen-dev7-docker-local.jfrog.io/citizen-dev7-starter-app
+  # TODO: Replace with your JFrog Docker registry repository URL
+  # Format: mckinsey-<productname>-docker-local.jfrog.io/<instance-name>-starter-app
+  repository: mckinsey-<PRODUCT_NAME>-docker-local.jfrog.io/<INSTANCE_NAME>-starter-app
   tag: latest
   pullPolicy: IfNotPresent
+
+# Cloudflare base domain (usually doesn't need to change)
 cloudflareBaseDomain: cf.platform.mckinsey.cloud
-pmckinstanceName: citizen-dev7
+
+# TODO: Replace with your Platform McKinsey instance name
+pmckinstanceName: <INSTANCE_NAME>
+
 ingressClass: nginx
+
 labels:
   app.kubernetes.io/namespace-owner: "lrah-control-plane"
-  app.kubernetes.io/lrah-user-product-id: 22391
-  app.kubernetes.io/lrah-user-evironment-id: citizen-dev7-b93a9
+  # TODO: Replace with your Product ID from Platform McKinsey instance details
+  app.kubernetes.io/lrah-user-product-id: <PRODUCT_ID>
+  # TODO: Replace with your Environment ID from Platform McKinsey instance details
+  app.kubernetes.io/lrah-user-evironment-id: <ENVIRONMENT_ID>
+
 imagePullSecrets:
-  - name: jfrog-citizen-dev7-b93a9-secret
+  # TODO: Replace with your JFrog secret name
+  # Format: jfrog-<instance-name>-<environment-id>-secret
+  - name: jfrog-<INSTANCE_NAME>-<ENVIRONMENT_ID>-secret
+
 env:
   NODE_ENV: production
+
 vaultSecrets:
   - name: lrah-secret-generic
-    secretStoreName: citizendev7
+    # TODO: Replace with your secret store name (usually lowercase instance name)
+    secretStoreName: <INSTANCE_NAME_LOWERCASE>
     refreshInterval: "1h"
-    secretPath: "deployer-k8s-paas/citizen-dev7-b93a9/app-secrets"
+    # TODO: Replace with your vault secret path
+    # Format: deployer-k8s-paas/<instance-name>-<environment-id>/app-secrets
+    secretPath: "deployer-k8s-paas/<INSTANCE_NAME>-<ENVIRONMENT_ID>/app-secrets"
     secretKey:
       - AI_GATEWAY_INSTANCE_ID
       - AI_GATEWAY_API_KEY

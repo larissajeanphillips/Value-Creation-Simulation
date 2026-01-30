@@ -4,6 +4,33 @@
 
 This framework enables non-technical domain experts to build specialized AI agent systems for their industry without deep coding knowledge. Simply answer questions about your domain, and Cursor will generate the necessary agents, prompts, and configurations.
 
+## 🚀 Quick Start (Docker - Recommended)
+
+**No Node.js, Python, or other dependencies needed! Just Docker.**
+
+**🎯 Windows users:** Docker eliminates elevated permission issues! No need to install Node.js, Python, or run build tools like esbuild locally. Everything runs in Docker containers.
+
+```bash
+# 1. Configure credentials
+cd deployer-apps/<instance-name>/src
+cp .env.example .env  # Windows: copy .env.example .env
+# Edit .env with your AI Gateway credentials (if using agents)
+
+# 2. Start the app
+./scripts/docker-dev.sh  # Windows: bash scripts/docker-dev.sh
+
+# 3. Open http://localhost:3000
+```
+
+**That's it!** See [QUICKSTART.md](./QUICKSTART.md) for detailed instructions.
+
+The Docker setup includes:
+- ✅ Pre-built React UI (no Node.js needed - builds in Docker)
+- ✅ Python backend with all dependencies (no Python setup needed)
+- ✅ Hot reloading for backend code (no rebuilds needed)
+- ✅ Everything runs in one container
+- ✅ **No elevated permissions required** - Docker handles all build tools
+
 ## What This Is
 
 - **Framework**: Reusable infrastructure for multi-agent systems
@@ -25,17 +52,17 @@ This repository includes a complete **automotive cost optimization** example wit
 
 ### Prerequisites
 
-Before you begin, you'll need:
+**For Docker (Recommended - No other dependencies needed):**
+1. **Docker Desktop** - [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
+   - **Windows users:** Solves permission issues - no Node.js/Python/esbuild needed!
+   - Everything builds and runs in Docker containers
+2. **AI Gateway Credentials** - Get from [Platform McKinsey](https://platform.mckinsey.com) > AI Gateway service (only if using agent framework)
 
-1. **Cursor IDE**
-   - Download and install from: [McKinsey Global Help Desk - Cursor](https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&utm_medium=web&utm_source=ghd_website&utm_content=ai_search_result&sys_id=1a9b2b55c38c9650cd5777f4e40131c9&table=pc_software_cat_item&searchTerm=cursor)
-   - Follow the installation instructions for your platform
+**For Development (Optional - if you want faster UI iteration):**
+1. **Cursor IDE** - [Download Cursor](https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&utm_medium=web&utm_source=ghd_website&utm_content=ai_search_result&sys_id=1a9b2b55c38c9650cd5777f4e40131c9&table=pc_software_cat_item&searchTerm=cursor)
+2. **Node.js** - Only needed if you want to run UI separately for faster iteration (optional, not required)
 
-2. **AI Gateway Credentials**
-   - Go to [Platform McKinsey](https://platform.mckinsey.com)
-   - Navigate to AI Gateway service
-   - Copy your **Instance ID** and **API Key** (format: `clientID:clientSecret`)
-   - Keep these handy for Step 2 below
+**Windows users:** See [WINDOWS_SETUP.md](./WINDOWS_SETUP.md) for complete Windows-specific guidance.
 
 ### Setup Steps
 

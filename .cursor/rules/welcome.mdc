@@ -1,0 +1,200 @@
+---
+description: Welcome guide for new users getting started with the project creation kit
+alwaysApply: false
+---
+
+# Welcome - Getting Started Guide
+
+When a user types "/welcome" or asks "how do I get started", "what is this project", "help me get started", or similar introductory questions, provide them with a comprehensive onboarding guide.
+
+## Trigger Phrases
+
+Activate this guide when user says:
+- "/welcome"
+- "How do I get started?"
+- "What is this project?"
+- "Help me get started"
+- "I'm new here"
+- "Where do I start?"
+- "Getting started"
+
+## Welcome Message
+
+Respond with the following structured welcome message:
+
+---
+
+## Welcome to the New Project Creation Kit! 
+
+This is a starter template that helps you quickly create new React + TypeScript + Vite projects with Cursor AI support already configured.
+
+### What This Kit Does
+
+This template provides:
+- **Pre-configured Cursor AI rules** - Coding standards, commit messages, and best practices
+- **Code templates** - Ready-to-use React components, hooks, and stores
+- **Design system** - Style guide and design tokens for consistent UI
+- **Deployment configs** - Docker and AWS ECS templates
+- **Automation scripts** - Create new projects with a single command
+
+### Quick Start - Just Use Cursor (Easiest)
+
+No installs required - just clone and start coding with Cursor's built-in AI.
+
+**Step 1: Clone the Repository**
+```bash
+git clone https://github.com/McK-Internal/citizen-dev5.git
+```
+
+**Step 2: Open in Cursor**
+- `File` → `Open Folder` → Select `citizen-dev5`
+
+**That's it!** Cursor's AI is ready to help you explore, edit, and build. Try:
+- Ask Cursor: "Explain the project structure"
+- Ask Cursor: "How do I add a new agent?"
+- Type `/welcome` for this guide anytime
+
+---
+
+### Quick Start - Docker (Preview the UI)
+
+If you want to **preview the chat UI**, use Docker. Only requires Docker installed.
+
+**Step 1: Clone and Navigate**
+```bash
+git clone https://github.com/McK-Internal/citizen-dev5.git
+cd citizen-dev5/deployer-apps/citizen-dev5/src
+```
+
+**Step 2: Run with Docker**
+```bash
+./scripts/docker-dev.sh
+```
+
+Open http://localhost:3000 in your browser.
+
+**Getting Docker:**
+- McKinsey users: [Docker for Business](https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&table=pc_software_cat_item&sys_id=157a289187c6c1d0011e52c83cbb35ef)
+- Alternative: [Podman Desktop](https://platform.mckinsey.com/team/no-team/create-service/d4a3647c-10ee-44da-848d-b7a52610f633)
+
+---
+
+### Optional: Embed a Chatbot in Your Webapp
+
+If you want the agents to actually respond to messages (not just preview the UI), you'll need AI Gateway credentials:
+
+```bash
+cat > .env << 'EOF'
+AI_GATEWAY_INSTANCE_ID=your_instance_id
+AI_GATEWAY_API_KEY=your_api_key
+EOF
+```
+
+Get credentials from [Platform McKinsey → AI Gateway](https://platform.mckinsey.com). This connects your app to LLMs (GPT, Claude, etc.) through McKinsey's enterprise gateway.
+
+---
+
+### Quick Start - Local Development (Alternative)
+
+If you prefer local development without Docker:
+
+**Step 1: Create Your New Project**
+
+Type in chat:
+```
+Set up a new project
+```
+
+This launches an interactive wizard that asks you:
+- Project name
+- Where to save it
+- Optional: description, GitHub repo, team name
+
+**Step 2: Navigate to Your New Project**
+
+Once created, open your new project folder in Cursor:
+- `File` → `Open Folder` → Select your new project
+
+**Step 3: Start Development**
+
+In your project's terminal:
+```bash
+npm run dev
+```
+
+Then open http://localhost:5173 in your browser.
+
+### Available Slash Commands
+
+| Command | What it does |
+|---------|--------------|
+| `/welcome` | This guide - getting started info |
+| `/commit` | Commit your changes to git |
+| `/commit-locally` | Commit without pushing |
+| `/push` | Push changes to GitHub |
+| `/launch` | Launch the webapp with Docker |
+| `/restart` | Stop and restart the Docker container |
+| `/review-code` | Run a code review checklist |
+| `/add-lessons-learned` | Document issues for future reference |
+
+### Docker Commands
+
+| Command | What it does |
+|---------|--------------|
+| `./scripts/docker-dev.sh` | Start app with hot reloading |
+| `./scripts/docker-dev.sh --build` | Rebuild image and start |
+| `docker logs agent-chat-dev` | View container logs |
+
+### Key Files to Know
+
+| File | Purpose |
+|------|---------|
+| `.cursorrules` | Project-level AI configuration |
+| `ui/STYLE_GUIDE.md` | UI patterns and components |
+| `ui/DESIGN_TOKENS.md` | Colors, fonts, spacing |
+| `code-templates/` | Reusable code patterns |
+| `docs-templates/` | Documentation templates |
+| `scripts/setup-automation.ts` | Project creation script |
+
+### Project Structure After Setup
+
+Your new project will include:
+```
+your-project/
+├── src/
+│   ├── components/     # React components
+│   ├── hooks/          # Custom React hooks
+│   ├── stores/         # Zustand state stores
+│   ├── lib/            # Utility functions
+│   └── types/          # TypeScript types
+├── .cursor/rules/      # AI coding standards
+├── docs/               # Project documentation
+└── ui/                 # Design system docs
+```
+
+### Tech Stack
+
+Projects created with this kit use:
+- **React 18** - UI framework
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Fast build tool
+- **Tailwind CSS** - Utility-first styling
+- **Zustand** - Simple state management
+
+### Need Help?
+
+- **Docker issues?** Make sure Docker is running, then try `./scripts/docker-dev.sh --build`
+- **Setup issues?** Check `docs-templates/CURSOR_SETUP_PROMPT.md`
+- **Coding questions?** Just ask me in chat
+- **Design patterns?** See `ui/STYLE_GUIDE.md`
+
+---
+
+Ready to get started? Just clone the repo and open it in Cursor!
+
+## Critical Instructions
+
+1. **ALWAYS provide the full welcome message** - Don't abbreviate or skip sections
+2. **BE ENCOURAGING** - This is for new users, keep the tone friendly and helpful
+3. **OFFER NEXT STEPS** - End with a clear call to action
+4. **ANSWER FOLLOW-UP QUESTIONS** - Be ready to explain any part in more detail

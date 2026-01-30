@@ -10,14 +10,14 @@ Fill out this questionnaire to generate your industry-specific agent workspace. 
 <!-- Example: Healthcare, Finance, Manufacturing, Legal, Energy, etc. -->
 
 **Answer:**
-Software engineering and algorithmic optimization
+<!-- TODO: Replace with your industry (e.g., Healthcare, Finance, Manufacturing, Legal, Energy, etc.) -->
 
 
 **What is your main objective for this agent system?**
 <!-- Example: Cost optimization, Compliance review, Risk analysis, Design review, Quality assurance, etc. -->
 
 **Answer:**
-To recommend algorithms, data structures, and other engineering techniques and tactics to improve software being developed.
+<!-- TODO: Replace with your main objective for this agent system -->
 
 
 
@@ -25,7 +25,7 @@ To recommend algorithms, data structures, and other engineering techniques and t
 <!-- What does your organization do? What problems are you trying to solve? -->
 
 **Answer:**
-Trying to make better software products, and help build better "first drafts" that avoid scalability issues.
+<!-- TODO: Replace with a brief description of your domain (2-3 sentences) -->
 
 
 
@@ -41,20 +41,19 @@ Define 3-5 specialized agents for your domain. Each agent should handle a specif
 **Name:**
 <!-- Short, descriptive name. Example: "Compliance Review", "Risk Analysis", "Cost Optimization" -->
 
-Software analyzer
+<!-- TODO: Replace with your first agent's name -->
 
 **When should this agent be used?**
 <!-- Describe the scenarios, objectives, or keywords that should trigger this agent -->
 
-It should be used when software files or code snippets are provided to be able to best structure an assessment for later analysis.
+<!-- TODO: Describe when this agent should be used -->
 
 
 
 **What domain knowledge should this agent have?**
 <!-- Key concepts, regulations, standards, methodologies this agent needs to know -->
 
-Software engineering, architecture, systems engineering, performance engineering, data structures and algorithms.
-
+<!-- TODO: List the domain knowledge this agent needs -->
 
 
 
@@ -62,31 +61,31 @@ Software engineering, architecture, systems engineering, performance engineering
 
 **Name:**
 
-Recommendation Agent
+<!-- TODO: Replace with your second agent's name -->
 
 **When should this agent be used?**
 
-When the software has been analyzed and an assessment is produced - this agent will offer the best suggestions in a prioritized way.
+<!-- TODO: Describe when this agent should be used -->
 
 **What domain knowledge should this agent have?**
 
-Software engineering, architecture, systems engineering, performance engineering, data structures and algorithms.
+<!-- TODO: List the domain knowledge this agent needs -->
 
 ### Agent 3
 
 **Name:**
 
-User Prompting Agent
+<!-- TODO: Replace with your third agent's name -->
 
 **When should this agent be used?**
 
-When more information is needed to move forward, this agent should compose questions and elicit information from the user to help progress toward the goal.
+<!-- TODO: Describe when this agent should be used -->
 
 
 
 **What domain knowledge should this agent have?**
 
-How to discuss software with the user, the ability to understand software assessments.
+<!-- TODO: List the domain knowledge this agent needs -->
 
 
 ---
@@ -119,7 +118,7 @@ How to discuss software with the user, the ability to understand software assess
 
 **Answer:**
 
-07d8525c-b234-46bc-8de7-e45bbddb47d9
+<!-- TODO: Replace with your AI Gateway Instance ID from Platform McKinsey -->
 
 
 
@@ -130,7 +129,7 @@ How to discuss software with the user, the ability to understand software assess
 
 **Answer:**
 
-8b90f0db-85c6-4e3a-8657-8511f702b006:MJhGavpalff3FuNZiXLEpxQH9ndTG1TH
+<!-- TODO: Replace with your AI Gateway API Key from Platform McKinsey (format: clientID:clientSecret) -->
 
 ---
 
@@ -147,7 +146,7 @@ Choose how you want to select models for your agents:
 **Additional preferences** (if any):
 <!-- Example: "Prefer Anthropic models", "Keep costs under $X/month", "Need fastest response time" -->
 
-Prefer Anthropic Models
+<!-- TODO: Add any additional model preferences -->
 
 
 
@@ -160,7 +159,7 @@ Prefer Anthropic Models
 
 **Answer:**
 
-No
+<!-- TODO: Add any important constraints agents should respect -->
 
 
 ---
@@ -172,7 +171,7 @@ No
 
 **Answer:**
 
-No
+<!-- TODO: Add any specific output format requirements -->
 
 
 ---

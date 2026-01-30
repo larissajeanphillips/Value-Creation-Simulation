@@ -1,0 +1,247 @@
+---
+description: Rules that govern and describe the steps necessary to deploy this application to production.
+alwaysApply: false
+---
+# Cursor Rules
+
+## Branch Protection for Code-Modifying Commands
+Before executing any command that modifies code (such as "Move sensitive variables into secrets" or "Dockerize application"), check the current git branch to ensure the user is not on the main branch.
+
+**Branch Check Workflow:**
+1. Get the current branch name using `git rev-parse --abbrev-ref HEAD` or `git branch --show-current`
+2. Check if the current branch is `main` or `master`:
+   - If on `main` or `master`:
+     - **WARN the user**: "You are currently on the main/master branch. Deployment steps will modify code files. Do you want to continue on main/master, or would you like to create a new branch for this deployment?"
+     - **Wait for user response**:
+       - If user chooses to continue on main: Proceed with the deployment command
+       - If user chooses to create a new branch: Execute branch creation workflow (see below)
+   - If NOT on `main` or `master`: Proceed directly with the deployment command (no branch creation needed)
+
+**Branch Creation Workflow (if user chooses new branch):**
+1. Get the current date in format `MMM-DD-YYYY` (e.g., `Jan-15-2024`):
+   - Use command: `date +"%b-%d-%Y"` (Unix/Mac) or `date +"%b-%d-%Y"` (Linux)
+   - Format: Three-letter month abbreviation, two-digit day, four-digit year (e.g., `Jan-15-2024`)
+2. Determine the deployment number index for today:
+   - List all existing branches matching pattern `{MMM-DD-YYYY}-###` using: `git branch -a | grep -E '{MMM-DD-YYYY}-[0-9]{3}'`
+   - Extract the highest deployment number (###) for today's date
+   - If no branches exist for today, start with `001`
+   - If branches exist, increment the highest number by 1 (e.g., if `Jan-15-2024-003` exists, create `Jan-15-2024-004`)
+3. Create the new branch with format `{MMM-DD-YYYY}-{###}`:
+   - Example: `Jan-15-2024-001`, `Jan-15-2024-002`, etc.
+   - Use command: `git checkout -b {MMM-DD-YYYY}-{###}`
+4. Confirm branch creation and proceed with the deployment command
+
+**Commands that require branch check:**
+- "Deploy application" / "Deploy" (calls code-modifying commands)
+- "Move sensitive variables into secrets" (modifies code files)
+- "Dockerize application" / "Dockerize my application" (creates/modifies Dockerfile)
+
+**Commands that do NOT require branch check:**
+- "push changes to GitHub" (only commits/pushes, doesn't modify code)
+- "execute deployment action" (only triggers workflows, doesn't modify code)
+
+## Deploy Command
+When the user prompts with "Deploy application" or "Deploy", execute the following prompts in sequence:
+1. **Configure Authentication (optional)**:
+   - Ask the user: "Would you like to configure authentication for this deployment?"
+   - If the user answers "no" or declines: Skip to step 2
+   - If the user answers "yes":
+     - Inform the user: "If needed, you must go to https://dashboard.mckinsey.id/ to retrieve the required information from the McKinsey ID stack."
+     - Prompt the user for three pieces of information:
+       - McKinsey ID Client ID
+       - McKinsey ID Client Secret
+       - McKinsey ID Group Name (the group that should have access to the application)
+     - Once the user provides all three values:
+       1. Write the Client Secret to GitHub repository secrets:
+          - Use GitHub CLI: `gh secret set MID_CLIENT_SECRET --body "<client_secret_value>"`
+          - Verify the secret was set: `gh secret list | grep MID_CLIENT_SECRET`
+       2. Trigger the Cloudflare Access workflow:
+          - Find the workflow file: `.github/workflows/cz-dev-poc-poc-cloudflare-access-toolkit.yml`
+          - **Always use the current branch for the workflow run**
+          - Get the current branch name: `git rev-parse --abbrev-ref HEAD`
+          - Use GitHub CLI to trigger the workflow with the provided inputs:
+            - Command: `gh workflow run cz-dev-poc-poc-cloudflare-access-toolkit.yml --ref <current_branch> -f mid_client_id="<client_id>" -f mid_group_name="<group_name>"`
+            - Replace `<current_branch>` with the current branch name from `git rev-parse --abbrev-ref HEAD`
+            - Replace `<client_id>` with the McKinsey ID Client ID provided by the user
+            - Replace `<group_name>` with the McKinsey ID Group Name provided by the user
+          - Get the workflow run ID after triggering:
+            - Command: `gh run list --workflow=cz-dev-poc-poc-cloudflare-access-toolkit.yml --limit 1 --json databaseId --jq '.[0].databaseId'`
+            - Store the run ID for monitoring
+          - Wait for the workflow to complete:
+            - Command: `gh run watch <run-id>` (replace `<run-id>` with the actual run ID from previous step)
+            - Monitor until the workflow completes (success or failure)
+          - Verify the workflow completed successfully:
+            - Check the final status: `gh run view <run-id> --json conclusion --jq '.conclusion'`
+            - If conclusion is "success", proceed to step 2
+            - If conclusion is "failure" or "cancelled", report the error to the user and ask if they want to continue with deployment or fix the authentication issue first
+       3. After the workflow completes successfully, proceed to step 2
+2. **Check branch protection** (see "Branch Protection for Code-Modifying Commands" above)
+3. "Move sensitive variables into secrets"
+4. "Dockerize application"
+5. "push changes to GitHub"
+6. "execute deployment action"
+
+## Dockerize Application Command
+When the user prompts with "Dockerize my application" or "Dockerize application", first **check branch protection** (see "Branch Protection for Code-Modifying Commands" above), then create a production-ready Dockerfile for the application located at `deployer-apps/<instance>/src` following the best practices defined in `.cursor/rules/docker-best-practices.mdc`.
+
+The Dockerfile should:
+1. Use multi-stage builds (builder stage and production stage)
+2. Use pinned versions
+3. Run as non-root user (use the built-in 'node' user)
+4. Include HEALTHCHECK instruction per industry standards for the specific application type eg. Node or Python, or other
+5. Optimize layer caching by copying package files before source code
+6. Use BuildKit cache mounts for npm dependencies
+7. Clean up npm cache and unnecessary files
+8. Expose port 3000 (Next.js default)
+9. Use .dockerignore to exclude unnecessary files
+
+Create the Dockerfile at `deployer-apps/<instance>/src/Dockerfile` and also create a `.dockerignore` file in the same directory if it doesn't exist.
+
+The Dockerfile should follow this structure:
+- Builder stage: Install dependencies and build the Next.js application
+- Production stage: Copy only the standalone output and necessary files, run as non-root user
+
+## Move Sensitive Variables into Secrets Command
+When the user prompts with "Move sensitive variables into secrets", first **check branch protection** (see "Branch Protection for Code-Modifying Commands" above), then parameterize sensitive application variables such as API keys and other secrets as environment variables. Follow the helm templates in the directory `deployer-apps/<instance>/<env>-<region>/manifests/templates` to configure each sensitive variable into a kubernetes secret. Update the kubernetes deployment to load the secrets as individual environment variables into the podspec. Update the code to read that sensitive data from the environment variables in the code.
+
+**CRITICAL: Always use runtime configuration injection instead of build-time variables for frontend applications.** Build-time environment variables are embedded into the application bundle, making secrets visible in client-side code. Runtime configuration injection fetches configuration from the backend API at runtime, keeping secrets secure.
+
+Specifically:
+1. Search the codebase for hardcoded sensitive values (API keys, secrets, passwords, tokens, etc.)
+   - Look for patterns like: `const VARIABLE_NAME = 'hardcoded-value'`, `API_KEY = "..."`, `SECRET = '...'`, etc.
+   - Check both frontend (TypeScript/JavaScript) and backend (Python/Node.js) code
+2. Update application code where appropriate based on the type of application to read these values from environment variables:
+   - **For Backend (Python/Node.js)**: Use `os.getenv('VARIABLE_NAME')` or `process.env.VARIABLE_NAME` to read from environment variables at runtime
+   - **For Frontend (React/Vite/Next.js)**: **ALWAYS use runtime configuration injection** instead of build-time variables:
+     - Use `import.meta.env.VITE_*` or `process.env.NEXT_PUBLIC_*` for most cases
+   - **Never use build-time environment variables for secrets in frontend code** 
+3. Update the deployment.yaml in manifests/templates to load each sensitive variable from the lrah-secret-generic Kubernetes secret using secretKeyRef:
+   ```yaml
+   env:
+     - name: VARIABLE_NAME
+       valueFrom:
+         secretKeyRef:
+           name: lrah-secret-generic
+           key: VARIABLE_NAME
+   ```
+4. Configure ExternalSecret in values.yaml to sync secrets from Vault:
+   - Use GitHub CLI to read Vault configuration from the remote GitHub repository:
+     - Check if GitHub CLI (`gh`) is installed and authenticated: `gh auth status`
+     - Get the repository information: `gh repo view --json nameWithOwner`
+     - Read environment variables from GitHub repository settings using `gh variable list --env <environment-name>`
+     - Look for the environment name matching the deployment (e.g., `<instance>-<env>-<region>`)
+     - Extract Vault configuration variables: `VAULT_BACKEND_INSTANCE_ID`, `VAULT_MOUNT_PATH`, `VAULT_ADDR`, `VAULT_GHA_AUTH_ROLE`
+     - Alternatively, extract from GitHub Actions workflow files (`.github/workflows/*-lrah-deploy-all.yml` or similar) to identify the environment name
+   - Determine the secretStoreName and secretPath:
+     - Get `secretStoreName` from the `VAULT_MOUNT_PATH` environment variable:
+       - Extract the last part of the `VAULT_MOUNT_PATH` path (e.g., if `VAULT_MOUNT_PATH` is `kvv2/22391/czdevpoc`, then `secretStoreName` is `czdevpoc`)
+       - Use string manipulation to get the last segment after the final `/` character
+     - Read from `deployer-apps/<app-name>/<env>-<region>/manifests/values.yaml`:
+       - Get the namespace ID from the label `app.kubernetes.io/lrah-user-evironment-id` (e.g., `cz-dev-poc-5a8bb`)
+     - The `secretPath` format is: `deployer-k8s-paas/{APPLICATION_NAMESPACE_ID}/app-secrets`
+       - Example: `deployer-k8s-paas/cz-dev-poc-5a8bb/app-secrets`
+   - Update values.yaml vaultSecrets section:
+     ```yaml
+     vaultSecrets:
+       - name: lrah-secret-generic
+         secretStoreName: czdevpoc  # Last part of VAULT_MOUNT_PATH (e.g., if VAULT_MOUNT_PATH is "kvv2/22391/czdevpoc", use "czdevpoc")
+         refreshInterval: "1h"
+         secretPath: "deployer-k8s-paas/<instance-name>/app-secrets"
+         secretKey:
+           - VARIABLE_NAME_1
+           - VARIABLE_NAME_2
+     ```
+5. Use GitHub Actions workflow to write the secret values to Vault:
+   - Determine the application name and environment:
+     - List directories under `deployer-apps/` to get available application names
+     - For each application, list subdirectories to find available environments (format: `<env>-<region>`, e.g., `dev-us-east-1`)
+     - If only one application and one environment combination exists, automatically use that combination
+     - If multiple combinations exist, prompt the user to select:
+       - Application name (from `deployer-apps/` directory names)
+       - Environment (from subdirectories under the selected application, format: `<env>-<region>`)
+     - The GitHub environment parameter format is: `{app-name}-{env}-{region}` (e.g., `cursor-pm-dev-us-east-1`)
+   - Get the application namespace ID:
+     - Read from `deployer-apps/<app-name>/<env>-<region>/manifests/values.yaml`:
+       - Look for the label `app.kubernetes.io/lrah-user-evironment-id` to get the namespace ID
+       - Alternatively, use GitHub CLI to read variables: `gh variable list --env <environment-name> --json name,value`
+       - Look for a variable that contains the namespace ID (may be in `KUBERNETES_NAMESPACE_NAME` or similar)
+   - Construct the Vault path:
+     - Format: `kvv2/22391/{APPLICATION_NAME}/deployer-k8s-paas/{APPLICATION_NAMESPACE_ID}/app-secrets`
+     - Example: `kvv2/22391/cursorpm/deployer-k8s-paas/cursor-pm-0f231/app-secrets`
+     - To determine `APPLICATION_NAME`:
+       - Check `deployer-apps/<app-name>/<env>-<region>/manifests/values.yaml` for the `vaultSecrets.secretPath` value
+       - Extract the application name from the path (e.g., if `secretPath` is `kvv2/22391/cursorpm`, then `APPLICATION_NAME` is `cursorpm`)
+       - Alternatively, use the directory name under `deployer-apps/` and transform it if needed (remove hyphens, convert to lowercase, etc.) based on existing patterns
+   - Before writing any data to vault, provide the details in the chat and prompt for confirmation for each secret individually:
+     - Display: Secret path, Secret key, Current value (from code), and ask for confirmation
+   - Prepare secrets as JSON object:
+     - Format all secret key-value pairs as a JSON object: `{"KEY1": "value1", "KEY2": "value2"}`
+     - The secrets will be written to the Vault path ending with `/app-secrets`, and all key-value pairs in the JSON will be stored at that path
+   - Trigger the GitHub Actions workflow:
+     - Use GitHub CLI: `gh workflow run write-vault-secrets.yaml`
+     - Pass the required inputs:
+       - `vault_path`: The constructed Vault path (e.g., `kvv2/22391/cursorpm/deployer-k8s-paas/cursor-pm-0f231/app-secrets`)
+       - `secrets_json`: The JSON object with all key-value pairs (e.g., `'{"KEY1": "value1", "KEY2": "value2"}'`)
+       - `environment`: The GitHub environment name (e.g., `cz-dev-poc-dev-us-east-1`)
+     - Example command:
+       ```bash
+       gh workflow run write-vault-secrets.yaml \
+         -f vault_path="kvv2/22391/cursorpm/deployer-k8s-paas/cursor-pm-0f231/app-secrets" \
+         -f secrets_json='{"AI_GATEWAY_INSTANCE_ID": "value1", "AI_GATEWAY_API_KEY": "value2"}' \
+         -f environment="cz-dev-poc-dev-us-east-1"
+       ```
+   - Monitor the workflow run to ensure it completes successfully:
+     - Use `gh run watch` to monitor the workflow execution
+     - Verify the workflow completes without errors
+6. Ensure all sensitive variables follow the pattern: Vault → ExternalSecret → Kubernetes secret → environment variable → accessible in code
+
+## Push Changes to GitHub Command
+When the user prompts with "push changes to github" or "push changes to GitHub", commit all changes using commitizen conventions, and push to the remote repository under the current branch.
+
+The workflow should:
+1. Use the current branch
+2. Stage all changes using `git add .`
+3. Commit using commitizen conventions with a conventional commit message format:
+   - Use `git commit` with a message following the format: `<type>(<scope>): <subject>`
+   - Common types: feat, fix, docs, style, refactor, test, chore, perf, ci, build
+   - If commitizen is available, use `git cz` or `npx cz` for interactive commit
+   - Otherwise, create a conventional commit message based on the changes made
+   - Include a body and footer if needed (BREAKING CHANGE, closes #issue)
+4. Push to the remote repository using `git push`
+
+Example commit message format:
+- `feat: add new feature`
+- `fix: resolve bug in deployment`
+- `docs: update README`
+- `refactor: restructure configuration files`
+- `chore: update dependencies`
+
+## Execute Deployment Action Command
+When the user prompts with "execute deployment action", use GitHub CLI to authenticate to the current remote repository and execute two GitHub Actions workflows sequentially using the current branch. The second workflow should only run after the first one completes successfully.
+
+The workflow should:
+1. Check if GitHub CLI (`gh`) is installed and authenticated
+2. Get the current repository information from the git remote
+3. Authenticate to GitHub using `gh auth status` (or prompt for authentication if needed)
+4. Find the workflows by pattern matching:
+   - First workflow: Find workflow file matching pattern `*-docker-build-and-publish.yml` in `.github/workflows/` directory
+   - Second workflow: Find workflow file matching pattern `*-lrah-deploy-all.yml` in `.github/workflows/` directory
+5. Trigger the first workflow using `gh workflow run` command:
+   - Use the workflow file found matching `*-docker-build-and-publish.yml` pattern
+   - **Always use the current branch for the workflow run**
+7. Wait for the first workflow to complete successfully by monitoring its status
+8. After the first workflow completes successfully, trigger the second workflow:
+   - Use the workflow file found matching `*-lrah-deploy-all.yml` pattern
+   - **Always use the current branch for the workflow run**
+   - Pass the required input parameter: `prune_resources` with default value `'no'`
+9. Monitor the second workflow run status using `gh run watch` and report the result
+
+Example commands:
+- `gh auth status` - Check authentication status
+- `gh auth login` - Authenticate if needed
+- `ls .github/workflows/*-docker-build-and-publish.yml` - Find the first workflow file
+- `ls .github/workflows/*-lrah-deploy-all.yml` - Find the second workflow file
+- `gh workflow run <workflow-name> --ref [CURRENT BRANCH NAME]]` - Trigger a workflow on current branch
+- `gh run watch <run-id>` - Monitor a specific workflow run until completion
+- `gh run list --workflow=<workflow-name> --limit 1` - Get the latest workflow run ID
+- `gh workflow run <workflow-name> --ref [CURRENT BRANCH NAME] -f prune_resources=no` - Trigger the second workflow with input on current branch
