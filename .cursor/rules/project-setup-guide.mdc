@@ -53,17 +53,24 @@ Use AskQuestion:
 
 ### Step 2: Description
 
-**First, open the inspiration gallery:**
+**Show the inspiration examples directly in chat (no external tools needed):**
 
-```bash
-open deployer-apps/citizen-dev7/src/ui/public/inspiration.html
-```
+Present the app ideas visually in the chat itself - this works for everyone regardless of what's installed:
 
-This shows visual examples of apps they can build to spark ideas.
+"**Here are some examples of apps you can build:**
 
-Then ask in chat:
+| App Type | Description |
+|----------|-------------|
+| **Project Dashboard** | Track project status, milestones, and team progress with charts and metrics |
+| **Client Portal** | Give clients a place to view deliverables, track progress, and communicate |
+| **Feedback Collector** | Gather workshop feedback, survey responses, or customer reviews |
+| **Data Explorer** | Filter, sort, and analyze data with an interactive table and export to Excel |
+| **AI Assistant** | A chatbot that answers questions about your products, services, or documents |
+| **Request Tracker** | Submit and track requests, approvals, or tickets with status updates |
+| **Team Directory** | A searchable directory of team members with photos, roles, and contact info |
+| **File Sharing** | Upload and share documents with your team or clients securely |
 
-"**I've opened an inspiration gallery in your browser** with examples of what you can build.
+**Or describe your own idea!**
 
 Describe your app in a sentence or two - what should it do? Who will use it?
 
