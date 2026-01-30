@@ -128,7 +128,43 @@ Adjust based on purpose:
 - Simpler initial state
 - Encourage experimentation
 
-### 4. Start the App
+### 4. Build Plan (Plan Mode)
+
+**BEFORE writing any code**, switch to Plan Mode to create an implementation plan:
+
+1. **Switch to Plan Mode** using the SwitchMode tool with target_mode_id: "plan"
+2. **Explain to user**: "Before I start building, let me create a plan so you can review what I'm going to create."
+
+The plan should include:
+
+**Architecture Overview:**
+- List of components to create
+- How they connect together
+- Data flow between components
+
+**Files to Create/Modify:**
+- New component files with descriptions
+- Existing files that need updates
+- Configuration changes
+
+**Implementation Order:**
+- Which files to create first (dependencies)
+- Logical build sequence
+- Checkpoints for user review
+
+**Sample Data Strategy:**
+- What sample data will be generated
+- How it relates to their app description
+- Realistic names, dates, values to use
+
+**Styling Approach:**
+- Color scheme based on inspiration
+- Layout structure (sidebar vs top-nav)
+- Component styling patterns
+
+After presenting the plan, ask the user to confirm before proceeding. Once confirmed, switch back to Agent mode and begin implementation.
+
+### 5. Start the App
 
 After customization:
 
@@ -149,7 +185,7 @@ cd deployer-apps/citizen-dev7/src/ui
 npm install && npm run dev
 ```
 
-### 5. Provide Next Steps
+### 6. Provide Next Steps
 
 After app is running, provide tailored guidance:
 
@@ -178,25 +214,31 @@ deployer-apps/citizen-dev7/src/
 
 ## Critical Instructions
 
-1. **WRITE CODE IMMEDIATELY** - After collecting user inputs, immediately start creating/editing files:
+1. **PLAN FIRST** - After collecting user inputs, switch to Plan Mode before writing any code:
+   - Use SwitchMode tool with target_mode_id: "plan"
+   - Present a clear implementation plan
+   - Wait for user confirmation before building
+   - This gives users visibility into what will be created
+
+2. **WRITE CODE AFTER PLAN APPROVAL** - Once user confirms the plan, create/edit files:
    - Use the Write tool to create new component files
    - Use the StrReplace tool to modify existing files
    - DO NOT just describe what files should contain - actually write them!
 
-2. **SHOW PROGRESS** - As you create each file, tell the user:
+3. **SHOW PROGRESS** - As you create each file, tell the user:
    - "✓ Created Dashboard.tsx with sample charts"
    - "✓ Updated App.tsx with navigation"
    - "✓ Applied blue color scheme"
 
-3. **BUILD BEFORE RUNNING** - All code changes must happen BEFORE starting Docker/dev server
+4. **BUILD BEFORE RUNNING** - All code changes must happen BEFORE starting Docker/dev server
 
-4. **USE TEMPLATES** - Reference code-templates/ for component patterns
+5. **USE TEMPLATES** - Reference code-templates/ for component patterns
 
-5. **FOLLOW STYLE GUIDE** - Use patterns from ui/STYLE_GUIDE.md if it exists
+6. **FOLLOW STYLE GUIDE** - Use patterns from ui/STYLE_GUIDE.md if it exists
 
-6. **GENERATE REALISTIC CONTENT** - Sample data should match their app description:
+7. **GENERATE REALISTIC CONTENT** - Sample data should match their app description:
    - If they said "project tracking" → use project names, dates, statuses
    - If they said "customer feedback" → use feedback entries, ratings
    - Never use "Lorem ipsum" or generic placeholders
 
-7. **COMMIT PROGRESS** - Suggest user run `/commit` after major milestones
+8. **COMMIT PROGRESS** - Suggest user run `/commit` after major milestones
