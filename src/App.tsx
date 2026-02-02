@@ -112,28 +112,32 @@ function App() {
     };
   }, []);
   
-  // Display Hub - landing page for AV teams
-  if (route === 'display-hub') {
-    return <DisplayHub />;
-  }
-  
-  // Big screen scoreboard display
-  if (route === 'display-scoreboard') {
-    return <ScoreboardDisplay />;
-  }
-  
-  // Big screen round display - shows macro environment
-  if (route === 'display-round') {
+  // Display routes - all protected by access code
+  if (route === 'display-hub' || route === 'display-scoreboard' || route === 'display-round') {
+    let displayContent: React.ReactNode;
+    
+    if (route === 'display-hub') {
+      displayContent = <DisplayHub />;
+    } else if (route === 'display-scoreboard') {
+      displayContent = <ScoreboardDisplay />;
+    } else {
+      displayContent = (
+        <MacroEnvironmentDisplay
+          round={displayRound}
+          showNavigation={true}
+          onRoundChange={(r) => {
+            setDisplayRound(r);
+            // Update URL to match
+            window.history.pushState({}, '', `/display/${r}`);
+          }}
+        />
+      );
+    }
+    
     return (
-      <MacroEnvironmentDisplay
-        round={displayRound}
-        showNavigation={true}
-        onRoundChange={(r) => {
-          setDisplayRound(r);
-          // Update URL to match
-          window.history.pushState({}, '', `/display/${r}`);
-        }}
-      />
+      <AccessGate accessCode={ACCESS_CODE}>
+        {displayContent}
+      </AccessGate>
     );
   }
   

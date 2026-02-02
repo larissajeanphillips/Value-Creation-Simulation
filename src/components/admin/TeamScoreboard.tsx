@@ -210,6 +210,8 @@ export const TeamScoreboard: React.FC<TeamScoreboardProps> = ({ onBack }) => {
                     stroke="#64748b"
                     tick={{ fill: '#94a3b8', fontSize: 12 }}
                     tickFormatter={(value) => ROUND_LABELS[value] || `R${value}`}
+                    ticks={[1, 2, 3, 4, 5]}
+                    domain={[1, 5]}
                   />
                   <YAxis
                     stroke="#64748b"
@@ -328,33 +330,34 @@ const TeamRow: React.FC<TeamRowProps> = ({ team, rank, color }) => {
 
 /**
  * Build chart data from team stock prices
- * Creates an array with one entry per round, each containing all team prices
+ * Creates an array with entries for ALL 5 rounds (FY26-FY30),
+ * with data points only for completed rounds
  */
 function buildChartData(
   teams: ScoreboardTeam[],
   currentRound: number
-): Array<Record<string, number | string>> {
+): Array<Record<string, number | string | undefined>> {
   if (teams.length === 0) return [];
   
-  const data: Array<Record<string, number | string>> = [];
+  const data: Array<Record<string, number | string | undefined>> = [];
+  const totalRounds = 5; // Always show all 5 years
   
-  // Build data for each completed round
-  for (let round = 1; round <= currentRound; round++) {
-    const roundData: Record<string, number | string> = { round };
+  // Build data for ALL rounds (FY26-FY30)
+  for (let round = 1; round <= totalRounds; round++) {
+    const roundData: Record<string, number | string | undefined> = { round };
     
-    let hasAnyData = false;
-    for (const team of teams) {
-      const price = team.stockPricesByRound[round];
-      if (price !== undefined) {
-        roundData[team.teamName] = price;
-        hasAnyData = true;
+    // Only populate team prices for completed rounds
+    if (round <= currentRound) {
+      for (const team of teams) {
+        const price = team.stockPricesByRound[round];
+        if (price !== undefined) {
+          roundData[team.teamName] = price;
+        }
       }
     }
+    // Future rounds will have undefined values (no data points plotted)
     
-    // Only add round if at least one team has data
-    if (hasAnyData) {
-      data.push(roundData);
-    }
+    data.push(roundData);
   }
   
   return data;
