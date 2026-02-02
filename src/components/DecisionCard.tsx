@@ -148,7 +148,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         {/* Cost */}
         <div className="flex items-center gap-1.5 mb-3">
           <DollarSign className="w-5 h-5 text-slate-700" />
-          <span className="text-xl font-bold text-slate-800">${decision.cost}M</span>
+          <span className="text-xl font-bold text-slate-800">{decision.cost}M</span>
         </div>
         
         {/* Brief Description */}
@@ -262,7 +262,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
               <DollarSign className="w-6 h-6 text-slate-700" />
-              <span className="text-3xl font-bold text-slate-800">${decision.cost}M</span>
+              <span className="text-3xl font-bold text-slate-800">{decision.cost}M</span>
             </div>
             
             {decision.isRisky && (
