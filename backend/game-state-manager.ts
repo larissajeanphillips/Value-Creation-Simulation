@@ -896,13 +896,14 @@ export class GameStateManager {
     // Generate market outlook based on first claimed team's metrics
     const marketOutlook = this.generateMarketOutlookForRound();
 
-    // Store the round results for retrieval
+    // Store the round results for retrieval (include round histories for chart)
     this.lastRoundResults = generateRoundResults(
       this.state.teams,
       this.state.currentRound,
       this.state.scenario.narrative,
       this.state.riskyEvents,
-      marketOutlook
+      marketOutlook,
+      this.roundHistories
     );
 
     this.broadcastStateChange();

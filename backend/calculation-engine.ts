@@ -491,25 +491,41 @@ export function generateRoundResults(
   round: RoundNumber,
   scenarioNarrative: string,
   riskyEvents: RiskyEventState,
-  marketOutlook: MarketOutlook
+  marketOutlook: MarketOutlook,
+  roundHistories: Record<number, TeamRoundSnapshot[]> = {}
 ): RoundResults {
   const claimedTeams = Object.values(teams).filter(t => t.isClaimed);
   const sorted = rankTeamsByTSR(claimedTeams);
   
-  const teamResults: TeamRoundResult[] = sorted.map((team, index) => ({
-    teamId: team.teamId,
-    stockPrice: team.stockPrice,
-    stockPriceChange: team.stockPrice - (team.metrics.beginningCash > 0 ? 
-      BASELINE_FINANCIALS.sharePrice : team.stockPrice),
-    roundTSR: team.roundTSR,
-    cumulativeTSR: team.cumulativeTSR,
-    rank: index + 1,
-    decisionsCount: team.currentRoundDecisions.length,
-    totalSpent: team.currentRoundDecisions.reduce((sum, d) => {
-      const dec = getDecisionById(d.decisionId);
-      return sum + (dec?.cost || 0);
-    }, 0),
-  }));
+  const teamResults: TeamRoundResult[] = sorted.map((team, index) => {
+    // Build stock price history from round histories
+    const history = roundHistories[team.teamId] || [];
+    const stockPricesByRound: Record<number, number> = {};
+    
+    // Add historical prices from completed rounds
+    for (const snapshot of history) {
+      stockPricesByRound[snapshot.round] = snapshot.stockPrice;
+    }
+    
+    // Add current round's price
+    stockPricesByRound[round] = team.stockPrice;
+    
+    return {
+      teamId: team.teamId,
+      stockPrice: team.stockPrice,
+      stockPriceChange: team.stockPrice - (team.metrics.beginningCash > 0 ? 
+        BASELINE_FINANCIALS.sharePrice : team.stockPrice),
+      roundTSR: team.roundTSR,
+      cumulativeTSR: team.cumulativeTSR,
+      rank: index + 1,
+      decisionsCount: team.currentRoundDecisions.length,
+      totalSpent: team.currentRoundDecisions.reduce((sum, d) => {
+        const dec = getDecisionById(d.decisionId);
+        return sum + (dec?.cost || 0);
+      }, 0),
+      stockPricesByRound,
+    };
+  });
   
   // Generate risky outcomes summary
   const riskyOutcomes: RoundResults['riskyOutcomes'] = [];

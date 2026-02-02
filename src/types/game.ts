@@ -476,6 +476,8 @@ export interface TeamRoundResult {
   rank: number;
   decisionsCount: number;
   totalSpent: number;
+  /** Historical stock prices by round (for chart display) */
+  stockPricesByRound: Record<number, number>;
 }
 
 /**
