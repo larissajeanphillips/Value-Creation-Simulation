@@ -49,61 +49,67 @@ const ACCESS_CODE = 'magna2026';
 
 type Route = 'demo-player' | 'demo-admin' | 'live-team' | 'live-admin' | 'display-hub' | 'display-round' | 'display-scoreboard';
 
-function App() {
-  // Default to demo player mode so each visitor gets their own isolated game
-  const [route, setRoute] = useState<Route>('demo-player');
-  const [displayRound, setDisplayRound] = useState<number>(1);
+/**
+ * Determines the route based on current URL
+ * Called both for initial render and URL changes
+ */
+function getRouteFromURL(): { route: Route; displayRound: number } {
+  const path = window.location.pathname;
+  const hash = window.location.hash;
+  const fullPath = path + hash;
   
-  // Handle routing based on URL
+  // /display/scoreboard - Big screen live scoreboard
+  if (fullPath.includes('/display/scoreboard') || fullPath.includes('#display/scoreboard')) {
+    return { route: 'display-scoreboard', displayRound: 1 };
+  }
+  
+  // /display/1-5 - Big screen round macro environment display
+  const roundMatch = fullPath.match(/display\/(\d)/);
+  if (roundMatch) {
+    const roundNum = parseInt(roundMatch[1], 10);
+    if (roundNum >= 1 && roundNum <= 5) {
+      return { route: 'display-round', displayRound: roundNum };
+    }
+  }
+  
+  // /display - Display hub (landing page for AV teams)
+  if (path === '/display' || path === '/display/' || hash === '#display' || hash.startsWith('#display')) {
+    return { route: 'display-hub', displayRound: 1 };
+  }
+  
+  // /admin or #admin - Admin demo mode
+  if (path === '/admin' || hash === '#admin') {
+    return { route: 'demo-admin', displayRound: 1 };
+  }
+  
+  // /live-admin - Live admin mode (requires backend)
+  if (path === '/live-admin' || hash === '#live-admin') {
+    return { route: 'live-admin', displayRound: 1 };
+  }
+  
+  // /live - Live multiplayer mode (requires backend)
+  if (path === '/live' || hash === '#live') {
+    return { route: 'live-team', displayRound: 1 };
+  }
+  
+  // Everything else defaults to player demo mode
+  return { route: 'demo-player', displayRound: 1 };
+}
+
+function App() {
+  // Initialize route from URL synchronously to avoid flash of wrong content
+  const initialRoute = getRouteFromURL();
+  const [route, setRoute] = useState<Route>(initialRoute.route);
+  const [displayRound, setDisplayRound] = useState<number>(initialRoute.displayRound);
+  
+  // Handle URL changes (back/forward navigation)
   useEffect(() => {
     const handleRouteChange = () => {
-      const path = window.location.pathname;
-      const hash = window.location.hash;
-      const fullPath = path + hash;
-      
-      // /display/scoreboard - Big screen live scoreboard
-      if (fullPath.includes('/display/scoreboard') || fullPath.includes('#display/scoreboard')) {
-        setRoute('display-scoreboard');
-        return;
-      }
-      
-      // /display/1-5 - Big screen round macro environment display
-      const roundMatch = fullPath.match(/display\/(\d)/);
-      if (roundMatch) {
-        const roundNum = parseInt(roundMatch[1], 10);
-        if (roundNum >= 1 && roundNum <= 5) {
-          setDisplayRound(roundNum);
-          setRoute('display-round');
-          return;
-        }
-      }
-      
-      // /display - Display hub (landing page for AV teams)
-      // Match /display or /display/ (but not /display/something which would have been caught above)
-      if (path === '/display' || path === '/display/' || hash === '#display' || hash.startsWith('#display')) {
-        setRoute('display-hub');
-        return;
-      }
-      
-      // /admin or #admin - Admin demo mode (each visitor gets fresh admin view)
-      if (path === '/admin' || hash === '#admin') {
-        setRoute('demo-admin');
-      }
-      // /live-admin - Live admin mode (requires backend)
-      else if (path === '/live-admin' || hash === '#live-admin') {
-        setRoute('live-admin');
-      }
-      // /live - Live multiplayer mode (requires backend)
-      else if (path === '/live' || hash === '#live') {
-        setRoute('live-team');
-      }
-      // Everything else defaults to player demo mode
-      else {
-        setRoute('demo-player');
-      }
+      const newRoute = getRouteFromURL();
+      setRoute(newRoute.route);
+      setDisplayRound(newRoute.displayRound);
     };
     
-    handleRouteChange();
     window.addEventListener('popstate', handleRouteChange);
     window.addEventListener('hashchange', handleRouteChange);
     
