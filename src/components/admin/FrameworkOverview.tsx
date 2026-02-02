@@ -106,48 +106,84 @@ const KPI_SCORECARD = [
 const SCENARIOS = [
   {
     round: 1,
-    year: 2026,
+    year: 'FY26',
     name: 'Business as Usual',
-    description: 'Stable market, technology evolution underway',
+    narrative: 'The automotive market remains stable with moderate growth expectations. OEMs are investing in next-generation platforms while maintaining current production volumes. Supply chains have stabilized post-pandemic.',
+    keyDetails: [
+      'Steady demand across traditional and EV segments',
+      'Normal competitive dynamics',
+      'Standard capital allocation decisions',
+    ],
     smartResponse: 'Balance growth & optimization; build foundation',
     trap: 'Over-investing in risky growth bets too early',
     multipliers: { grow: 1.0, optimize: 1.0, sustain: 1.0 },
+    color: 'emerald',
   },
   {
     round: 2,
-    year: 2027,
+    year: 'FY27',
     name: 'Business as Usual',
-    description: 'Continued stability; investments ramping',
+    narrative: 'Market conditions remain favorable with continued investment in electrification and advanced technologies.',
+    keyDetails: [
+      'EV transition accelerating as planned',
+      'Healthy OEM order books',
+    ],
     smartResponse: 'Execute on strategy; diversify OEM exposure',
     trap: 'Concentrating on single OEM relationships (BAIT CARD!)',
     multipliers: { grow: 1.0, optimize: 1.0, sustain: 1.0 },
+    color: 'emerald',
   },
   {
     round: 3,
-    year: 2028,
-    name: 'Cost Pressure',
-    description: 'Raw materials ↑, labor ↑, OEM pushback; OEM program cancellation hits',
+    year: 'FY28',
+    name: 'Cost Pressures',
+    narrative: 'Rising input costs and supply chain volatility are putting pressure on margins. Raw material prices have increased significantly, and labor costs are rising across key manufacturing regions.',
+    keyDetails: [
+      'Commodity prices up 15-20%',
+      'OEMs demanding price reductions',
+      'Wage inflation in key markets',
+      'Energy costs impacting operations',
+      'Focus on operational excellence',
+    ],
     smartResponse: 'Pivot to Optimize decisions; preserve cash',
     trap: 'Doubling down on Grow (penalized at 0.7x!)',
     multipliers: { grow: 0.7, optimize: 1.2, sustain: 1.0 },
+    color: 'amber',
   },
   {
     round: 4,
-    year: 2029,
+    year: 'FY29',
     name: 'Recession',
-    description: 'Auto sales ↓↓, cash is king',
+    narrative: 'A global economic recession has significantly reduced vehicle demand. OEMs are cutting production volumes and delaying new program launches. Consumer confidence is at multi-year lows.',
+    keyDetails: [
+      'Vehicle sales down 20-25%',
+      'OEM program cancellations',
+      'Customers in-sourcing to fill capacity',
+      'Smaller suppliers at risk of bankruptcy',
+      'Credit markets tightening',
+      'Restructuring announcements across the industry',
+    ],
     smartResponse: 'Sustain investments; opportunistic M&A if cash available',
     trap: 'Aggressive expansion (penalized at 0.5x!)',
     multipliers: { grow: 0.5, optimize: 1.0, sustain: 1.5 },
+    color: 'red',
   },
   {
     round: 5,
-    year: 2030,
+    year: 'FY30',
     name: 'Recovery',
-    description: 'Market rebounds, optimism returns',
+    narrative: 'The economy is recovering and automotive demand is rebounding. OEMs are ramping up production and launching delayed programs. Companies with strong balance sheets are well-positioned to capture growth.',
+    keyDetails: [
+      'Pent-up demand driving sales recovery',
+      'New program launches resuming',
+      'M&A opportunities emerging',
+      'Technology investments paying off',
+      'Strong performers gaining market share',
+    ],
     smartResponse: 'Grow investments rewarded (1.3x); ride the wave',
     trap: 'Over-defensive play; excessive Sustain (0.8x)',
     multipliers: { grow: 1.3, optimize: 1.0, sustain: 0.8 },
+    color: 'blue',
   },
 ];
 
@@ -505,85 +541,153 @@ const KPIsView: React.FC = () => {
 // SCENARIOS VIEW
 // =============================================================================
 
+const scenarioColorClasses: Record<string, { bg: string; border: string; badge: string }> = {
+  emerald: { 
+    bg: 'bg-emerald-500/10', 
+    border: 'border-emerald-500/30',
+    badge: 'bg-emerald-500',
+  },
+  amber: { 
+    bg: 'bg-amber-500/10', 
+    border: 'border-amber-500/30',
+    badge: 'bg-amber-500',
+  },
+  red: { 
+    bg: 'bg-red-500/10', 
+    border: 'border-red-500/30',
+    badge: 'bg-red-500',
+  },
+  blue: { 
+    bg: 'bg-blue-500/10', 
+    border: 'border-blue-500/30',
+    badge: 'bg-blue-500',
+  },
+};
+
 const ScenariosView: React.FC = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold text-white mb-2">Macro Dynamics</h2>
-      <p className="text-magna-gray mb-8">Round-by-round scenarios and the strategic responses they reward or punish.</p>
+      <h2 className="text-3xl font-bold text-white mb-2">Macro Dynamics & Round Details</h2>
+      <p className="text-magna-gray mb-8">Round-by-round scenarios, market conditions, and the strategic responses they reward or punish.</p>
 
       {/* Timeline */}
-      <div className="space-y-4">
-        {SCENARIOS.map((scenario) => (
-          <div
-            key={scenario.round}
-            className="bg-magna-dark border border-white/10 rounded-2xl p-6"
-          >
-            <div className="flex items-start gap-6">
-              {/* Round Badge */}
-              <div className="flex-shrink-0">
-                <div className="w-16 h-16 bg-magna-red rounded-2xl flex flex-col items-center justify-center">
-                  <span className="text-2xl font-bold text-white">{scenario.round}</span>
-                  <span className="text-xs text-white/80">{scenario.year}</span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="text-xl font-bold text-white">{scenario.name}</h3>
-                  {scenario.round === 3 && (
-                    <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
-                      OEM CANCELLATION
-                    </span>
-                  )}
-                </div>
-                <p className="text-magna-gray mb-4">{scenario.description}</p>
-
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
-                    <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold mb-1">
-                      <CheckCircle2 className="w-4 h-4" /> Smart Response
-                    </div>
-                    <p className="text-white">{scenario.smartResponse}</p>
+      <div className="space-y-6">
+        {SCENARIOS.map((scenario) => {
+          const colors = scenarioColorClasses[scenario.color] || scenarioColorClasses.emerald;
+          return (
+            <div
+              key={scenario.round}
+              className={cn("bg-magna-dark border rounded-2xl overflow-hidden", colors.border)}
+            >
+              {/* Header */}
+              <div className={cn("px-6 py-4 flex items-center justify-between", colors.bg)}>
+                <div className="flex items-center gap-4">
+                  <div className={cn("w-12 h-12 rounded-xl flex flex-col items-center justify-center", colors.badge)}>
+                    <span className="text-lg font-bold text-white">{scenario.round}</span>
                   </div>
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-                    <div className="flex items-center gap-2 text-red-400 text-sm font-semibold mb-1">
-                      <XCircle className="w-4 h-4" /> Trap to Avoid
-                    </div>
-                    <p className="text-white">{scenario.trap}</p>
+                  <div>
+                    <div className="text-white/60 text-sm">{scenario.year}</div>
+                    <h3 className="text-xl font-bold text-white">{scenario.name}</h3>
                   </div>
                 </div>
-
-                {/* Multipliers */}
-                <div className="flex gap-3">
+                {scenario.round === 3 && (
+                  <span className="px-3 py-1 bg-amber-500/20 text-amber-400 text-sm rounded-full font-medium">
+                    OEM CANCELLATION EVENT
+                  </span>
+                )}
+                {/* Multipliers in header */}
+                <div className="flex gap-2">
                   <MultiplierBadge label="Grow" value={scenario.multipliers.grow} />
                   <MultiplierBadge label="Optimize" value={scenario.multipliers.optimize} />
                   <MultiplierBadge label="Sustain" value={scenario.multipliers.sustain} />
                 </div>
               </div>
+
+              {/* Content */}
+              <div className="p-6">
+                {/* Narrative & Key Details */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <h4 className="text-sm font-semibold text-magna-gray uppercase tracking-wide mb-3">
+                      Market Narrative
+                    </h4>
+                    <p className="text-white leading-relaxed">{scenario.narrative}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-magna-gray uppercase tracking-wide mb-3">
+                      Key Details
+                    </h4>
+                    <ul className="space-y-2">
+                      {scenario.keyDetails.map((detail, i) => (
+                        <li key={i} className="flex items-start gap-2 text-white">
+                          <span className={cn("w-2 h-2 rounded-full mt-2 flex-shrink-0", colors.badge)} />
+                          {detail}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Strategic Guidance */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold mb-2">
+                      <CheckCircle2 className="w-4 h-4" /> Smart Response
+                    </div>
+                    <p className="text-white">{scenario.smartResponse}</p>
+                  </div>
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-red-400 text-sm font-semibold mb-2">
+                      <XCircle className="w-4 h-4" /> Trap to Avoid
+                    </div>
+                    <p className="text-white">{scenario.trap}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Multiplier Legend */}
       <div className="mt-8 bg-black/30 border border-white/10 rounded-2xl p-6">
         <h4 className="text-sm font-semibold text-magna-gray uppercase tracking-wide mb-4">
-          Multiplier Impact
+          Multiplier Impact on Returns
         </h4>
         <div className="flex gap-6 text-sm">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 bg-emerald-500 rounded-full" />
-            <span className="text-white">&gt;1.0x = Outperforms</span>
+            <span className="text-white">&gt;1.0x = Strategy outperforms</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 bg-magna-gray rounded-full" />
-            <span className="text-white">1.0x = Normal</span>
+            <span className="text-white">1.0x = Normal returns</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 bg-red-500 rounded-full" />
-            <span className="text-white">&lt;1.0x = Underperforms</span>
+            <span className="text-white">&lt;1.0x = Strategy underperforms</span>
           </div>
+        </div>
+      </div>
+
+      {/* Quick Reference Link */}
+      <div className="mt-6 bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Calendar className="w-5 h-5 text-purple-400" />
+            <div>
+              <div className="text-white font-medium">Big Screen Display Available</div>
+              <div className="text-purple-300 text-sm">Show round details on the conference room screen</div>
+            </div>
+          </div>
+          <a
+            href="/display"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-purple-500 text-white rounded-lg text-sm font-medium hover:bg-purple-600 transition-colors"
+          >
+            Open Display Hub →
+          </a>
         </div>
       </div>
     </div>

@@ -12,6 +12,11 @@
  * - /live - Live multiplayer team interface
  * - /live-admin - Live facilitator control panel
  * 
+ * Display Routes (for big screen presentation):
+ * - /display - Display Hub - landing page for AV teams
+ * - /display/scoreboard - Live scoreboard (auto-updates)
+ * - /display/1 through /display/5 - Round macro environment displays
+ * 
  * Team Interface States:
  * - Team Selection (not joined)
  * - Lobby (joined, game not started)
@@ -33,23 +38,51 @@ import { AdminPanel } from '@/components/admin';
 import { RoundCountdown } from '@/components/RoundCountdown';
 import { DemoApp } from '@/demo';
 import { MagnaLogo } from '@/components/MagnaLogo';
+import { MacroEnvironmentDisplay } from '@/components/MacroEnvironmentDisplay';
+import { DisplayHub } from '@/components/DisplayHub';
+import { ScoreboardDisplay } from '@/components/ScoreboardDisplay';
 
 // =============================================================================
 // ACCESS CODE - Change this to control who can access the app
 // =============================================================================
 const ACCESS_CODE = 'magna2026';
 
-type Route = 'demo-player' | 'demo-admin' | 'live-team' | 'live-admin';
+type Route = 'demo-player' | 'demo-admin' | 'live-team' | 'live-admin' | 'display-hub' | 'display-round' | 'display-scoreboard';
 
 function App() {
   // Default to demo player mode so each visitor gets their own isolated game
   const [route, setRoute] = useState<Route>('demo-player');
+  const [displayRound, setDisplayRound] = useState<number>(1);
   
   // Handle routing based on URL
   useEffect(() => {
     const handleRouteChange = () => {
       const path = window.location.pathname;
       const hash = window.location.hash;
+      const fullPath = path + hash;
+      
+      // /display/scoreboard - Big screen live scoreboard
+      if (fullPath.includes('/display/scoreboard') || fullPath.includes('#display/scoreboard')) {
+        setRoute('display-scoreboard');
+        return;
+      }
+      
+      // /display/1-5 - Big screen round macro environment display
+      const roundMatch = fullPath.match(/display\/(\d)/);
+      if (roundMatch) {
+        const roundNum = parseInt(roundMatch[1], 10);
+        if (roundNum >= 1 && roundNum <= 5) {
+          setDisplayRound(roundNum);
+          setRoute('display-round');
+          return;
+        }
+      }
+      
+      // /display - Display hub (landing page for AV teams)
+      if (path === '/display' || hash === '#display') {
+        setRoute('display-hub');
+        return;
+      }
       
       // /admin or #admin - Admin demo mode (each visitor gets fresh admin view)
       if (path === '/admin' || hash === '#admin') {
@@ -78,6 +111,31 @@ function App() {
       window.removeEventListener('hashchange', handleRouteChange);
     };
   }, []);
+  
+  // Display Hub - landing page for AV teams
+  if (route === 'display-hub') {
+    return <DisplayHub />;
+  }
+  
+  // Big screen scoreboard display
+  if (route === 'display-scoreboard') {
+    return <ScoreboardDisplay />;
+  }
+  
+  // Big screen round display - shows macro environment
+  if (route === 'display-round') {
+    return (
+      <MacroEnvironmentDisplay
+        round={displayRound}
+        showNavigation={true}
+        onRoundChange={(r) => {
+          setDisplayRound(r);
+          // Update URL to match
+          window.history.pushState({}, '', `/display/${r}`);
+        }}
+      />
+    );
+  }
   
   // Demo modes - no backend required, each visitor gets their own fresh game
   if (route === 'demo-player') {

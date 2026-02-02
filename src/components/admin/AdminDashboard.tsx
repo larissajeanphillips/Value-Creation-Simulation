@@ -24,6 +24,8 @@ import {
   LogOut,
   BookOpen,
   BarChart3,
+  ExternalLink,
+  Monitor,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
@@ -331,6 +333,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                   Principles & Dynamics
                 </button>
               )}
+              
+              {/* Big Screen Display Hub Link */}
+              <a
+                href="/display"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors font-medium"
+              >
+                <Monitor className="w-4 h-4" />
+                Display Hub
+                <ExternalLink className="w-3 h-3" />
+              </a>
               
               {/* Logout */}
               <button
