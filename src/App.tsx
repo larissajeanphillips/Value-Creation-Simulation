@@ -127,17 +127,27 @@ function getRouteFromURL(): { route: Route; displayRound: number } {
 }
 
 function App() {
-  // Initialize route from URL synchronously to avoid flash of wrong content
-  const initialRoute = getRouteFromURL();
-  const [route, setRoute] = useState<Route>(initialRoute.route);
-  const [displayRound, setDisplayRound] = useState<number>(initialRoute.displayRound);
+  // Initialize route from URL synchronously using initializer function
+  // This ensures getRouteFromURL() is called exactly once on mount
+  const [routeState, setRouteState] = useState(() => {
+    const initial = getRouteFromURL();
+    console.log('[App] Initial route state:', initial);
+    return initial;
+  });
+  const route = routeState.route;
+  const displayRound = routeState.displayRound;
+  
+  // Wrapper to update both route and displayRound together
+  const updateRoute = (newRoute: { route: Route; displayRound: number }) => {
+    setRouteState(newRoute);
+  };
   
   // Handle URL changes (back/forward navigation)
   useEffect(() => {
     const handleRouteChange = () => {
       const newRoute = getRouteFromURL();
-      setRoute(newRoute.route);
-      setDisplayRound(newRoute.displayRound);
+      console.log('[App] Route change detected:', newRoute);
+      updateRoute(newRoute);
     };
     
     window.addEventListener('popstate', handleRouteChange);
@@ -163,7 +173,7 @@ function App() {
           round={displayRound}
           showNavigation={true}
           onRoundChange={(r) => {
-            setDisplayRound(r);
+            updateRoute({ route: 'display-round', displayRound: r });
             // Update URL to match
             window.history.pushState({}, '', `/display/${r}`);
           }}
