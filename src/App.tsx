@@ -58,41 +58,71 @@ function getRouteFromURL(): { route: Route; displayRound: number } {
   const hash = window.location.hash;
   const fullPath = path + hash;
   
-  // /display/scoreboard - Big screen live scoreboard
-  if (fullPath.includes('/display/scoreboard') || fullPath.includes('#display/scoreboard')) {
-    return { route: 'display-scoreboard', displayRound: 1 };
-  }
+  // Debug logging - remove after fixing
+  console.log('[Router] path:', path, 'hash:', hash, 'fullPath:', fullPath);
   
-  // /display/1-5 - Big screen round macro environment display
-  const roundMatch = fullPath.match(/display\/(\d)/);
-  if (roundMatch) {
-    const roundNum = parseInt(roundMatch[1], 10);
-    if (roundNum >= 1 && roundNum <= 5) {
-      return { route: 'display-round', displayRound: roundNum };
+  // /display routes - check if path starts with /display
+  if (path.startsWith('/display')) {
+    // /display/scoreboard
+    if (path === '/display/scoreboard' || path === '/display/scoreboard/') {
+      console.log('[Router] -> display-scoreboard');
+      return { route: 'display-scoreboard', displayRound: 1 };
+    }
+    
+    // /display/1-5 - Round displays
+    const roundMatch = path.match(/^\/display\/(\d)\/?$/);
+    if (roundMatch) {
+      const roundNum = parseInt(roundMatch[1], 10);
+      if (roundNum >= 1 && roundNum <= 5) {
+        console.log('[Router] -> display-round', roundNum);
+        return { route: 'display-round', displayRound: roundNum };
+      }
+    }
+    
+    // /display or /display/ - Display hub
+    if (path === '/display' || path === '/display/') {
+      console.log('[Router] -> display-hub');
+      return { route: 'display-hub', displayRound: 1 };
     }
   }
   
-  // /display - Display hub (landing page for AV teams)
-  if (path === '/display' || path === '/display/' || hash === '#display' || hash.startsWith('#display')) {
-    return { route: 'display-hub', displayRound: 1 };
+  // Hash-based display routes (fallback)
+  if (hash.startsWith('#display')) {
+    if (hash === '#display/scoreboard') {
+      return { route: 'display-scoreboard', displayRound: 1 };
+    }
+    const hashRoundMatch = hash.match(/^#display\/(\d)$/);
+    if (hashRoundMatch) {
+      const roundNum = parseInt(hashRoundMatch[1], 10);
+      if (roundNum >= 1 && roundNum <= 5) {
+        return { route: 'display-round', displayRound: roundNum };
+      }
+    }
+    if (hash === '#display') {
+      return { route: 'display-hub', displayRound: 1 };
+    }
   }
   
   // /admin or #admin - Admin demo mode
-  if (path === '/admin' || hash === '#admin') {
+  if (path === '/admin' || path === '/admin/' || hash === '#admin') {
+    console.log('[Router] -> demo-admin');
     return { route: 'demo-admin', displayRound: 1 };
   }
   
   // /live-admin - Live admin mode (requires backend)
-  if (path === '/live-admin' || hash === '#live-admin') {
+  if (path === '/live-admin' || path === '/live-admin/' || hash === '#live-admin') {
+    console.log('[Router] -> live-admin');
     return { route: 'live-admin', displayRound: 1 };
   }
   
   // /live - Live multiplayer mode (requires backend)
-  if (path === '/live' || hash === '#live') {
+  if (path === '/live' || path === '/live/' || hash === '#live') {
+    console.log('[Router] -> live-team');
     return { route: 'live-team', displayRound: 1 };
   }
   
   // Everything else defaults to player demo mode
+  console.log('[Router] -> demo-player (default)');
   return { route: 'demo-player', displayRound: 1 };
 }
 
