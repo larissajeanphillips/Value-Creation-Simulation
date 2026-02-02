@@ -22,6 +22,7 @@ import {
   BarChart3,
   Activity,
   Table,
+  Table2,
   ThumbsUp,
   ThumbsDown,
   BookOpen,
@@ -41,6 +42,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
 import { GameRecap } from './GameRecap';
+import { SimplifiedFinancialsModal } from './investor-report';
 import { MagnaLogo } from './MagnaLogo';
 import type { TeamRoundSnapshot } from '@/types/game';
 
@@ -148,6 +150,8 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
   
   // State for Game Recap modal
   const [showRecap, setShowRecap] = useState(false);
+  // State for Simplified Financials modal
+  const [showFinancialsModal, setShowFinancialsModal] = useState(false);
   
   // Find our team's results
   const ourResult = useMemo(() => {
@@ -628,8 +632,8 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
         </div>
       </div>
       
-      {/* View Game Recap Button */}
-      <div className="mb-8">
+      {/* View Game Recap & Financials Buttons */}
+      <div className="mb-8 flex flex-wrap items-center justify-center gap-4">
         <button
           onClick={() => setShowRecap(true)}
           className="px-10 py-5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-semibold text-xl transition-colors flex items-center gap-3 shadow-lg"
@@ -637,6 +641,15 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
           <BarChart3 className="w-6 h-6" />
           View Game Recap
           <span className="text-base text-slate-300">(Round-by-Round Breakdown)</span>
+        </button>
+        
+        <button
+          onClick={() => setShowFinancialsModal(true)}
+          className="px-10 py-5 bg-amber-100 hover:bg-amber-200 text-amber-800 border-2 border-amber-300 rounded-xl font-semibold text-xl transition-colors flex items-center gap-3 shadow-lg"
+        >
+          <Table2 className="w-6 h-6" />
+          View Financials
+          <span className="text-base text-amber-600">(Detailed Statements)</span>
         </button>
       </div>
       
@@ -647,6 +660,12 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
           onClose={() => setShowRecap(false)}
         />
       )}
+      
+      {/* Simplified Financials Modal */}
+      <SimplifiedFinancialsModal 
+        isOpen={showFinancialsModal} 
+        onClose={() => setShowFinancialsModal(false)} 
+      />
       
       {/* Footer */}
       <div className="mt-12 text-center">
