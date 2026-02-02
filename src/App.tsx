@@ -79,7 +79,8 @@ function App() {
       }
       
       // /display - Display hub (landing page for AV teams)
-      if (path === '/display' || hash === '#display') {
+      // Match /display or /display/ (but not /display/something which would have been caught above)
+      if (path === '/display' || path === '/display/' || hash === '#display' || hash.startsWith('#display')) {
         setRoute('display-hub');
         return;
       }
