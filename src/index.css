@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================================
+   MAGNA BRAND IDENTITY (Official Brand Center Guidelines)
+   
+   Primary Colors:
+   - Ignition Red: #DA291C (accent, use sparingly ~4%)
+   - Carbon Black: #000000 (dominant ~54%)
+   - Chrome White: #FFFFFF
+   - Cool Gray: #8B8B8D (~14%)
+   
+   Secondary Colors:
+   - Electric Blue: #4299B4 (accent highlights)
+   
+   Color Balance: 54% Black, 24% White, 14% Gray, 4% Red
+   
+   Typography:
+   - Headlines: Helvetica Neue LT Pro 75 Bold (fallback: Arial Bold)
+   - Subheads: Helvetica Neue LT Pro 45 Light
+   - Body: Helvetica Neue LT Pro 55 Roman (fallback: Arial)
+   
+   Tagline: "Forward. For all."
+   ============================================================================= */
+
+@layer base {
+  :root {
+    /* Light mode - Magna corporate look (predominantly white/gray with red accents) */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 0%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    
+    /* Ignition Red as primary accent - HSL: 4 83% 48% */
+    --primary: 4 83% 48%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    
+    --muted: 0 0% 55%;
+    --muted-foreground: 0 0% 45%;
+    
+    /* Ignition Red for accent */
+    --accent: 4 83% 48%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 4 83% 48%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 4 83% 48%;
+    
+    --radius: 0.5rem;
+    
+    /* Chart colors - Magna themed */
+    --chart-1: 4 83% 48%;     /* Ignition Red */
+    --chart-2: 0 0% 0%;       /* Carbon Black */
+    --chart-3: 0 0% 55%;      /* Cool Gray */
+    --chart-4: 193 47% 48%;   /* Electric Blue */
+    --chart-5: 0 0% 35%;      /* Dark Gray */
+    
+    /* Magna Brand Colors (direct hex values for use in components) */
+    --magna-ignition-red: #DA291C;
+    --magna-carbon-black: #000000;
+    --magna-chrome-white: #FFFFFF;
+    --magna-cool-gray: #8B8B8D;
+    --magna-electric-blue: #4299B4;
+    
+    /* Legacy aliases */
+    --magna-red: #DA291C;
+    --magna-black: #000000;
+    --magna-gray: #4a4a4a;
+    --magna-dark: #1a1a1a;
+  }
+
+  .dark {
+    /* Dark mode - True dark theme with high contrast */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
+    
+    /* Ignition Red as primary accent */
+    --primary: 4 83% 48%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 0 0% 25%;
+    --muted-foreground: 0 0% 65%;
+    
+    /* Ignition Red for accent */
+    --accent: 4 83% 48%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 4 83% 48%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 4 83% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    /* Magna Typography: Helvetica Neue (primary), Arial (digital fallback) */
+    font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Magna Headline Typography */
+  h1, h2, h3 {
+    font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-weight: 700; /* Helvetica Neue LT Pro 75 Bold equivalent */
+  }
+  
+  /* Magna Subhead Typography */
+  h4, h5, h6 {
+    font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-weight: 300; /* Helvetica Neue LT Pro 45 Light equivalent */
+  }
+}
+
+/* Card flip animation utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Line clamp for card descriptions */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Custom scrollbar for investment cards - Magna themed */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #F5F5F5;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #8B8B8D; /* Cool Gray */
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #666666;
+}
+
+/* =============================================================================
+   MAGNA CHEVRON DECORATIVE ELEMENT
+   The chevron is a key Magna brand element - a diagonal design element
+   that creates a sense of forward movement.
+   ============================================================================= */
+   
+.magna-chevron {
+  position: relative;
+  overflow: hidden;
+}
+
+.magna-chevron::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -20%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 45%,
+    rgba(139, 139, 141, 0.1) 45%,
+    rgba(139, 139, 141, 0.1) 55%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+/* Red accent variant */
+.magna-chevron-red::before {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 45%,
+    rgba(218, 41, 28, 0.15) 45%,
+    rgba(218, 41, 28, 0.15) 55%,
+    transparent 55%
+  );
+}
+
+/* Shimmer animation for urgent warnings */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
