@@ -1,0 +1,47 @@
+# Dependencies
+node_modules
+backend/node_modules
+
+# Build outputs
+dist
+backend/dist
+build
+
+# Development files
+.git
+.gitignore
+*.md
+LICENSE
+
+# IDE
+.vscode
+.cursor
+.idea
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Test files
+coverage
+__tests__
+*.test.*
+*.spec.*
+
+# Docker files (don't need to copy these into container)
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Deployment configs (not needed in container) - except nginx.conf
+deployer-apps
+mcps
