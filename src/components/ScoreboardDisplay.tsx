@@ -150,9 +150,10 @@ export const ScoreboardDisplay: React.FC = () => {
     );
   }
   
-  // Split teams into two columns for display (8 left, 7 right for 15 teams)
-  const leftColumnTeams = data.teams.slice(0, 8);
-  const rightColumnTeams = data.teams.slice(8, 15);
+  // Use two columns only when there are more than 8 teams
+  const useTwoColumns = data.teams.length > 8;
+  const leftColumnTeams = useTwoColumns ? data.teams.slice(0, 8) : data.teams;
+  const rightColumnTeams = useTwoColumns ? data.teams.slice(8, 15) : [];
   
   return (
     <div className="h-screen bg-slate-900 text-white flex flex-col overflow-hidden">
@@ -201,8 +202,11 @@ export const ScoreboardDisplay: React.FC = () => {
       
       {/* Main Content - Compact layout to fit all teams */}
       <main className="flex-1 flex p-4 gap-4 overflow-hidden min-h-0">
-        {/* Left Side - Two-Column Leaderboard */}
-        <div className="w-[700px] flex-shrink-0 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex flex-col">
+        {/* Left Side - Leaderboard (single or two-column based on team count) */}
+        <div className={cn(
+          "flex-shrink-0 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex flex-col",
+          useTwoColumns ? "w-[700px]" : "w-[380px]"
+        )}>
           <div className="px-4 py-2 bg-slate-700/50 border-b border-slate-700 flex items-center gap-3 flex-shrink-0">
             <Trophy className="w-5 h-5 text-yellow-400" />
             <h2 className="text-lg font-semibold text-white">
@@ -213,8 +217,8 @@ export const ScoreboardDisplay: React.FC = () => {
           <div className="flex-1 flex min-h-0">
             {data.teams.length > 0 ? (
               <>
-                {/* Left Column - Ranks 1-8 */}
-                <div className="flex-1 border-r border-slate-700">
+                {/* Left Column (or single column when ≤8 teams) */}
+                <div className={cn("flex-1", useTwoColumns && "border-r border-slate-700")}>
                   <table className="w-full">
                     <thead className="bg-slate-800">
                       <tr className="text-xs text-slate-400 uppercase tracking-wider border-b border-slate-700">
@@ -277,75 +281,68 @@ export const ScoreboardDisplay: React.FC = () => {
                   </table>
                 </div>
                 
-                {/* Right Column - Ranks 9-15 */}
-                <div className="flex-1">
-                  <table className="w-full">
-                    <thead className="bg-slate-800">
-                      <tr className="text-xs text-slate-400 uppercase tracking-wider border-b border-slate-700">
-                        <th className="text-left px-3 py-2 w-12">Rank</th>
-                        <th className="text-left px-2 py-2">Team</th>
-                        <th className="text-right px-3 py-2">Price</th>
-                        <th className="text-right px-3 py-2">TSR</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rightColumnTeams.map((team, index) => {
-                        const actualRank = index + 8;
-                        return (
-                          <tr 
-                            key={team.teamId}
-                            className="border-b border-slate-700/50"
-                          >
-                            <td className="px-3 py-1.5">
-                              <div className="w-6 h-6 rounded flex items-center justify-center font-bold text-sm bg-slate-600/30 text-slate-400">
-                                {actualRank + 1}
-                              </div>
-                            </td>
-                            <td className="px-2 py-1.5">
-                              <div className="flex items-center gap-2">
-                                <div
-                                  className="w-3 h-3 rounded-full flex-shrink-0"
-                                  style={{ backgroundColor: TEAM_COLORS[actualRank % TEAM_COLORS.length] }}
-                                />
-                                <span className="font-medium text-white text-sm truncate max-w-[120px]">
-                                  {team.teamName}
-                                </span>
-                              </div>
-                            </td>
-                            <td className="px-3 py-1.5 text-right">
-                              <span className="font-mono font-semibold text-white text-sm">
-                                ${team.currentStockPrice.toFixed(2)}
-                              </span>
-                            </td>
-                            <td className="px-3 py-1.5 text-right">
-                              <span className={cn(
-                                "flex items-center justify-end gap-1 font-medium text-sm",
-                                team.cumulativeTSR >= 0 ? "text-emerald-400" : "text-red-400"
-                              )}>
-                                {team.cumulativeTSR >= 0 ? (
-                                  <TrendingUp className="w-3 h-3" />
-                                ) : (
-                                  <TrendingDown className="w-3 h-3" />
-                                )}
-                                {team.cumulativeTSR >= 0 ? '+' : ''}
-                                {(team.cumulativeTSR * 100).toFixed(1)}%
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                      {/* Fill empty rows if less than 7 teams in right column */}
-                      {rightColumnTeams.length < 7 && Array.from({ length: 7 - rightColumnTeams.length }).map((_, i) => (
-                        <tr key={`empty-${i}`} className="border-b border-slate-700/50">
-                          <td className="px-3 py-1.5"><div className="h-6" /></td>
-                          <td className="px-2 py-1.5" />
-                          <td className="px-3 py-1.5" />
-                          <td className="px-3 py-1.5" />
+                {/* Right Column - Ranks 9-15 (only shown when more than 8 teams) */}
+                {useTwoColumns && (
+                  <div className="flex-1">
+                    <table className="w-full">
+                      <thead className="bg-slate-800">
+                        <tr className="text-xs text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                          <th className="text-left px-3 py-2 w-12">Rank</th>
+                          <th className="text-left px-2 py-2">Team</th>
+                          <th className="text-right px-3 py-2">Price</th>
+                          <th className="text-right px-3 py-2">TSR</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {rightColumnTeams.map((team, index) => {
+                          const actualRank = index + 8;
+                          return (
+                            <tr 
+                              key={team.teamId}
+                              className="border-b border-slate-700/50"
+                            >
+                              <td className="px-3 py-1.5">
+                                <div className="w-6 h-6 rounded flex items-center justify-center font-bold text-sm bg-slate-600/30 text-slate-400">
+                                  {actualRank + 1}
+                                </div>
+                              </td>
+                              <td className="px-2 py-1.5">
+                                <div className="flex items-center gap-2">
+                                  <div
+                                    className="w-3 h-3 rounded-full flex-shrink-0"
+                                    style={{ backgroundColor: TEAM_COLORS[actualRank % TEAM_COLORS.length] }}
+                                  />
+                                  <span className="font-medium text-white text-sm truncate max-w-[120px]">
+                                    {team.teamName}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="px-3 py-1.5 text-right">
+                                <span className="font-mono font-semibold text-white text-sm">
+                                  ${team.currentStockPrice.toFixed(2)}
+                                </span>
+                              </td>
+                              <td className="px-3 py-1.5 text-right">
+                                <span className={cn(
+                                  "flex items-center justify-end gap-1 font-medium text-sm",
+                                  team.cumulativeTSR >= 0 ? "text-emerald-400" : "text-red-400"
+                                )}>
+                                  {team.cumulativeTSR >= 0 ? (
+                                    <TrendingUp className="w-3 h-3" />
+                                  ) : (
+                                    <TrendingDown className="w-3 h-3" />
+                                  )}
+                                  {team.cumulativeTSR >= 0 ? '+' : ''}
+                                  {(team.cumulativeTSR * 100).toFixed(1)}%
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </>
             ) : (
               <div className="flex items-center justify-center w-full text-slate-400 p-8">
