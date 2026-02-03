@@ -56,16 +56,11 @@ type Route = 'demo-player' | 'demo-admin' | 'live-team' | 'live-admin' | 'displa
 function getRouteFromURL(): { route: Route; displayRound: number } {
   const path = window.location.pathname;
   const hash = window.location.hash;
-  const fullPath = path + hash;
-  
-  // Debug logging - remove after fixing
-  console.log('[Router] path:', path, 'hash:', hash, 'fullPath:', fullPath);
   
   // /display routes - check if path starts with /display
   if (path.startsWith('/display')) {
     // /display/scoreboard
     if (path === '/display/scoreboard' || path === '/display/scoreboard/') {
-      console.log('[Router] -> display-scoreboard');
       return { route: 'display-scoreboard', displayRound: 1 };
     }
     
@@ -74,14 +69,12 @@ function getRouteFromURL(): { route: Route; displayRound: number } {
     if (roundMatch) {
       const roundNum = parseInt(roundMatch[1], 10);
       if (roundNum >= 1 && roundNum <= 5) {
-        console.log('[Router] -> display-round', roundNum);
         return { route: 'display-round', displayRound: roundNum };
       }
     }
     
     // /display or /display/ - Display hub
     if (path === '/display' || path === '/display/') {
-      console.log('[Router] -> display-hub');
       return { route: 'display-hub', displayRound: 1 };
     }
   }
@@ -105,59 +98,31 @@ function getRouteFromURL(): { route: Route; displayRound: number } {
   
   // /admin or #admin - Admin demo mode
   if (path === '/admin' || path === '/admin/' || hash === '#admin') {
-    console.log('[Router] -> demo-admin');
     return { route: 'demo-admin', displayRound: 1 };
   }
   
   // /live-admin - Live admin mode (requires backend)
   if (path === '/live-admin' || path === '/live-admin/' || hash === '#live-admin') {
-    console.log('[Router] -> live-admin');
     return { route: 'live-admin', displayRound: 1 };
   }
   
   // /live - Live multiplayer mode (requires backend)
   if (path === '/live' || path === '/live/' || hash === '#live') {
-    console.log('[Router] -> live-team');
     return { route: 'live-team', displayRound: 1 };
   }
   
   // Everything else defaults to player demo mode
-  console.log('[Router] -> demo-player (default)');
   return { route: 'demo-player', displayRound: 1 };
 }
-
-// Build version - change this to verify deployment
-const BUILD_VERSION = 'v2.1-display-fix';
 
 function App() {
   // Initialize route from URL synchronously using initializer function
   // This ensures getRouteFromURL() is called exactly once on mount
   const [routeState, setRouteState] = useState(() => {
-    const initial = getRouteFromURL();
-    console.log('[App] Build:', BUILD_VERSION, 'Initial route:', initial);
-    return initial;
+    return getRouteFromURL();
   });
   const route = routeState.route;
   const displayRound = routeState.displayRound;
-  
-  // DEBUG: Show version and detected route at top of page
-  const DebugBanner = () => (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      background: '#ef4444',
-      color: 'white',
-      padding: '8px',
-      textAlign: 'center',
-      zIndex: 9999,
-      fontSize: '14px',
-      fontFamily: 'monospace'
-    }}>
-      DEBUG: Build {BUILD_VERSION} | Route: {route} | Path: {window.location.pathname}
-    </div>
-  );
   
   // Wrapper to update both route and displayRound together
   const updateRoute = (newRoute: { route: Route; displayRound: number }) => {
@@ -204,42 +169,26 @@ function App() {
     }
     
     return (
-      <>
-        <DebugBanner />
-        <AccessGate accessCode={ACCESS_CODE}>
-          {displayContent}
-        </AccessGate>
-      </>
+      <AccessGate accessCode={ACCESS_CODE}>
+        {displayContent}
+      </AccessGate>
     );
   }
   
   // Demo modes - no backend required, each visitor gets their own fresh game
   if (route === 'demo-player') {
-    return (
-      <>
-        <DebugBanner />
-        <DemoApp startMode="player" />
-      </>
-    );
+    return <DemoApp startMode="player" />;
   }
   
   if (route === 'demo-admin') {
-    return (
-      <>
-        <DebugBanner />
-        <DemoApp startMode="admin" />
-      </>
-    );
+    return <DemoApp startMode="admin" />;
   }
   
   // Live modes - wrap in AccessGate, requires backend
   return (
-    <>
-      <DebugBanner />
-      <AccessGate accessCode={ACCESS_CODE}>
-        {route === 'live-admin' ? <AdminPanel /> : <TeamInterface />}
-      </AccessGate>
-    </>
+    <AccessGate accessCode={ACCESS_CODE}>
+      {route === 'live-admin' ? <AdminPanel /> : <TeamInterface />}
+    </AccessGate>
   );
 }
 
