@@ -159,6 +159,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 2,
         startMinute: 16,
         endMinute: 18,
+        script: 'The year is FY26. The automotive market has stabilized. After years of supply chain disruptions and semiconductor shortages, we\'re finally operating in a more predictable environment. Vehicle demand is steady—nothing extraordinary, but solid. This is "business as usual." Your decisions today will set the foundation for everything that follows. You have a fixed capital pool to allocate across growth initiatives, operational improvements, and shareholder returns. You have 10 minutes to make your capital allocation decisions.',
       },
       {
         id: 'round-1-decision',
@@ -204,6 +205,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 2,
         startMinute: 32,
         endMinute: 34,
+        script: 'The year is now FY27. The good news: conditions remain favorable. The EV transition is progressing as expected. OEM order books are healthy, and those who invested in electrification capabilities last round may be starting to see early returns. Look around the room—some teams made very different decisions in Round 1. The market hasn\'t differentiated yet, but it will. You have 10 minutes. Your decisions are due when the timer ends.',
       },
       {
         id: 'round-2-decision',
@@ -249,6 +251,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 2,
         startMinute: 48,
         endMinute: 50,
+        script: 'Round 3. The year is FY28. And the environment has changed. Costs are rising significantly—steel, aluminum, and key commodities are up 15 to 20 percent. Energy costs have spiked. Labor markets are tight. But here\'s the real pressure: your OEM customers aren\'t absorbing these costs. They\'re demanding price reductions. This is the squeeze that separates good companies from great ones. You have 10 minutes to navigate this challenge.',
       },
       {
         id: 'round-3-decision',
@@ -294,6 +297,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 2,
         startMinute: 64,
         endMinute: 66,
+        script: 'Round 4. FY29. The market shows signs of cooling, but nothing dramatic. Consumer confidence has softened. Some OEMs are adjusting production forecasts downward. It feels like a typical cyclical adjustment. Begin your deliberations... [NOTE: After 2 minutes, interrupt with the recession announcement using the item below.]',
       },
       {
         id: 'round-4-decision-1',
@@ -357,6 +361,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 2,
         startMinute: 84,
         endMinute: 86,
+        script: 'Final round. Round 5. The year is FY30. The storm has passed. The economy is recovering. Consumer confidence is rebounding. OEMs are ramping production back up. Pent-up demand is creating opportunities across every segment. But not everyone is positioned to capture it. The teams that maintained their capabilities through the downturn are now positioned to win. This is your final allocation—your last chance to shape Magna\'s trajectory. You have 10 minutes.',
       },
       {
         id: 'round-5-decision',
@@ -851,17 +856,6 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
                                     item.activity
                                   )}
                                 </div>
-                                {isScenarioIntro && roundNumber && (
-                                  <div className="mt-2">
-                                    <button
-                                      onClick={() => setScriptModalRound(roundNumber)}
-                                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-blue-700 text-sm font-medium transition-colors"
-                                    >
-                                      <MessageSquare className="w-4 h-4" />
-                                      View Round {roundNumber} Script
-                                    </button>
-                                  </div>
-                                )}
                                 {item.script && (
                                   <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                                     <div className="flex items-center gap-2 text-blue-700 font-medium mb-1">
