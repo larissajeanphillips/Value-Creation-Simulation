@@ -31,23 +31,188 @@ Activate when user says:
 ## Flow Overview
 
 ```
-0. Approach: Quick Start or Plan First (PRD)
-1. Context: What are you building for?
-2. Description: Describe your app
-3. Features: Multi-select feature types
-4. Visual Inspiration: Images, design links, or description (optional)
-5. Existing Code: GitHub repos, local code, or snippets (optional)
-6. Existing Data: Data files, database, or examples (optional)
-7. Name: What to call the app
-8. Runtime: Docker or local
-9. **PLAN: Create .plan.md file, user clicks "Build this"**
-10. Build: Apply customizations (only after plan confirmed)
-11. Start: Launch the app + auto-open browser
+0. Existing App Check: Detect if there's already a webapp, offer to keep or replace
+1. Approach: Quick Start or Plan First (PRD)
+2. Context: What are you building for?
+3. Description: Describe your app
+4. Features: Multi-select feature types
+5. Visual Inspiration: Images, design links, or description (optional)
+6. Existing Code: GitHub repos, local code, or snippets (optional)
+7. Existing Data: Data files, database, or examples (optional)
+8. Name: What to call the app
+9. Runtime: Docker or local
+10. **PLAN: Create .plan.md file, user clicks "Build this"**
+11. Build: Apply customizations (only after plan confirmed)
+12. Start: Launch the app + auto-open browser
 ```
 
 ## Step-by-Step Implementation
 
-### Step 0: Choose Your Approach
+### Step 0: Existing Webapp Detection
+
+**Before starting the wizard, check if there's an existing webapp that differs from the starter template.**
+
+#### Detection Logic
+
+Check for signs of an existing custom webapp by examining the UI directory:
+
+```
+deployer-apps/citizen-dev7/src/ui/src/
+```
+
+**Indicators of a STARTER template (no existing app):**
+- Only has Chat-related components: `ChatWindow.tsx`, `MessageBubble.tsx`, `InputBar.tsx`, `Sidebar.tsx`, `TypingIndicator.tsx`
+- `App.tsx` primarily renders a chat interface
+- No custom pages like `Dashboard.tsx`, `ProjectsPage.tsx`, `AnalyticsPage.tsx`, etc.
+- No `data/` folder with custom types or sample data
+
+**Indicators of an EXISTING custom webapp:**
+- Has additional components beyond the chat UI (Dashboard, Forms, Tables, etc.)
+- Has a `data/` folder with `types.ts`, `sampleData.ts`, or similar
+- `App.tsx` has custom routing/navigation logic
+- `package.json` has a custom name (not the default)
+
+#### Detection Steps
+
+1. **Read the components directory:**
+   ```bash
+   ls deployer-apps/citizen-dev7/src/ui/src/components/
+   ```
+
+2. **Check for data folder:**
+   ```bash
+   ls deployer-apps/citizen-dev7/src/ui/src/data/ 2>/dev/null
+   ```
+
+3. **Read package.json name:**
+   ```bash
+   grep '"name"' deployer-apps/citizen-dev7/src/ui/package.json
+   ```
+
+4. **Evaluate:**
+   - If ONLY starter components exist (Chat*, Message*, Input*, Sidebar, TypingIndicator) → **No existing app, skip to Step 1**
+   - If additional custom components exist → **Existing app detected, proceed with choice**
+
+#### If Existing App Detected
+
+Tell the user what was found, then use AskQuestion:
+
+"**I found an existing webapp in this project!**
+
+It looks like there's already a custom app built here with components like [list 3-4 key components found].
+
+Before we continue, I need to know what you'd like to do with it:"
+
+```json
+{
+  "title": "Existing Webapp Detected",
+  "questions": [{
+    "id": "existing_app",
+    "prompt": "What would you like to do with the existing app?",
+    "options": [
+      { "id": "delete", "label": "Delete it - Start completely fresh with a new app" },
+      { "id": "keep", "label": "Keep it - Create my new app in a separate folder" }
+    ]
+  }]
+}
+```
+
+#### If "delete" selected
+
+1. **Warn the user:**
+   "⚠️ This will permanently delete the existing webapp code. The files will be removed and cannot be recovered unless you have a backup or committed them to git."
+
+2. **Confirm with another question:**
+   ```json
+   {
+     "title": "Confirm Deletion",
+     "questions": [{
+       "id": "confirm_delete",
+       "prompt": "Are you sure you want to delete the existing webapp?",
+       "options": [
+         { "id": "yes", "label": "Yes, delete it and start fresh" },
+         { "id": "no", "label": "No, keep it and create a new folder instead" }
+       ]
+     }]
+   }
+   ```
+
+3. **If confirmed, delete custom files:**
+   - Remove all components EXCEPT the starter template ones (ChatWindow, MessageBubble, InputBar, Sidebar, TypingIndicator)
+   - Remove `data/` folder if it exists
+   - Reset `App.tsx` to the starter template version
+   - Reset `package.json` name to default
+   - Reset `index.html` title to default
+
+4. **Tell user:** "✓ Existing app removed. Starting fresh!"
+
+5. **Continue to Step 1**
+
+#### If "keep" selected
+
+1. **Create a new app folder structure:**
+   
+   Create a new directory at:
+   ```
+   deployer-apps/citizen-dev7/src/apps/[new-app-name]/
+   ```
+   
+   This will be a clone of the starter template with its own:
+   - `ui/` folder with fresh React app
+   - `api.py` for backend
+   - All necessary config files
+
+2. **Clone the starter template:**
+   
+   Copy the following files/folders to the new app directory:
+   ```
+   deployer-apps/citizen-dev7/src/
+   ├── ui/                    # Clone the starter UI template
+   │   ├── src/
+   │   │   ├── components/    # Only starter components (Chat*, etc.)
+   │   │   ├── App.tsx        # Starter version
+   │   │   └── ...
+   │   ├── package.json       # Fresh package.json
+   │   ├── index.html         # Fresh index.html
+   │   └── ...
+   ├── api.py                 # Clone the API
+   └── ...
+   ```
+
+3. **Ask for the new app name:**
+   
+   "What would you like to call your new app? This will be used for the folder name."
+
+4. **Create the new app folder:**
+   
+   The new structure will be:
+   ```
+   deployer-apps/citizen-dev7/src/
+   ├── ui/                           # Existing app (preserved)
+   ├── apps/
+   │   └── [new-app-name]/
+   │       ├── ui/                   # New app UI
+   │       │   ├── src/
+   │       │   │   ├── components/
+   │       │   │   ├── App.tsx
+   │       │   │   └── ...
+   │       │   ├── package.json
+   │       │   ├── index.html
+   │       │   └── ...
+   │       └── api.py
+   ```
+
+5. **Update working context:**
+   
+   Tell the user and set context for the rest of the wizard:
+   
+   "✓ Created new app folder at `apps/[new-app-name]/`
+   
+   Your existing app is preserved in `ui/`. The setup wizard will now configure your new app."
+
+6. **Continue to Step 1** with the new app folder as the target
+
+### Step 1: Choose Your Approach
 
 Use AskQuestion:
 
@@ -67,12 +232,12 @@ Use AskQuestion:
 
 **If "prd" selected:**
 - Read and follow the PRD generator skill at `.cursor/skills/prd-generator/SKILL.md`
-- After PRD is complete, return here and continue from Step 1
+- After PRD is complete, return here and continue from Step 2
 
 **If "quick" selected:**
-- Continue with Steps 1-8 below
+- Continue with Steps 2-9 below
 
-### Step 1: Context
+### Step 2: Context
 
 Use AskQuestion:
 
@@ -92,7 +257,7 @@ Use AskQuestion:
 }
 ```
 
-### Step 2: Description
+### Step 3: Description
 
 **Show the inspiration examples directly in chat (no external tools needed):**
 
@@ -120,7 +285,7 @@ Examples:
 - 'A tool for tracking workshop feedback and generating reports'
 - 'A form where customers submit support requests'"
 
-### Step 3: Features
+### Step 4: Features
 
 Use AskQuestion with multi-select:
 
@@ -144,7 +309,7 @@ Use AskQuestion with multi-select:
 }
 ```
 
-### Step 4: Visual & Design Inspiration
+### Step 5: Visual & Design Inspiration
 
 Use AskQuestion:
 
@@ -208,7 +373,7 @@ You can share multiple links!"
 
 **If describe:** "Describe the look you're going for. Examples: 'Clean like Notion', 'Professional with blue', 'Modern with shadows', 'Minimal like Linear', 'Colorful like Figma'"
 
-### Step 5: Existing Code Reference
+### Step 6: Existing Code Reference
 
 Use AskQuestion:
 
@@ -307,7 +472,7 @@ After analyzing, create a mental style guide including:
 - State: hooks, stores, patterns
 - TypeScript: strict mode, interface vs type
 
-### Step 6: Existing Data
+### Step 7: Existing Data
 
 Use AskQuestion:
 
@@ -372,7 +537,7 @@ ui/src/data/
 └── README.md         # Documents data sources and structure
 ```
 
-### Step 7: App Name
+### Step 8: App Name
 
 Ask in chat:
 
@@ -380,7 +545,7 @@ Ask in chat:
 
 Examples: 'Client Portal', 'Feedback Tracker', 'Project Dashboard'"
 
-### Step 8: Runtime Choice
+### Step 9: Runtime Choice
 
 First, explain the options in chat:
 
@@ -388,9 +553,9 @@ First, explain the options in chat:
 
 I can run your app in two ways:
 
-**Docker** (Recommended) - Think of it as a 'container' that has everything your app needs built in. You install Docker once, and everything just works. No other software needed. *Best for most people.*
+**Local** (Recommended) - Runs directly on your computer using Node.js and Python. Fast iteration, standard developer workflow. *Best for most developers.*
 
-**Local** - Runs directly on your computer using Node.js and Python. *Best for developers who already have these tools.*"
+**Docker** - Think of it as a 'container' that has everything your app needs built in. No Node.js or Python setup required. *Best if you don't want to install development tools.*"
 
 Then use AskQuestion with a simple choice:
 
@@ -401,14 +566,14 @@ Then use AskQuestion with a simple choice:
     "id": "runtime",
     "prompt": "Which option works for you?",
     "options": [
-      { "id": "docker", "label": "Docker (Recommended)" },
-      { "id": "local", "label": "Local (Node.js/Python)" }
+      { "id": "local", "label": "Local (Recommended)" },
+      { "id": "docker", "label": "Docker (No local setup)" }
     ]
   }]
 }
 ```
 
-### Step 8b: Docker Setup (if Docker selected)
+### Step 9b: Docker Setup (if Docker selected)
 
 **Check if Docker is running:**
 ```bash
@@ -455,7 +620,7 @@ cd deployer-apps/citizen-dev7/src
 ./scripts/docker-dev.sh
 ```
 
-## After Collecting Inputs (Steps 0-7)
+## After Collecting Inputs (Steps 1-8)
 
 ### MANDATORY: Create Cursor Plan File (.plan.md)
 

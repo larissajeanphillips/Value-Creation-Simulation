@@ -43,7 +43,59 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     && pip install --user --no-cache-dir fastapi uvicorn[standard] python-dotenv
 
 # -----------------------------------------------------------------------------
-# Stage 3: Production runtime
+# Stage 3: Development runtime (includes Node.js for UI hot reload)
+# Used with: ./scripts/docker-dev.sh --ui-dev
+# -----------------------------------------------------------------------------
+FROM python:3.12.8-slim-bookworm AS dev
+
+WORKDIR /app
+
+# Install Node.js for Vite dev server + runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Copy Python dependencies from builder (to root for dev simplicity)
+COPY --from=python-builder /root/.local /root/.local
+ENV PATH=/root/.local/bin:$PATH
+
+# Copy application code
+COPY llm/ ./llm/
+COPY scripts/ ./scripts/
+COPY agents/ ./agents/
+COPY configs/ ./configs/
+COPY workflows/ ./workflows/
+COPY reference/ ./reference/
+COPY api.py ./
+
+# Copy UI source and dependencies (not just built files)
+COPY ui/ ./ui/
+
+# Install UI dependencies
+WORKDIR /app/ui
+RUN npm install --silent
+WORKDIR /app
+
+# Create data directories
+RUN mkdir -p data/outputs data/excel
+
+# Environment configuration
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+# Expose ports (3000 for API, 5173 for Vite)
+EXPOSE 3000 5173
+
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
+
+# -----------------------------------------------------------------------------
+# Stage 4: Production runtime (slim, no Node.js)
+# Default target for production builds
 # -----------------------------------------------------------------------------
 FROM python:3.12.8-slim-bookworm AS runner
 
