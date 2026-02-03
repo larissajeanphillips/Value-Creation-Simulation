@@ -85,7 +85,7 @@ Remember: there are no right or wrong answers, only trade-offs. Choose wisely.`,
     duration: '2 minutes',
     overview: 'Market conditions remain favorable. Teams should see the results of their Round 1 decisions and adjust their strategy accordingly.',
     keyPoints: [
-      'EV transition accelerating as planned',
+      'Technology investments progressing as planned',
       'Healthy OEM order books',
       'Technology investments beginning to pay off',
       'Competitors making strategic moves',
@@ -94,7 +94,7 @@ Remember: there are no right or wrong answers, only trade-offs. Choose wisely.`,
 
 Let me give you the market update.
 
-The good news: conditions remain favorable. The EV transition is progressing as the industry expected—not faster, not slower. OEM order books are healthy, and those of you who invested in electrification capabilities last round may be starting to see early returns.
+The good news: conditions remain favorable. Technology investments are progressing as the industry expected—not faster, not slower. OEM order books are healthy, and those of you who invested in advanced capabilities last round may be starting to see early returns.
 
 But here's what's interesting.
 

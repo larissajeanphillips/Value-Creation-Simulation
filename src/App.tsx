@@ -146,16 +146,20 @@ function App() {
     };
   }, []);
   
-  // Display routes - all protected by access code
-  if (route === 'display-hub' || route === 'display-scoreboard' || route === 'display-round') {
-    let displayContent: React.ReactNode;
-    
-    if (route === 'display-hub') {
-      displayContent = <DisplayHub />;
-    } else if (route === 'display-scoreboard') {
-      displayContent = <ScoreboardDisplay />;
-    } else {
-      displayContent = (
+  // Scoreboard display - no password required for easy AV team access
+  if (route === 'display-scoreboard') {
+    return <ScoreboardDisplay />;
+  }
+  
+  // Display hub - no password required (it's just a navigation page)
+  if (route === 'display-hub') {
+    return <DisplayHub />;
+  }
+  
+  // Round environment displays - protected by access code
+  if (route === 'display-round') {
+    return (
+      <AccessGate accessCode={ACCESS_CODE}>
         <MacroEnvironmentDisplay
           round={displayRound}
           showNavigation={true}
@@ -165,12 +169,6 @@ function App() {
             window.history.pushState({}, '', `/display/${r}`);
           }}
         />
-      );
-    }
-    
-    return (
-      <AccessGate accessCode={ACCESS_CODE}>
-        {displayContent}
       </AccessGate>
     );
   }

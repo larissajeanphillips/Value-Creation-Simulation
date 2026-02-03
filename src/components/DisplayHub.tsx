@@ -44,7 +44,7 @@ const DISPLAY_OPTIONS: DisplayOption[] = [
   {
     id: 'round-2',
     title: 'FY27 - Business as Usual',
-    description: 'Continued stability. EV transition accelerating.',
+    description: 'Continued stability. Market conditions remain favorable.',
     url: '/display/2',
     icon: <Calendar className="w-8 h-8" />,
     color: 'text-emerald-400',

@@ -205,7 +205,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 2,
         startMinute: 32,
         endMinute: 34,
-        script: 'The year is now FY27. The good news: conditions remain favorable. The EV transition is progressing as expected. OEM order books are healthy, and those who invested in electrification capabilities last round may be starting to see early returns. Look around the room—some teams made very different decisions in Round 1. The market hasn\'t differentiated yet, but it will. You have 10 minutes. Your decisions are due when the timer ends.',
+        script: 'The year is now FY27. The good news: conditions remain favorable. Technology investments are progressing as expected. OEM order books are healthy, and those who invested in advanced capabilities last round may be starting to see early returns. Look around the room—some teams made very different decisions in Round 1. The market hasn\'t differentiated yet, but it will. You have 10 minutes. Your decisions are due when the timer ends.',
       },
       {
         id: 'round-2-decision',

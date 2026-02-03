@@ -40,6 +40,9 @@ export interface Decision {
   /** Unique identifier for the decision */
   id: string;
   
+  /** Decision number from Excel (1-75) for reference */
+  decisionNumber: number;
+  
   /** Category: grow, optimize, or sustain */
   category: DecisionCategory;
   

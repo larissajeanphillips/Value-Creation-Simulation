@@ -75,7 +75,7 @@ const YEAR_SCENARIOS: Record<number, {
     theme: 'Continued Stability',
     description: 'Market conditions remain favorable with continued investment in electrification and advanced technologies. Supply chains have stabilized post-pandemic.',
     keyDynamics: [
-      'EV transition accelerating as planned',
+      'Technology investments progressing as planned',
       'Healthy OEM order books',
       'Focus on operational excellence',
     ],

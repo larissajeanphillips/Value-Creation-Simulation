@@ -16,6 +16,7 @@ const GROW_DECISIONS: Decision[] = [
   // ===== ROUND 1 =====
   {
     id: 'grow-1-1',
+    decisionNumber: 1,
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Mexico Capacity Expansion',
@@ -34,6 +35,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-1-2',
+    decisionNumber: 2,
     category: 'grow',
     subcategory: 'Scale R&D for Next-Gen Portfolio',
     name: 'Advanced Powertrain R&D Expansion',
@@ -52,6 +54,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-1-3',
+    decisionNumber: 3,
     category: 'grow',
     subcategory: 'Enter New Geography / Market',
     name: 'Southeast Asia Market Entry',
@@ -70,6 +73,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-1-4',
+    decisionNumber: 4,
     category: 'grow',
     subcategory: 'JV / Strategic Partnership',
     name: 'Battery Technology JV',
@@ -88,6 +92,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-1-5',
+    decisionNumber: 5,
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Concentrated OEM Capacity Investment',
@@ -110,6 +115,7 @@ const GROW_DECISIONS: Decision[] = [
   // ===== ROUND 2 =====
   {
     id: 'grow-2-1',
+    decisionNumber: 16,
     category: 'grow',
     subcategory: 'Launch a New Business',
     name: 'Autonomous Driving Systems Unit',
@@ -128,6 +134,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-2-2',
+    decisionNumber: 17,
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Diversified OEM Capacity Investment',
@@ -147,6 +154,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-2-3',
+    decisionNumber: 18,
     category: 'grow',
     subcategory: 'Acquire a Business',
     name: 'Bolt-on Sensor Acquisition',
@@ -165,6 +173,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-2-4',
+    decisionNumber: 19,
     category: 'grow',
     subcategory: 'Platform-Level Technology Bets',
     name: 'Software-Defined Vehicle Platform',
@@ -183,6 +192,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-2-5',
+    decisionNumber: 20,
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'European Advanced Assembly Facility',
@@ -203,6 +213,7 @@ const GROW_DECISIONS: Decision[] = [
   // ===== ROUND 3 =====
   {
     id: 'grow-3-1',
+    decisionNumber: 31,
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'North America Advanced Component Hub',
@@ -221,6 +232,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-3-2',
+    decisionNumber: 32,
     category: 'grow',
     subcategory: 'JV / Strategic Partnership',
     name: 'Chinese OEM Partnership',
@@ -239,6 +251,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-3-3',
+    decisionNumber: 33,
     category: 'grow',
     subcategory: 'Acquire a Business',
     name: 'Distressed Competitor Acquisition',
@@ -257,6 +270,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-3-4',
+    decisionNumber: 34,
     category: 'grow',
     subcategory: 'Scale R&D for Next-Gen Portfolio',
     name: 'Solid-State Battery Research',
@@ -275,6 +289,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-3-5',
+    decisionNumber: 35,
     category: 'grow',
     subcategory: 'Revenue Diversification',
     name: 'Expand Beyond OEMs into Non-Traditional Customers',
@@ -295,6 +310,7 @@ const GROW_DECISIONS: Decision[] = [
   // ===== ROUND 4 =====
   {
     id: 'grow-4-1',
+    decisionNumber: 46,
     category: 'grow',
     subcategory: 'Acquire a Business',
     name: 'Opportunistic Acquisition - Premium Supplier',
@@ -313,6 +329,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-4-2',
+    decisionNumber: 47,
     category: 'grow',
     subcategory: 'Pricing Strategy',
     name: 'Aggressive pricing to win new business',
@@ -332,6 +349,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-4-3',
+    decisionNumber: 48,
     category: 'grow',
     subcategory: 'Enter New Geography / Market',
     name: 'Middle East Manufacturing Partnership',
@@ -350,6 +368,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-4-4',
+    decisionNumber: 49,
     category: 'grow',
     subcategory: 'JV / Strategic Partnership',
     name: 'Hydrogen Fuel Cell Alliance',
@@ -368,6 +387,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-4-5',
+    decisionNumber: 50,
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Underutilized Capacity Purchase',
@@ -388,6 +408,7 @@ const GROW_DECISIONS: Decision[] = [
   // ===== ROUND 5 =====
   {
     id: 'grow-5-1',
+    decisionNumber: 61,
     category: 'grow',
     subcategory: 'Commercial Prioritization',
     name: 'Prioritize Commercial Recoveries to win business',
@@ -406,6 +427,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-5-2',
+    decisionNumber: 62,
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Global Capacity Expansion Program',
@@ -424,6 +446,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-5-3',
+    decisionNumber: 63,
     category: 'grow',
     subcategory: 'Acquire a Business',
     name: 'Strategic Technology Acquisition',
@@ -442,6 +465,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-5-4',
+    decisionNumber: 64,
     category: 'grow',
     subcategory: 'JV / Strategic Partnership',
     name: 'OEM Strategic Alliance',
@@ -460,6 +484,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-5-5',
+    decisionNumber: 65,
     category: 'grow',
     subcategory: 'Launch a New Business',
     name: 'Mobility Services Platform',
@@ -478,6 +503,7 @@ const GROW_DECISIONS: Decision[] = [
   },
   {
     id: 'grow-5-6',
+    decisionNumber: 66,
     category: 'grow',
     subcategory: 'Scale R&D for Next-Gen Portfolio',
     name: 'Next-Gen ADAS Development',
@@ -504,6 +530,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   // ===== ROUND 1 =====
   {
     id: 'optimize-1-1',
+    decisionNumber: 6,
     category: 'optimize',
     subcategory: 'Factory of the Future',
     name: 'Smart Factory Pilot Program',
@@ -522,6 +549,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-1-2',
+    decisionNumber: 7,
     category: 'optimize',
     subcategory: 'SG&A Optimization',
     name: 'Shared Services Consolidation',
@@ -540,6 +568,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-1-3',
+    decisionNumber: 8,
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Supplier Dual-Sourcing Initiative',
@@ -559,6 +588,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-1-4',
+    decisionNumber: 9,
     category: 'optimize',
     subcategory: 'Enterprise Digital Transformation',
     name: 'ERP System Upgrade',
@@ -578,6 +608,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-1-5',
+    decisionNumber: 10,
     category: 'optimize',
     subcategory: 'Organizational Restructure',
     name: 'Management Delayering',
@@ -598,6 +629,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   // ===== ROUND 2 =====
   {
     id: 'optimize-2-1',
+    decisionNumber: 21,
     category: 'optimize',
     subcategory: 'Enterprise Digital Transformation',
     name: 'Advanced Analytics Platform',
@@ -617,6 +649,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-2-2',
+    decisionNumber: 22,
     category: 'optimize',
     subcategory: 'Factory of the Future',
     name: 'Automation Expansion Program',
@@ -635,6 +668,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-2-3',
+    decisionNumber: 23,
     category: 'optimize',
     subcategory: 'Select Group Transformation',
     name: 'Underperforming Division Turnaround',
@@ -654,6 +688,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-2-4',
+    decisionNumber: 24,
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Logistics Network Optimization',
@@ -672,6 +707,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-2-5',
+    decisionNumber: 25,
     category: 'optimize',
     subcategory: 'SG&A Optimization',
     name: 'Procurement Excellence Program',
@@ -693,6 +729,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   // ===== ROUND 3 =====
   {
     id: 'optimize-3-1',
+    decisionNumber: 36,
     category: 'optimize',
     subcategory: 'Divest Group',
     name: 'Non-Core Division Divestiture',
@@ -711,6 +748,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-3-2',
+    decisionNumber: 37,
     category: 'optimize',
     subcategory: 'Program Governance',
     name: 'Bypass Standard Launch Gates to Meet SOP Deadline',
@@ -729,6 +767,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-3-3',
+    decisionNumber: 38,
     category: 'optimize',
     subcategory: 'Factory of the Future',
     name: 'Energy Efficiency Program',
@@ -747,6 +786,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-3-4',
+    decisionNumber: 39,
     category: 'optimize',
     subcategory: 'Organizational Restructure',
     name: 'Workforce Right-Sizing',
@@ -766,6 +806,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-3-5',
+    decisionNumber: 40,
     category: 'optimize',
     subcategory: 'Select Group Transformation',
     name: 'Plant Footprint Rationalization',
@@ -786,6 +827,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   // ===== ROUND 4 =====
   {
     id: 'optimize-4-1',
+    decisionNumber: 51,
     category: 'optimize',
     subcategory: 'Capital Timing',
     name: 'Material process flow automation',
@@ -804,6 +846,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-4-2',
+    decisionNumber: 52,
     category: 'optimize',
     subcategory: 'Divest Group',
     name: 'Strategic Asset Sale',
@@ -821,6 +864,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-4-3',
+    decisionNumber: 53,
     category: 'optimize',
     subcategory: 'SG&A Optimization',
     name: 'Working from Home Optimization',
@@ -839,6 +883,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-4-4',
+    decisionNumber: 54,
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Supplier Renegotiation Program',
@@ -857,6 +902,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-4-5',
+    decisionNumber: 55,
     category: 'optimize',
     subcategory: 'Enterprise Digital Transformation',
     name: 'Process Automation Acceleration',
@@ -877,6 +923,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   // ===== ROUND 5 =====
   {
     id: 'optimize-5-1',
+    decisionNumber: 67,
     category: 'optimize',
     subcategory: 'Enterprise Digital Transformation',
     name: 'AI Operations Platform',
@@ -896,6 +943,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-5-2',
+    decisionNumber: 68,
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Inventory Optimization',
@@ -914,6 +962,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-5-3',
+    decisionNumber: 69,
     category: 'optimize',
     subcategory: 'SG&A Optimization',
     name: 'Sales Force Effectiveness',
@@ -932,6 +981,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-5-4',
+    decisionNumber: 70,
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Near-Shoring Initiative',
@@ -951,6 +1001,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
   },
   {
     id: 'optimize-5-5',
+    decisionNumber: 71,
     category: 'optimize',
     subcategory: 'Factory of the Future',
     name: 'Full Smart Factory Rollout',
@@ -977,6 +1028,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   // ===== ROUND 1 =====
   {
     id: 'sustain-1-1',
+    decisionNumber: 11,
     category: 'sustain',
     subcategory: 'Portfolio management (maintenance)',
     name: 'Customer Diversification Initiative',
@@ -995,6 +1047,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-1-2',
+    decisionNumber: 12,
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Technical Talent Development',
@@ -1012,6 +1065,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-1-3',
+    decisionNumber: 13,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Cybersecurity Enhancement',
@@ -1030,6 +1084,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-1-4',
+    decisionNumber: 14,
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Equipment Refresh Program',
@@ -1048,6 +1103,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-1-5',
+    decisionNumber: 15,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Environmental Compliance Investment',
@@ -1068,6 +1124,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   // ===== ROUND 2 =====
   {
     id: 'sustain-2-1',
+    decisionNumber: 26,
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Leadership Development Program',
@@ -1085,6 +1142,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-2-2',
+    decisionNumber: 27,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Quality Management System Upgrade',
@@ -1103,6 +1161,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-2-3',
+    decisionNumber: 28,
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'IT Infrastructure Modernization',
@@ -1121,6 +1180,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-2-4',
+    decisionNumber: 29,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Health & Safety Investment',
@@ -1139,6 +1199,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-2-5',
+    decisionNumber: 30,
     category: 'sustain',
     subcategory: 'Portfolio management (maintenance)',
     name: 'Supplier Relationship Investment',
@@ -1159,6 +1220,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   // ===== ROUND 3 =====
   {
     id: 'sustain-3-1',
+    decisionNumber: 41,
     category: 'sustain',
     subcategory: 'Portfolio management (maintenance)',
     name: 'Contract Renewal Defense',
@@ -1177,6 +1239,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-3-2',
+    decisionNumber: 42,
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Critical Equipment Maintenance',
@@ -1195,6 +1258,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-3-3',
+    decisionNumber: 43,
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Key Talent Retention Program',
@@ -1213,6 +1277,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-3-4',
+    decisionNumber: 44,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Business Continuity Enhancement',
@@ -1231,6 +1296,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-3-5',
+    decisionNumber: 45,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Insurance Coverage Upgrade',
@@ -1251,6 +1317,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   // ===== ROUND 4 =====
   {
     id: 'sustain-4-1',
+    decisionNumber: 56,
     category: 'sustain',
     subcategory: 'Organizational Restructure',
     name: 'Deep Cost Restructuring',
@@ -1270,6 +1337,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-4-2',
+    decisionNumber: 57,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Regulatory Compliance Baseline',
@@ -1288,6 +1356,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-4-3',
+    decisionNumber: 58,
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Minimum Viable Maintenance',
@@ -1306,6 +1375,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-4-4',
+    decisionNumber: 59,
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Core Team Preservation',
@@ -1324,6 +1394,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-4-5',
+    decisionNumber: 60,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Financial Risk Management',
@@ -1344,6 +1415,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   // ===== ROUND 5 =====
   {
     id: 'sustain-5-1',
+    decisionNumber: 72,
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Deferred Maintenance Catch-Up',
@@ -1362,6 +1434,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-5-2',
+    decisionNumber: 73,
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Workforce Rebuilding Program',
@@ -1379,6 +1452,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-5-3',
+    decisionNumber: 74,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'ESG & Sustainability Investment',
@@ -1397,6 +1471,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
   },
   {
     id: 'sustain-5-4',
+    decisionNumber: 75,
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Post-Crisis Risk Assessment',

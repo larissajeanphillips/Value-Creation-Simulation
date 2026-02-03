@@ -46,7 +46,7 @@ const ROUND_DATA: Record<number, RoundData> = {
     scenario: 'Business as Usual',
     narrative: 'Market conditions remain favorable with continued investment in electrification and advanced technologies.',
     details: [
-      'EV transition accelerating as planned',
+      'Technology investments progressing as planned',
       'Healthy OEM order books',
     ],
     color: 'emerald',

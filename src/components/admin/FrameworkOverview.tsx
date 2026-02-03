@@ -125,7 +125,7 @@ const SCENARIOS = [
     name: 'Business as Usual',
     narrative: 'Market conditions remain favorable with continued investment in electrification and advanced technologies.',
     keyDetails: [
-      'EV transition accelerating as planned',
+      'Technology investments progressing as planned',
       'Healthy OEM order books',
     ],
     smartResponse: 'Execute on strategy; diversify OEM exposure',

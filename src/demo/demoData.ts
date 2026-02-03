@@ -316,10 +316,10 @@ export function createDemoRoundResults(round: RoundNumber): RoundResults {
         decisionsCount: 4,
       },
     ],
-    scenarioNarrative: 'The automotive sector saw steady growth this quarter as EV adoption continued to accelerate.',
+    scenarioNarrative: 'The automotive sector saw steady growth this quarter as technology investments continued to pay off.',
     marketOutlook: {
       backwardStatements: [
-        'EV adoption exceeded expectations, driving component demand higher.',
+        'Technology adoption exceeded expectations, driving component demand higher.',
         'Supply chain pressures eased as semiconductor availability improved.',
       ],
       forwardStatements: [

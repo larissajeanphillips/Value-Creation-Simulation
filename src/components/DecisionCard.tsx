@@ -112,6 +112,11 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           className
         )}
       >
+        {/* Decision Number - Small, light gray, non-conspicuous */}
+        <span className="absolute top-2 left-3 text-xs text-slate-400 font-normal">
+          #{decision.decisionNumber}
+        </span>
+        
         {/* Selection Indicator */}
         {isSelected && (
           <div className={cn(
@@ -238,13 +243,17 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           `bg-${config.accentColor}-50`
         )}>
           <div className="flex items-start justify-between mb-4">
-            <div className={cn(
-              "inline-flex items-center gap-2 px-4 py-2 rounded-full text-base font-semibold",
-              config.bgColor,
-              config.textColor
-            )}>
-              <CategoryIcon className="w-5 h-5" />
-              {config.label}
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "inline-flex items-center gap-2 px-4 py-2 rounded-full text-base font-semibold",
+                config.bgColor,
+                config.textColor
+              )}>
+                <CategoryIcon className="w-5 h-5" />
+                {config.label}
+              </div>
+              {/* Decision Number in Modal */}
+              <span className="text-sm text-slate-400">#{decision.decisionNumber}</span>
             </div>
             
             <button
