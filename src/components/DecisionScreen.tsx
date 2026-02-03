@@ -33,8 +33,10 @@ import {
 import { cn } from '@/lib/utils';
 import { useGameStore, useCurrentTeam, useRemainingBudget, useSelectedCost } from '@/stores/gameStore';
 import { useSocket } from '@/hooks/useSocket';
+import { useFinancials } from '@/hooks/useFinancials';
 import { DecisionCard } from './DecisionCard';
 import { MagnaLogo } from './MagnaLogo';
+import { FinancialDashboard } from './FinancialDashboard';
 import type { Decision, DecisionCategory } from '@/types/game';
 
 interface DecisionScreenProps {
@@ -90,6 +92,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
   
   const remainingBudget = useRemainingBudget();
   const selectedCost = useSelectedCost();
+  const financialMetrics = useFinancials();
   
   const { submitDecisions, unsubmitDecisions, syncDraftSelections } = useSocket();
   
@@ -591,6 +594,15 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
       
       {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto px-4 py-6 w-full">
+        {/* Financial Dashboard */}
+        <div className="mb-6">
+          <FinancialDashboard 
+            metrics={financialMetrics}
+            year={2025}
+            variant="compact"
+          />
+        </div>
+        
         {/* Category Sections */}
         {(['grow', 'optimize', 'sustain'] as DecisionCategory[]).map((category) => {
           const config = CATEGORY_CONFIG[category];

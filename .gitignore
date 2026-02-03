@@ -200,3 +200,25 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+### Node.js ###
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+### Python ###
+*.py
+*.pyc
+__pycache__/
+*.txt
+!requirements.txt
+
+### Build outputs ###
+dist/
+build/
+
+### Temporary files ###
+*.csv
+*-output.txt
