@@ -1,8 +1,8 @@
 /**
- * TeamScoreboard Component
+ * Standalone Value Creation Challenge Scoreboard
  * 
- * Full-screen scoreboard view designed for display on big screens.
- * Shows team rankings and stock price trends across rounds (FY26-FY30).
+ * This is a standalone deployment of the scoreboard display
+ * designed for big screen presentations.
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -16,46 +16,45 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { ArrowLeft, RefreshCw, TrendingUp, TrendingDown } from 'lucide-react';
+import { RefreshCw, TrendingUp, TrendingDown, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAdmin, type ScoreboardData, type ScoreboardTeam } from '@/hooks/useAdmin';
-import { MagnaLogo } from '../MagnaLogo';
 
-interface TeamScoreboardProps {
-  onBack: () => void;
+// API URL - configure via environment variable
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+// Types
+interface ScoreboardTeam {
+  teamId: number;
+  teamName: string;
+  currentStockPrice: number;
+  cumulativeTSR: number;
+  stockPricesByRound: Record<number, number>;
 }
 
-// Team colors for the chart lines (matches the screenshot style)
+interface ScoreboardData {
+  success: boolean;
+  currentRound: number;
+  status: string;
+  scenario: {
+    type: string;
+    narrative: string;
+    eventTriggered: boolean;
+    eventDescription?: string;
+  };
+  teams: ScoreboardTeam[];
+}
+
+// Team colors for the chart lines
 const TEAM_COLORS = [
-  '#ef4444', // red
-  '#f97316', // orange
-  '#eab308', // yellow
-  '#22c55e', // green
-  '#14b8a6', // teal
-  '#3b82f6', // blue
-  '#8b5cf6', // violet
-  '#ec4899', // pink
-  '#f43f5e', // rose
-  '#06b6d4', // cyan
-  '#84cc16', // lime
-  '#a855f7', // purple
-  '#10b981', // emerald
-  '#6366f1', // indigo
-  '#f59e0b', // amber
-  '#0ea5e9', // sky
-  '#d946ef', // fuchsia
-  '#64748b', // slate
-  '#78716c', // stone
-  '#71717a', // zinc
+  '#ef4444', '#f97316', '#eab308', '#22c55e', '#14b8a6',
+  '#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#06b6d4',
+  '#84cc16', '#a855f7', '#10b981', '#6366f1', '#f59e0b',
+  '#0ea5e9', '#d946ef', '#64748b', '#78716c', '#71717a',
 ];
 
 // Year labels for rounds
 const ROUND_LABELS: Record<number, string> = {
-  1: 'FY26',
-  2: 'FY27',
-  3: 'FY28',
-  4: 'FY29',
-  5: 'FY30',
+  1: 'FY26', 2: 'FY27', 3: 'FY28', 4: 'FY29', 5: 'FY30',
 };
 
 // Scenario headlines for the news ticker
@@ -67,26 +66,179 @@ const SCENARIO_HEADLINES: Record<string, string> = {
 };
 
 /**
- * Main scoreboard component for big screen display
+ * Main App Component
  */
-export const TeamScoreboard: React.FC<TeamScoreboardProps> = ({ onBack }) => {
+function App() {
+  const [pin, setPin] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  // Check for stored PIN on mount
+  useEffect(() => {
+    const storedPin = sessionStorage.getItem('scoreboardPin');
+    if (storedPin) {
+      setPin(storedPin);
+      // Auto-authenticate with stored PIN
+      authenticateWithPin(storedPin);
+    }
+  }, []);
+
+  /**
+   * Authenticate with admin PIN
+   */
+  const authenticateWithPin = async (pinToUse: string) => {
+    setIsAuthenticating(true);
+    setAuthError(null);
+    
+    try {
+      const response = await fetch(`${API_URL}/admin/auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pinToUse }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        sessionStorage.setItem('scoreboardPin', pinToUse);
+        setIsAuthenticated(true);
+      } else {
+        setAuthError(data.error || 'Invalid PIN');
+      }
+    } catch {
+      setAuthError('Connection error. Please check the API URL.');
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pin.trim()) {
+      authenticateWithPin(pin.trim());
+    }
+  };
+
+  if (!isAuthenticated) {
+    return <LoginScreen 
+      pin={pin} 
+      setPin={setPin} 
+      onSubmit={handleSubmit}
+      error={authError}
+      isLoading={isAuthenticating}
+    />;
+  }
+
+  return <Scoreboard />;
+}
+
+/**
+ * Login Screen Component
+ */
+interface LoginScreenProps {
+  pin: string;
+  setPin: (pin: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  error: string | null;
+  isLoading: boolean;
+}
+
+function LoginScreen({ pin, setPin, onSubmit, error, isLoading }: LoginScreenProps) {
+  return (
+    <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+      <div className="bg-slate-800 rounded-xl p-8 w-full max-w-md border border-slate-700">
+        <div className="flex flex-col items-center mb-6">
+          <img 
+            src="/magna-logo-white.png" 
+            alt="Magna" 
+            className="h-10 mb-4"
+          />
+          <h1 className="text-xl font-semibold text-white">
+            Value Creation Challenge
+          </h1>
+          <p className="text-slate-400 text-sm mt-1">
+            Scoreboard Display
+          </p>
+        </div>
+        
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="pin" className="block text-sm font-medium text-slate-300 mb-2">
+              Admin PIN
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <input
+                id="pin"
+                type="password"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                placeholder="Enter admin PIN"
+                className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                autoFocus
+              />
+            </div>
+          </div>
+          
+          {error && (
+            <p className="text-red-400 text-sm">{error}</p>
+          )}
+          
+          <button
+            type="submit"
+            disabled={isLoading || !pin.trim()}
+            className="w-full py-3 px-4 bg-magna-red hover:bg-red-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+          >
+            {isLoading ? 'Connecting...' : 'View Scoreboard'}
+          </button>
+        </form>
+        
+        <p className="mt-6 text-xs text-slate-500 text-center">
+          Connect to: {API_URL}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Main Scoreboard Component
+ */
+function Scoreboard() {
   const [data, setData] = useState<ScoreboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [error, setError] = useState<string | null>(null);
   
-  const { getScoreboard } = useAdmin();
-  
-  // Fetch scoreboard data
+  /**
+   * Fetch scoreboard data from API
+   */
   const fetchData = useCallback(async () => {
-    const result = await getScoreboard();
-    if (result) {
-      setData(result);
-      setLastUpdated(new Date());
+    const pin = sessionStorage.getItem('scoreboardPin');
+    if (!pin) return;
+    
+    try {
+      const response = await fetch(
+        `${API_URL}/admin/scoreboard?pin=${encodeURIComponent(pin)}`
+      );
+      const result = await response.json();
+      
+      if (result.success) {
+        setData(result);
+        setLastUpdated(new Date());
+        setError(null);
+      } else {
+        setError(result.error || 'Failed to fetch data');
+      }
+    } catch {
+      setError('Connection error');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [getScoreboard]);
+  }, []);
   
-  // Initial fetch and polling every 3 seconds for live updates
+  // Initial fetch and polling every 3 seconds
   useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 3000);
@@ -107,13 +259,11 @@ export const TeamScoreboard: React.FC<TeamScoreboardProps> = ({ onBack }) => {
       <header className="bg-slate-800 border-b border-slate-700">
         <div className="flex items-center justify-between px-6 py-3">
           <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <MagnaLogo variant="white" size="xs" />
+            <img 
+              src="/magna-logo-white.png" 
+              alt="Magna" 
+              className="h-6"
+            />
             <div className="h-6 w-px bg-slate-700" />
             <h1 className="text-lg font-semibold text-white">
               Value Creation Challenge Scoreboard
@@ -140,12 +290,19 @@ export const TeamScoreboard: React.FC<TeamScoreboardProps> = ({ onBack }) => {
             <span className="font-bold uppercase text-xs tracking-wider bg-white/20 px-2 py-0.5 rounded">
               Market Update
             </span>
-            <p className="text-sm font-medium animate-marquee whitespace-nowrap">
+            <p className="text-sm font-medium whitespace-nowrap">
               {headline}
             </p>
           </div>
         </div>
       </header>
+      
+      {/* Error Banner */}
+      {error && (
+        <div className="bg-red-900/50 border-b border-red-800 px-6 py-2 text-red-200 text-sm">
+          {error}
+        </div>
+      )}
       
       {/* Main Content */}
       <main className="flex-1 flex p-6 gap-6 overflow-hidden">
@@ -265,7 +422,7 @@ export const TeamScoreboard: React.FC<TeamScoreboardProps> = ({ onBack }) => {
       </footer>
     </div>
   );
-};
+}
 
 /**
  * Single team row in the leaderboard
@@ -276,7 +433,7 @@ interface TeamRowProps {
   color: string;
 }
 
-const TeamRow: React.FC<TeamRowProps> = ({ team, rank, color }) => {
+function TeamRow({ team, rank, color }: TeamRowProps) {
   const tsrPercent = (team.cumulativeTSR * 100).toFixed(1);
   const isPositive = team.cumulativeTSR >= 0;
   
@@ -326,12 +483,10 @@ const TeamRow: React.FC<TeamRowProps> = ({ team, rank, color }) => {
       </td>
     </tr>
   );
-};
+}
 
 /**
  * Build chart data from team stock prices
- * Creates an array with entries for ALL 5 rounds (FY26-FY30),
- * with data points only for completed rounds
  */
 function buildChartData(
   teams: ScoreboardTeam[],
@@ -340,13 +495,11 @@ function buildChartData(
   if (teams.length === 0) return [];
   
   const data: Array<Record<string, number | string | undefined>> = [];
-  const totalRounds = 5; // Always show all 5 years
+  const totalRounds = 5;
   
-  // Build data for ALL rounds (FY26-FY30)
   for (let round = 1; round <= totalRounds; round++) {
     const roundData: Record<string, number | string | undefined> = { round };
     
-    // Only populate team prices for completed rounds
     if (round <= currentRound) {
       for (const team of teams) {
         const price = team.stockPricesByRound[round];
@@ -355,7 +508,6 @@ function buildChartData(
         }
       }
     }
-    // Future rounds will have undefined values (no data points plotted)
     
     data.push(roundData);
   }
@@ -363,4 +515,4 @@ function buildChartData(
   return data;
 }
 
-TeamScoreboard.displayName = 'TeamScoreboard';
+export default App;

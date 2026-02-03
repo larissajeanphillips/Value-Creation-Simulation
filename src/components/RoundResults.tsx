@@ -9,9 +9,9 @@
  */
 
 import React, { useState } from 'react';
-import { FileText, Trophy, ChevronRight } from 'lucide-react';
+import { FileText, Trophy, ChevronRight, Table2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { InvestorReportSummary } from './investor-report';
+import { InvestorReportSummary, SimplifiedFinancialsModal } from './investor-report';
 import { RankingsPreview } from './RankingsPreview';
 
 type ResultsTab = 'equity-research' | 'rankings-preview';
@@ -28,6 +28,7 @@ interface RoundResultsProps {
  */
 export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
   const [activeTab, setActiveTab] = useState<ResultsTab>('equity-research');
+  const [showFinancialsModal, setShowFinancialsModal] = useState(false);
   
   return (
     <div className={cn("relative", className)}>
@@ -63,6 +64,16 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
               >
                 <Trophy className="w-4 h-4" />
                 Rankings & Next Round
+              </button>
+              
+              {/* View Financials Button */}
+              <div className="w-px h-6 bg-slate-300 mx-2" />
+              <button
+                onClick={() => setShowFinancialsModal(true)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-300"
+              >
+                <Table2 className="w-4 h-4" />
+                View Financials
               </button>
             </div>
             
@@ -100,6 +111,12 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
         {activeTab === 'equity-research' && <InvestorReportSummary />}
         {activeTab === 'rankings-preview' && <RankingsPreview />}
       </div>
+      
+      {/* Simplified Financials Modal */}
+      <SimplifiedFinancialsModal 
+        isOpen={showFinancialsModal} 
+        onClose={() => setShowFinancialsModal(false)} 
+      />
     </div>
   );
 };

@@ -5,5 +5,6 @@
  */
 
 export { InvestorReportSummary } from './InvestorReportSummary';
+export { SimplifiedFinancialsModal } from './SimplifiedFinancialsModal';
 export { generateAnalystQuotes, MARKET_GROWTH_RATES } from './analystQuotes';
 export type { AnalystQuote } from './analystQuotes';

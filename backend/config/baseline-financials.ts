@@ -1,38 +1,48 @@
 /**
  * Value Creation Challenge - Baseline Financials
- * Starting position for all teams (2025 EOY)
+ * Starting position for all teams (2024 EOY / 2025 Start)
  * 
- * Based on Magna International's simplified 2025 financials
+ * Based on Magna International's 2024 Annual Report
  * All values in USD Millions unless otherwise noted
  */
 
 import type { BaselineFinancials, FinancialMetrics } from '../types/game.js';
 
 /**
- * 2025 End of Year baseline financials
+ * 2024 End of Year baseline financials (from Magna International 2024 Annual Report)
  * This is the starting position for all teams
  */
 export const BASELINE_FINANCIALS: BaselineFinancials = {
   // Income Statement
-  revenue: 42836,           // $42,836M
-  cogs: -37037,             // ($37,037M) - Cost of Goods Sold
-  sga: -2061,               // ($2,061M) - SG&A
-  ebitda: 3738,             // $3,738M - EBITDA
-  depreciation: -1510,      // ($1,510M)
-  amortization: -112,       // ($112M)
-  ebit: 2116,               // $2,116M - EBIT
+  revenue: 42836,           // $42,836M - Annual report
+  cogs: -37037,             // ($37,037M) - Cost of Goods Sold - Annual report
+  sga: -2061,               // ($2,061M) - SG&A - Annual report
+  ebitda: 3738,             // $3,738M - Revenue - COGS - SG&A
+  depreciation: -1510,      // ($1,510M) - Annual report
+  amortization: -112,       // ($112M) - Annual report
+  ebit: 2116,               // $2,116M - EBITDA - Depreciation - Amortization
   
   // Cash Flow
-  cashTaxes: -466,          // ($466M)
-  capex: -1713,             // ($1,713M) - Capital Expenditures
-  operatingFCF: 1561,       // $1,561M - Operating Free Cash Flow
-  beginningCash: 1247,      // $1,247M
+  cashTaxes: -466,          // ($466M) - Assume 22% of incremental EBIT
+  capex: -1713,             // ($1,713M) - 4% of revenue (average CAPEX as % of revenue)
+  operatingFCF: 1559,       // $1,559M - EBIT - Taxes + D&A - CapEx
+  beginningCash: 1247,      // $1,247M - End of year cash position
+  dividends: -539,          // ($539M) - Annual report
+  shareBuybacks: -207,      // ($207M) - Repurchase of Common Shares - Annual report
+  
+  // Balance Sheet
+  netDebt: 7765,            // $7,765M - MVI (Market Value Index)
+  minorityInterest: 418,    // $418M - Annual report
+  investedCapital: 15828,   // $15,828M - MVI, adjusted to reclassify Equity Investments as operating
   
   // Valuation
   npv: 22738,               // $22,738M - Enterprise Value / NPV
-  equityValue: 14164,       // $14,164M
-  sharesOutstanding: 287,   // 287M shares
-  sharePrice: 49.29,        // $49.29 per share
+  equityValue: 14555,       // $14,555M - NPV - Net Debt - Minority Interest
+  sharesOutstanding: 287.34, // 287.34M shares - MVI
+  sharePrice: 50.67,        // $50.67 per share - Equity Value / Shares
+  
+  // Rates
+  costOfEquity: 0.09,       // 9% - Cost of Equity
 };
 
 /**
@@ -41,6 +51,10 @@ export const BASELINE_FINANCIALS: BaselineFinancials = {
  */
 export function createInitialMetrics(): FinancialMetrics {
   const baseline = BASELINE_FINANCIALS;
+  
+  // Calculate ROIC: EBIT * (1 - Tax Rate) / Invested Capital
+  const nopat = baseline.ebit * (1 - TAX_RATE);
+  const roic = nopat / baseline.investedCapital;
   
   return {
     // Income Statement
@@ -57,7 +71,7 @@ export function createInitialMetrics(): FinancialMetrics {
     capex: baseline.capex,
     operatingFCF: baseline.operatingFCF,
     beginningCash: baseline.beginningCash,
-    endingCash: baseline.beginningCash + baseline.operatingFCF,
+    endingCash: baseline.beginningCash + baseline.operatingFCF + baseline.dividends + baseline.shareBuybacks,
     
     // Valuation
     npv: baseline.npv,
@@ -67,7 +81,7 @@ export function createInitialMetrics(): FinancialMetrics {
     
     // Derived Metrics
     ebitMargin: baseline.ebit / baseline.revenue,  // ~4.94%
-    roic: 0.08,  // Assume 8% ROIC (slightly above WACC per PRD)
+    roic: roic,  // NOPAT / Invested Capital (~10.4%)
   };
 }
 

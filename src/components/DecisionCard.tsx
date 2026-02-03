@@ -112,6 +112,11 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           className
         )}
       >
+        {/* Decision Number - Top right, formatted nicely */}
+        <span className="absolute top-2 right-3 text-xs text-slate-400 font-normal">
+          Decision #{decision.decisionNumber}
+        </span>
+        
         {/* Selection Indicator */}
         {isSelected && (
           <div className={cn(
@@ -124,7 +129,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         
         {/* Risky Badge */}
         {decision.isRisky && (
-          <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-red-100 rounded-full">
+          <div className="absolute top-8 right-3 flex items-center gap-1 px-2 py-1 bg-red-100 rounded-full">
             <AlertTriangle className="w-4 h-4 text-red-600" />
             <span className="text-sm font-medium text-red-600">Risky</span>
           </div>
@@ -148,7 +153,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         {/* Cost */}
         <div className="flex items-center gap-1.5 mb-3">
           <DollarSign className="w-5 h-5 text-slate-700" />
-          <span className="text-xl font-bold text-slate-800">${decision.cost}M</span>
+          <span className="text-xl font-bold text-slate-800">{decision.cost}M</span>
         </div>
         
         {/* Brief Description */}
@@ -238,13 +243,17 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           `bg-${config.accentColor}-50`
         )}>
           <div className="flex items-start justify-between mb-4">
-            <div className={cn(
-              "inline-flex items-center gap-2 px-4 py-2 rounded-full text-base font-semibold",
-              config.bgColor,
-              config.textColor
-            )}>
-              <CategoryIcon className="w-5 h-5" />
-              {config.label}
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "inline-flex items-center gap-2 px-4 py-2 rounded-full text-base font-semibold",
+                config.bgColor,
+                config.textColor
+              )}>
+                <CategoryIcon className="w-5 h-5" />
+                {config.label}
+              </div>
+              {/* Decision Number in Modal */}
+              <span className="text-sm text-slate-400">Decision #{decision.decisionNumber}</span>
             </div>
             
             <button
@@ -262,7 +271,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
               <DollarSign className="w-6 h-6 text-slate-700" />
-              <span className="text-3xl font-bold text-slate-800">${decision.cost}M</span>
+              <span className="text-3xl font-bold text-slate-800">{decision.cost}M</span>
             </div>
             
             {decision.isRisky && (

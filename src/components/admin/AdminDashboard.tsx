@@ -24,6 +24,9 @@ import {
   LogOut,
   BookOpen,
   BarChart3,
+  ExternalLink,
+  Monitor,
+  ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
@@ -37,6 +40,7 @@ interface AdminDashboardProps {
   className?: string;
   onOpenFramework?: () => void;
   onOpenScoreboard?: () => void;
+  onOpenAgenda?: () => void;
 }
 
 interface TeamInfo {
@@ -71,7 +75,7 @@ const YEAR_SCENARIOS: Record<number, {
     theme: 'Continued Stability',
     description: 'Market conditions remain favorable with continued investment in electrification and advanced technologies. Supply chains have stabilized post-pandemic.',
     keyDynamics: [
-      'EV transition accelerating as planned',
+      'Technology investments progressing as planned',
       'Healthy OEM order books',
       'Focus on operational excellence',
     ],
@@ -117,7 +121,7 @@ const YEAR_SCENARIOS: Record<number, {
   },
 };
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpenFramework, onOpenScoreboard }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpenFramework, onOpenScoreboard, onOpenAgenda }) => {
   // Local state
   const [teamCount, setTeamCount] = useState(15);
   const [roundDuration, setRoundDuration] = useState(600);
@@ -331,6 +335,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                   Principles & Dynamics
                 </button>
               )}
+              
+              {/* Agenda Button */}
+              {onOpenAgenda && (
+                <button
+                  onClick={onOpenAgenda}
+                  className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors font-medium"
+                >
+                  <ClipboardList className="w-4 h-4" />
+                  Agenda & Scripts
+                </button>
+              )}
+              
+              {/* Big Screen Display Hub Link */}
+              <a
+                href="/display"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors font-medium"
+              >
+                <Monitor className="w-4 h-4" />
+                Display Hub
+                <ExternalLink className="w-3 h-3" />
+              </a>
               
               {/* Logout */}
               <button

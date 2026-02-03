@@ -154,6 +154,10 @@ function DemoAdminView() {
     // Auto-authenticate admin in demo mode
     setAuthenticated(true);
     
+    // Also grant access to protected routes (Display Hub, etc.) so admin
+    // doesn't need to enter password again when navigating there
+    sessionStorage.setItem('tsr_access_granted', 'true');
+    
     // Set up demo game state so admin can see teams
     updateGameState(createDemoGameState(1, 'lobby'));
   }, [setAuthenticated, updateGameState]);

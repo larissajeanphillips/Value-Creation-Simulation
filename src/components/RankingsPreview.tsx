@@ -87,7 +87,7 @@ const NEXT_YEAR_SCENARIOS: Record<number, {
     theme: 'Continued Stability',
     description: 'Market conditions remain favorable with continued investment in electrification and advanced technologies. Supply chains have stabilized post-pandemic.',
     keyDynamics: [
-      'EV transition accelerating as planned',
+      'Technology investments progressing as planned',
       'Healthy OEM order books',
       'Focus on operational excellence',
     ],
@@ -382,33 +382,40 @@ export const RankingsPreview: React.FC<RankingsPreviewProps> = ({ className }) =
     return [...roundResults.teamResults].sort((a, b) => a.rank - b.rank);
   }, [roundResults]);
   
-  // Build chart data from round results
-  // Since we don't have full history in the client, we'll show current round data
-  // and baseline for comparison
+  // Build chart data from round results with full stock price history
   const chartData = useMemo(() => {
     if (!roundResults || !gameState) return [];
     
     const currentRound = roundResults.round;
     const data: Array<Record<string, number | string>> = [];
     
-    // Add baseline (FY25)
+    // Add baseline (FY25) - starting point for all teams
     const baselineData: Record<string, number | string> = { round: 0, label: 'FY25' };
-    roundResults.teamResults.forEach((result, index) => {
+    roundResults.teamResults.forEach((result) => {
       const name = gameState.teams[result.teamId]?.teamName || `Team ${result.teamId}`;
       baselineData[name] = BASELINE_STOCK_PRICE;
     });
     data.push(baselineData);
     
-    // Add current round data
-    const currentData: Record<string, number | string> = { 
-      round: currentRound, 
-      label: ROUND_LABELS[currentRound] || `R${currentRound}` 
-    };
-    roundResults.teamResults.forEach((result, index) => {
-      const name = gameState.teams[result.teamId]?.teamName || `Team ${result.teamId}`;
-      currentData[name] = result.stockPrice;
-    });
-    data.push(currentData);
+    // Add data for each completed round (FY26, FY27, etc.) using stockPricesByRound
+    for (let round = 1; round <= currentRound; round++) {
+      const roundData: Record<string, number | string> = { 
+        round, 
+        label: ROUND_LABELS[round] || `R${round}` 
+      };
+      
+      roundResults.teamResults.forEach((result) => {
+        const name = gameState.teams[result.teamId]?.teamName || `Team ${result.teamId}`;
+        // Use historical price if available, otherwise current price for current round
+        const price = result.stockPricesByRound?.[round] ?? 
+          (round === currentRound ? result.stockPrice : undefined);
+        if (price !== undefined) {
+          roundData[name] = price;
+        }
+      });
+      
+      data.push(roundData);
+    }
     
     return data;
   }, [roundResults, gameState]);

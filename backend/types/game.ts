@@ -43,6 +43,9 @@ export interface Decision {
   /** Unique identifier for the decision */
   id: string;
   
+  /** Decision number from Excel (1-75) for reference */
+  decisionNumber: number;
+  
   /** Category: grow, optimize, or sustain */
   category: DecisionCategory;
   
@@ -351,9 +354,11 @@ export interface GameConfig {
 }
 
 /**
- * BaselineFinancials - Starting financial position (2025 EOY)
+ * BaselineFinancials - Starting financial position (2024 EOY / 2025 Start)
+ * Based on Magna International's 2024 Annual Report
  */
 export interface BaselineFinancials {
+  // Income Statement
   revenue: number;
   cogs: number;
   sga: number;
@@ -361,14 +366,28 @@ export interface BaselineFinancials {
   depreciation: number;
   amortization: number;
   ebit: number;
+  
+  // Cash Flow
   cashTaxes: number;
   capex: number;
   operatingFCF: number;
   beginningCash: number;
+  dividends: number;
+  shareBuybacks: number;
+  
+  // Balance Sheet
+  netDebt: number;
+  minorityInterest: number;
+  investedCapital: number;
+  
+  // Valuation
   npv: number;
   equityValue: number;
   sharesOutstanding: number;
   sharePrice: number;
+  
+  // Rates
+  costOfEquity: number;
 }
 
 // =============================================================================
@@ -470,6 +489,8 @@ export interface TeamRoundResult {
   rank: number;
   decisionsCount: number;
   totalSpent: number;
+  /** Historical stock prices by round (for chart display) */
+  stockPricesByRound: Record<number, number>;
 }
 
 /**

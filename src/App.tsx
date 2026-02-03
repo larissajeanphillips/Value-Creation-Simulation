@@ -12,6 +12,11 @@
  * - /live - Live multiplayer team interface
  * - /live-admin - Live facilitator control panel
  * 
+ * Display Routes (for big screen presentation):
+ * - /display - Display Hub - landing page for AV teams
+ * - /display/scoreboard - Live scoreboard (auto-updates)
+ * - /display/1 through /display/5 - Round macro environment displays
+ * 
  * Team Interface States:
  * - Team Selection (not joined)
  * - Lobby (joined, game not started)
@@ -33,43 +38,105 @@ import { AdminPanel } from '@/components/admin';
 import { RoundCountdown } from '@/components/RoundCountdown';
 import { DemoApp } from '@/demo';
 import { MagnaLogo } from '@/components/MagnaLogo';
+import { MacroEnvironmentDisplay } from '@/components/MacroEnvironmentDisplay';
+import { DisplayHub } from '@/components/DisplayHub';
+import { ScoreboardDisplay } from '@/components/ScoreboardDisplay';
 
 // =============================================================================
 // ACCESS CODE - Change this to control who can access the app
 // =============================================================================
 const ACCESS_CODE = 'magna2026';
 
-type Route = 'demo-player' | 'demo-admin' | 'live-team' | 'live-admin';
+type Route = 'demo-player' | 'demo-admin' | 'live-team' | 'live-admin' | 'display-hub' | 'display-round' | 'display-scoreboard';
+
+/**
+ * Determines the route based on current URL
+ * Called both for initial render and URL changes
+ */
+function getRouteFromURL(): { route: Route; displayRound: number } {
+  const path = window.location.pathname;
+  const hash = window.location.hash;
+  
+  // /display routes - check if path starts with /display
+  if (path.startsWith('/display')) {
+    // /display/scoreboard
+    if (path === '/display/scoreboard' || path === '/display/scoreboard/') {
+      return { route: 'display-scoreboard', displayRound: 1 };
+    }
+    
+    // /display/1-5 - Round displays
+    const roundMatch = path.match(/^\/display\/(\d)\/?$/);
+    if (roundMatch) {
+      const roundNum = parseInt(roundMatch[1], 10);
+      if (roundNum >= 1 && roundNum <= 5) {
+        return { route: 'display-round', displayRound: roundNum };
+      }
+    }
+    
+    // /display or /display/ - Display hub
+    if (path === '/display' || path === '/display/') {
+      return { route: 'display-hub', displayRound: 1 };
+    }
+  }
+  
+  // Hash-based display routes (fallback)
+  if (hash.startsWith('#display')) {
+    if (hash === '#display/scoreboard') {
+      return { route: 'display-scoreboard', displayRound: 1 };
+    }
+    const hashRoundMatch = hash.match(/^#display\/(\d)$/);
+    if (hashRoundMatch) {
+      const roundNum = parseInt(hashRoundMatch[1], 10);
+      if (roundNum >= 1 && roundNum <= 5) {
+        return { route: 'display-round', displayRound: roundNum };
+      }
+    }
+    if (hash === '#display') {
+      return { route: 'display-hub', displayRound: 1 };
+    }
+  }
+  
+  // /admin or #admin - Admin demo mode
+  if (path === '/admin' || path === '/admin/' || hash === '#admin') {
+    return { route: 'demo-admin', displayRound: 1 };
+  }
+  
+  // /live-admin - Live admin mode (requires backend)
+  if (path === '/live-admin' || path === '/live-admin/' || hash === '#live-admin') {
+    return { route: 'live-admin', displayRound: 1 };
+  }
+  
+  // /live - Live multiplayer mode (requires backend)
+  if (path === '/live' || path === '/live/' || hash === '#live') {
+    return { route: 'live-team', displayRound: 1 };
+  }
+  
+  // Everything else defaults to player demo mode
+  return { route: 'demo-player', displayRound: 1 };
+}
 
 function App() {
-  // Default to demo player mode so each visitor gets their own isolated game
-  const [route, setRoute] = useState<Route>('demo-player');
+  // Initialize route from URL synchronously using initializer function
+  // This ensures getRouteFromURL() is called exactly once on mount
+  const [routeState, setRouteState] = useState(() => {
+    return getRouteFromURL();
+  });
+  const route = routeState.route;
+  const displayRound = routeState.displayRound;
   
-  // Handle routing based on URL
+  // Wrapper to update both route and displayRound together
+  const updateRoute = (newRoute: { route: Route; displayRound: number }) => {
+    setRouteState(newRoute);
+  };
+  
+  // Handle URL changes (back/forward navigation)
   useEffect(() => {
     const handleRouteChange = () => {
-      const path = window.location.pathname;
-      const hash = window.location.hash;
-      
-      // /admin or #admin - Admin demo mode (each visitor gets fresh admin view)
-      if (path === '/admin' || hash === '#admin') {
-        setRoute('demo-admin');
-      }
-      // /live-admin - Live admin mode (requires backend)
-      else if (path === '/live-admin' || hash === '#live-admin') {
-        setRoute('live-admin');
-      }
-      // /live - Live multiplayer mode (requires backend)
-      else if (path === '/live' || hash === '#live') {
-        setRoute('live-team');
-      }
-      // Everything else defaults to player demo mode
-      else {
-        setRoute('demo-player');
-      }
+      const newRoute = getRouteFromURL();
+      console.log('[App] Route change detected:', newRoute);
+      updateRoute(newRoute);
     };
     
-    handleRouteChange();
     window.addEventListener('popstate', handleRouteChange);
     window.addEventListener('hashchange', handleRouteChange);
     
@@ -78,6 +145,33 @@ function App() {
       window.removeEventListener('hashchange', handleRouteChange);
     };
   }, []);
+  
+  // Scoreboard display - no password required for easy AV team access
+  if (route === 'display-scoreboard') {
+    return <ScoreboardDisplay />;
+  }
+  
+  // Display hub - no password required (it's just a navigation page)
+  if (route === 'display-hub') {
+    return <DisplayHub />;
+  }
+  
+  // Round environment displays - protected by access code
+  if (route === 'display-round') {
+    return (
+      <AccessGate accessCode={ACCESS_CODE}>
+        <MacroEnvironmentDisplay
+          round={displayRound}
+          showNavigation={true}
+          onRoundChange={(r) => {
+            updateRoute({ route: 'display-round', displayRound: r });
+            // Update URL to match
+            window.history.pushState({}, '', `/display/${r}`);
+          }}
+        />
+      </AccessGate>
+    );
+  }
   
   // Demo modes - no backend required, each visitor gets their own fresh game
   if (route === 'demo-player') {
