@@ -26,6 +26,7 @@ import {
   BarChart3,
   ExternalLink,
   Monitor,
+  ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
@@ -39,6 +40,7 @@ interface AdminDashboardProps {
   className?: string;
   onOpenFramework?: () => void;
   onOpenScoreboard?: () => void;
+  onOpenAgenda?: () => void;
 }
 
 interface TeamInfo {
@@ -119,7 +121,7 @@ const YEAR_SCENARIOS: Record<number, {
   },
 };
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpenFramework, onOpenScoreboard }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpenFramework, onOpenScoreboard, onOpenAgenda }) => {
   // Local state
   const [teamCount, setTeamCount] = useState(15);
   const [roundDuration, setRoundDuration] = useState(600);
@@ -331,6 +333,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                 >
                   <BookOpen className="w-4 h-4" />
                   Principles & Dynamics
+                </button>
+              )}
+              
+              {/* Agenda Button */}
+              {onOpenAgenda && (
+                <button
+                  onClick={onOpenAgenda}
+                  className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors font-medium"
+                >
+                  <ClipboardList className="w-4 h-4" />
+                  Agenda & Scripts
                 </button>
               )}
               
