@@ -107,7 +107,7 @@ This round, you need to consider:
 • What are your competitors doing, and does it change your approach?
 • How do you balance continued investment with showing results?
 
-The automotive industry rewards patience and punishes short-term thinking. But it also punishes those who wait too long to act.
+This industry rewards patience and punishes short-term thinking. But it also punishes those who wait too long to act.
 
 You have 10 minutes. Your decisions are due when the timer ends.
 
@@ -138,7 +138,7 @@ But here's the real pressure point.
 
 Your OEM customers aren't absorbing these costs. They're coming to you demanding price reductions. They're pointing to their own margin pressures and expecting their supply base to help.
 
-This is the squeeze that separates good companies from great ones.
+This is the squeeze that separates good companies from great ones. We've all seen it before.
 
 You now face difficult trade-offs:
 • Do you protect margins by cutting costs aggressively? Where?
@@ -195,9 +195,9 @@ You now have a choice to make:
 
 The decisions you make in a downturn define the company you become in the upturn.
 
-You have 10 more minutes to recalibrate your strategy. The clock is running.
+You have 10 more minutes to adjust your strategy. The clock is running.
 
-Show us what you're made of.`,
+Good luck.`,
     transitionNote: 'This round has a mid-round twist. Start teams with the normal briefing, then interrupt with the recession announcement after 2 minutes.',
   },
   5: {
@@ -238,7 +238,7 @@ This is it. Your final chance to shape Magna's trajectory.
 
 You have 10 minutes to make your last capital allocation decisions.
 
-After this, we'll calculate final share prices and crown a winner.
+After this, we calculate final share prices and announce the winner.
 
 Make it count.`,
     transitionNote: 'Build energy—this is the final round. After results, proceed to overall simulation takeaways.',

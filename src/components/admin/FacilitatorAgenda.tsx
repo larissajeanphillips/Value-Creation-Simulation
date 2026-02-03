@@ -5,7 +5,7 @@
  * Displays the full 120-minute session structure.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   ArrowLeft, 
   Clock, 
@@ -15,6 +15,10 @@ import {
   FileText,
   MessageSquare,
   ExternalLink,
+  Play,
+  Pause,
+  RotateCcw,
+  MapPin,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MagnaLogo } from '../MagnaLogo';
@@ -62,7 +66,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 3,
         startMinute: 0,
         endMinute: 3,
-        script: 'Good morning everyone. Before we dive into today\'s challenge, I want to take a moment to reinforce why we\'re here. Value creation isn\'t just a financial metric—it\'s the fundamental measure of whether we\'re fulfilling our mission to shareholders, employees, and customers. Throughout the year, we\'ve talked about the importance of disciplined capital allocation, operational excellence, and strategic positioning. Today, you\'ll experience firsthand the trade-offs and decisions that drive—or destroy—shareholder value. This simulation will put you in the CEO seat and challenge you to balance short-term performance with long-term positioning. The decisions you make will have real consequences in the game, just as they do in our business.',
+        script: 'Good morning everyone. Before we get started, I want to remind you why we\'re here. Value creation is how we measure success—for our shareholders, our employees, and our customers. All year, we\'ve talked about disciplined capital allocation, operational excellence, and strategic positioning. Today, you\'ll experience firsthand the trade-offs and decisions that create—or destroy—shareholder value. This simulation puts you in the CEO seat. You\'ll have to balance short-term results with long-term positioning. The decisions you make will have real consequences in the game, just like they do in our business.',
       },
       {
         id: 'intro-2',
@@ -71,7 +75,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 3,
         startMinute: 3,
         endMinute: 6,
-        script: 'Now, let me introduce the Magna Value Creation Challenge. Over the next two hours, you and your teammates will step into the role of Magna\'s executive leadership team. You\'ll face real market scenarios—some favorable, some challenging—and make capital allocation decisions that will determine your company\'s share price. Your mission is simple: maximize shareholder value over five simulated fiscal years. But as you\'ll discover, simple doesn\'t mean easy. Every decision has trade-offs. Every investment has risk. And the market will judge your performance quarter after quarter. Phil will now walk you through the mechanics. Good luck—and may the best leadership team win.',
+        script: 'Now, let me introduce the Magna Value Creation Challenge. Over the next two hours, you and your team will step into the role of Magna\'s executive leadership. You\'ll face real market scenarios—some good, some tough—and make capital allocation decisions that determine your share price. Your mission is simple: maximize shareholder value over five simulated years. But as you\'ll see, simple doesn\'t mean easy. Every decision has trade-offs. Every investment has risk. And the market will judge your performance round after round. Phil will walk you through the mechanics. Good luck.',
       },
     ],
   },
@@ -90,7 +94,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 2,
         startMinute: 6,
         endMinute: 8,
-        script: 'Thank you, Swamy. Let me explain what we\'re trying to accomplish today. The objective of this challenge is to help you understand—viscerally, not just intellectually—the business decisions and trade-offs that drive earnings per share and growth. You\'ll experience the tension between investing for the future and delivering results today. You\'ll see how strategic choices compound over time. And most importantly, you\'ll understand why alignment between strategy and execution is so critical. Every decision you make will impact multiple levers: revenue growth, margins, capital efficiency, and ultimately, your share price.',
+        script: 'Thank you, Swamy. Let me explain what we\'re trying to accomplish today. The goal of this challenge is simple: help you experience firsthand the business decisions and trade-offs that drive earnings per share and growth. You\'ll feel the tension between investing for the future and delivering results today. You\'ll see how strategic choices add up over time. And you\'ll see why getting strategy and execution aligned is so critical. Every decision you make will impact multiple levers: revenue growth, margins, capital efficiency, and ultimately, your share price.',
       },
       {
         id: 'overview-2',
@@ -334,7 +338,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 3,
         startMinute: 81,
         endMinute: 84,
-        script: 'Round 4 results—the recession round. [SHOW SCOREBOARD] This round separated the resilient from the fragile. Look at the share price movements—some teams lost significant value, while others held steady or even gained. In a real recession, companies with strong balance sheets and operational discipline survive. Companies that overextended get hurt. Notice how the teams that maintained financial flexibility had more options. Those who invested everything in growth found themselves exposed. One round remains. The recovery is coming. The question is: are you positioned to capture it?',
+        script: 'Round 4 results—the recession round. [SHOW SCOREBOARD] This round separated the strong from the weak. Look at the share prices—some teams lost real value, while others held steady or even gained. In a real recession, companies with strong balance sheets survive. Companies that overextended get hurt. Notice how teams with financial flexibility had more options. Those who bet everything on growth got caught. One round left. The recovery is coming. The question is: are you positioned to capture it?',
       },
       // Round 5
       {
@@ -370,7 +374,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 1,
         startMinute: 96,
         endMinute: 97,
-        script: 'Final decisions are LOCKED! That\'s it—five years of simulated capital allocation decisions are complete. The market will now render its final judgment on your leadership. Let\'s see who created the most shareholder value.',
+        script: 'Final decisions are LOCKED! That\'s it—five years of capital allocation decisions are done. Now we see who created the most shareholder value.',
       },
       {
         id: 'round-5-results',
@@ -379,7 +383,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 4,
         startMinute: 97,
         endMinute: 101,
-        script: 'Ladies and gentlemen, the final results of the Magna Value Creation Challenge. [SHOW FINAL SCOREBOARD - BUILD SUSPENSE] In fifth place... [TEAM NAME] with a share price of [X]. In fourth place... [TEAM NAME]. In third place... [TEAM NAME]. Your runner-up, in second place... [TEAM NAME] with a share price of [X]. And your winner of the Value Creation Challenge... [PAUSE] [TEAM NAME] with a final share price of [X]! [APPLAUSE] Congratulations to our winning team. But before we celebrate, let\'s talk about what we all learned today.',
+        script: 'Alright, let\'s see the final results. [SHOW FINAL SCOREBOARD - BUILD SUSPENSE] In fifth place... [TEAM NAME] with a share price of [X]. Fourth place... [TEAM NAME]. Third place... [TEAM NAME]. In second place... [TEAM NAME] with a share price of [X]. And the winner of the Value Creation Challenge... [PAUSE] [TEAM NAME] with a final share price of [X]! [APPLAUSE] Congratulations. But before we celebrate, let\'s talk about what we learned today.',
       },
     ],
   },
@@ -398,7 +402,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 7,
         startMinute: 101,
         endMinute: 108,
-        script: 'Let\'s analyze what drove the results today. [SHOW ANALYTICS DASHBOARD] Looking across all teams, some clear patterns emerge. First, balance matters. Teams that went all-in on any single strategy—whether aggressive growth or pure cost-cutting—generally underperformed. The winners found ways to invest in the future while maintaining operational discipline. Second, timing matters. Early investments in capabilities paid off when conditions got tough. Teams that waited until the recession to cut costs were already behind. Third, adaptability matters. The recession round showed who could pivot quickly versus who was locked into their strategy. Finally, look at these numbers: [SHOW TSR BREAKDOWN]. The gap between the highest and lowest performing teams is [X]%. That\'s the difference between being a value creator and a value destroyer. Every decision you made—or didn\'t make—contributed to that gap.',
+        script: 'Let\'s look at what drove the results today. [SHOW ANALYTICS DASHBOARD] Looking across all teams, a few clear patterns stand out. First, balance matters. Teams that went all-in on any single strategy—whether aggressive growth or pure cost-cutting—generally underperformed. The winners invested in the future while keeping operational discipline. Second, timing matters. Early investments in capabilities paid off when things got tough. Teams that waited until the recession to cut costs were already behind. Third, adaptability matters. The recession round showed who could pivot fast versus who was stuck in their strategy. Look at these numbers: [SHOW TSR BREAKDOWN]. The gap between the top and bottom teams is [X]%. That\'s the difference between creating value and destroying it. Every decision you made—or didn\'t make—contributed to that gap.',
       },
       {
         id: 'takeaways-2',
@@ -407,7 +411,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 7,
         startMinute: 108,
         endMinute: 115,
-        script: 'Now I want to hear from you. What surprised you about this experience? [PAUSE - TAKE 2-3 RESPONSES] What was the hardest trade-off you faced? [PAUSE - TAKE 2-3 RESPONSES] For our winning team: what was your strategy? Walk us through your thinking. [PAUSE - LET WINNING TEAM EXPLAIN] For a team that struggled: where do you think things went wrong? [PAUSE - BE SUPPORTIVE, FOCUS ON LEARNING] Here\'s what I want you to take back to your day jobs: These aren\'t hypothetical decisions. Every quarter, Magna\'s leadership faces versions of these same trade-offs. Growth versus margins. Short-term versus long-term. Defense versus offense. The difference is, in the real world, you don\'t get five rounds—you get one shot. The discipline and strategic thinking you practiced today is exactly what we need every day.',
+        script: 'Now I want to hear from you. What surprised you? [PAUSE - TAKE 2-3 RESPONSES] What was the toughest trade-off you faced? [PAUSE - TAKE 2-3 RESPONSES] Winning team: what was your strategy? Walk us through it. [PAUSE - LET WINNING TEAM EXPLAIN] For a team that struggled: where do you think it went wrong? [PAUSE - BE SUPPORTIVE, FOCUS ON LEARNING] Here\'s what I want you to take back to your jobs: These aren\'t hypothetical decisions. Every quarter, Magna\'s leadership faces the same trade-offs. Growth versus margins. Short-term versus long-term. Defense versus offense. The difference is, in the real world, you don\'t get five rounds—you get one shot. The discipline and thinking you practiced today is exactly what we need every day.',
       },
     ],
   },
@@ -426,7 +430,7 @@ const AGENDA_DATA: AgendaSection[] = [
         duration: 5,
         startMinute: 115,
         endMinute: 120,
-        script: 'Thank you all for your engagement today. What I observed was impressive strategic thinking, passionate debate, and real learning. Let me leave you with three thoughts. First, value creation is a choice. Every day, in every decision, you choose to create or destroy value. This simulation compressed years into hours, but the principles are the same. Second, we win as a team. Notice how the best-performing groups today weren\'t dominated by one voice—they leveraged diverse perspectives and made better decisions because of it. That\'s exactly how we need to operate across Magna. Third, the real challenge starts tomorrow. Take what you learned today and apply it. Ask yourself: Is this decision creating long-term value? Am I balancing growth with discipline? Am I adapting to changing conditions or clinging to outdated plans? Congratulations again to our winners, and thank you all for investing this time in becoming better leaders. Now go create value.',
+        script: 'Thank you all for your energy today. I saw great strategic thinking, good debate, and real learning happening in this room. Let me leave you with three things. First, value creation is a choice. Every day, every decision, you\'re either creating value or destroying it. We compressed years into hours today, but the principles are the same. Second, we win as a team. The best-performing groups today weren\'t dominated by one voice—they used different perspectives and made better decisions because of it. That\'s how we need to operate across Magna. Third, the real challenge starts tomorrow. Take what you learned today and use it. Ask yourself: Is this decision creating long-term value? Am I balancing growth with discipline? Am I adapting to change or sticking to old plans? Congratulations to our winners. Thank you all for your time today. Now let\'s go create value.',
       },
     ],
   },
@@ -470,6 +474,135 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
     new Set(AGENDA_DATA.map((s) => s.id)) // All expanded by default
   );
   const [scriptModalRound, setScriptModalRound] = useState<number | null>(null);
+  
+  // Session timer state
+  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+  /**
+   * Timer effect - updates elapsed time every second when running
+   */
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    
+    if (isTimerRunning && sessionStartTime) {
+      interval = setInterval(() => {
+        const now = Date.now();
+        const elapsed = Math.floor((now - sessionStartTime) / 1000);
+        setElapsedSeconds(elapsed);
+      }, 1000);
+    }
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isTimerRunning, sessionStartTime]);
+
+  /**
+   * Start the session timer
+   */
+  const startTimer = useCallback(() => {
+    if (!sessionStartTime) {
+      setSessionStartTime(Date.now());
+    } else {
+      // Resume from pause - adjust start time to account for elapsed
+      setSessionStartTime(Date.now() - elapsedSeconds * 1000);
+    }
+    setIsTimerRunning(true);
+  }, [sessionStartTime, elapsedSeconds]);
+
+  /**
+   * Pause the session timer
+   */
+  const pauseTimer = useCallback(() => {
+    setIsTimerRunning(false);
+  }, []);
+
+  /**
+   * Reset the session timer
+   */
+  const resetTimer = useCallback(() => {
+    setIsTimerRunning(false);
+    setSessionStartTime(null);
+    setElapsedSeconds(0);
+  }, []);
+
+  /**
+   * Get elapsed minutes for agenda positioning
+   */
+  const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+
+  /**
+   * Find the current agenda section and item based on elapsed time
+   */
+  const getCurrentAgendaPosition = useCallback(() => {
+    let currentSection: AgendaSection | null = null;
+    let currentItem: AgendaItem | null = null;
+    let nextItem: AgendaItem | null = null;
+
+    for (const section of AGENDA_DATA) {
+      if (elapsedMinutes >= section.startMinute && elapsedMinutes < section.endMinute) {
+        currentSection = section;
+        
+        for (let i = 0; i < section.items.length; i++) {
+          const item = section.items[i];
+          if (item.notes === 'section-header') continue;
+          
+          if (elapsedMinutes >= item.startMinute && elapsedMinutes < item.endMinute) {
+            currentItem = item;
+            // Find next non-header item
+            for (let j = i + 1; j < section.items.length; j++) {
+              if (section.items[j].notes !== 'section-header') {
+                nextItem = section.items[j];
+                break;
+              }
+            }
+            break;
+          }
+        }
+        break;
+      }
+    }
+
+    // If past last section, mark as complete
+    if (elapsedMinutes >= 120) {
+      return {
+        currentSection: AGENDA_DATA[AGENDA_DATA.length - 1],
+        currentItem: null,
+        nextItem: null,
+        isComplete: true,
+      };
+    }
+
+    return { currentSection, currentItem, nextItem, isComplete: false };
+  }, [elapsedMinutes]);
+
+  const agendaPosition = getCurrentAgendaPosition();
+
+  /**
+   * Format seconds as MM:SS or HH:MM:SS
+   */
+  const formatElapsedTime = (seconds: number): string => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    if (hrs > 0) {
+      return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  /**
+   * Check if an item is currently active based on elapsed time
+   */
+  const isItemActive = (item: AgendaItem): boolean => {
+    if (!isTimerRunning && elapsedSeconds === 0) return false;
+    return elapsedMinutes >= item.startMinute && elapsedMinutes < item.endMinute;
+  };
 
   /**
    * Extracts the round number from an agenda item ID (e.g., 'round-1-setup' -> 1)
@@ -682,19 +815,27 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
                           const isRoundHeader = item.notes === 'section-header';
                           const isScenarioIntro = isScenarioIntroItem(item.id);
                           const roundNumber = isScenarioIntro ? getRoundFromItemId(item.id) : null;
+                          const isActive = !isRoundHeader && isItemActive(item);
                           
                           return (
                             <tr
                               key={item.id}
                               className={cn(
-                                "border-b border-slate-100 last:border-0",
-                                isRoundHeader && "bg-slate-50"
+                                "border-b border-slate-100 last:border-0 transition-colors",
+                                isRoundHeader && "bg-slate-50",
+                                isActive && "bg-emerald-50 border-l-4 border-l-emerald-500"
                               )}
                             >
                               <td className={cn(
                                 "py-3 px-2",
                                 isRoundHeader && "font-semibold text-slate-800"
                               )}>
+                                {isActive && (
+                                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500 text-white text-xs font-bold rounded-full mb-2">
+                                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                                    NOW
+                                  </div>
+                                )}
                                 <div className="whitespace-pre-line">
                                   {isScenarioIntro && roundNumber ? (
                                     <button
