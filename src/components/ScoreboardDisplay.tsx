@@ -69,27 +69,33 @@ export const ScoreboardDisplay: React.FC = () => {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [connectionError, setConnectionError] = useState(false);
   
-  // Fetch scoreboard data from API
+  // Fetch scoreboard data from the public API endpoint
   const fetchData = useCallback(async () => {
     try {
-      // Try to fetch from the backend API
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
-      const response = await fetch(`${backendUrl}/api/admin/scoreboard`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      // Fetch from the public scoreboard endpoint (no auth required)
+      // Use VITE_SOCKET_URL for consistency with other hooks, default to port 3000
+      const backendUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const response = await fetch(
+        `${backendUrl}/scoreboard`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       
       if (response.ok) {
         const result = await response.json();
-        if (result.success && result.data) {
+        if (result.success) {
           setData({
-            teams: result.data.teams || [],
-            currentRound: result.data.currentRound || 1,
-            scenarioType: result.data.scenario?.type || 'business_as_usual',
-            gameStatus: result.data.gameStatus || 'lobby',
+            teams: result.teams || [],
+            currentRound: result.currentRound || 1,
+            scenarioType: result.scenario?.type || 'business_as_usual',
+            gameStatus: result.status || 'lobby',
           });
           setConnectionError(false);
+        } else {
+          setConnectionError(true);
         }
       } else {
         setConnectionError(true);
@@ -129,7 +135,9 @@ export const ScoreboardDisplay: React.FC = () => {
           <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <Users className="w-8 h-8 text-amber-400" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">Waiting for Game</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            Waiting for Game
+          </h2>
           <p className="text-slate-400">
             The scoreboard will appear once the game server is running and teams have joined.
           </p>
@@ -142,11 +150,15 @@ export const ScoreboardDisplay: React.FC = () => {
     );
   }
   
+  // Split teams into two columns for display (8 left, 7 right for 15 teams)
+  const leftColumnTeams = data.teams.slice(0, 8);
+  const rightColumnTeams = data.teams.slice(8, 15);
+  
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col">
+    <div className="h-screen bg-slate-900 text-white flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700">
-        <div className="flex items-center justify-between px-8 py-4">
+      <header className="bg-slate-800 border-b border-slate-700 flex-shrink-0">
+        <div className="flex items-center justify-between px-8 py-3">
           <div className="flex items-center gap-6">
             <MagnaLogo variant="white" size="sm" />
             <div className="h-8 w-px bg-slate-700" />
@@ -187,81 +199,156 @@ export const ScoreboardDisplay: React.FC = () => {
         </div>
       </header>
       
-      {/* Main Content */}
-      <main className="flex-1 flex p-6 gap-6 overflow-hidden">
-        {/* Left Side - Leaderboard */}
-        <div className="w-96 flex-shrink-0 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex flex-col">
-          <div className="px-6 py-4 bg-slate-700/50 border-b border-slate-700 flex items-center gap-3">
+      {/* Main Content - Compact layout to fit all teams */}
+      <main className="flex-1 flex p-4 gap-4 overflow-hidden min-h-0">
+        {/* Left Side - Two-Column Leaderboard */}
+        <div className="w-[700px] flex-shrink-0 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex flex-col">
+          <div className="px-4 py-2 bg-slate-700/50 border-b border-slate-700 flex items-center gap-3 flex-shrink-0">
             <Trophy className="w-5 h-5 text-yellow-400" />
             <h2 className="text-lg font-semibold text-white">
               Team Rankings
             </h2>
           </div>
           
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 flex min-h-0">
             {data.teams.length > 0 ? (
-              <table className="w-full">
-                <thead className="sticky top-0 bg-slate-800">
-                  <tr className="text-xs text-slate-400 uppercase tracking-wider border-b border-slate-700">
-                    <th className="text-left px-6 py-3 w-16">Rank</th>
-                    <th className="text-left px-4 py-3">Team</th>
-                    <th className="text-right px-6 py-3">Stock Price</th>
-                    <th className="text-right px-6 py-3">TSR</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.teams.map((team, index) => (
-                    <tr 
-                      key={team.teamId}
-                      className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        <div className={cn(
-                          "w-8 h-8 rounded-lg flex items-center justify-center font-bold",
-                          index === 0 && "bg-yellow-500/20 text-yellow-400",
-                          index === 1 && "bg-slate-400/20 text-slate-300",
-                          index === 2 && "bg-amber-600/20 text-amber-500",
-                          index > 2 && "bg-slate-600/30 text-slate-400"
-                        )}>
-                          {index + 1}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-4 h-4 rounded-full flex-shrink-0"
-                            style={{ backgroundColor: TEAM_COLORS[index % TEAM_COLORS.length] }}
-                          />
-                          <span className="font-medium text-white truncate max-w-[140px]">
-                            {team.teamName}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <span className="font-mono font-semibold text-white text-lg">
-                          ${team.currentStockPrice.toFixed(2)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <span className={cn(
-                          "flex items-center justify-end gap-1 font-medium",
-                          team.cumulativeTSR >= 0 ? "text-emerald-400" : "text-red-400"
-                        )}>
-                          {team.cumulativeTSR >= 0 ? (
-                            <TrendingUp className="w-4 h-4" />
-                          ) : (
-                            <TrendingDown className="w-4 h-4" />
-                          )}
-                          {team.cumulativeTSR >= 0 ? '+' : ''}
-                          {(team.cumulativeTSR * 100).toFixed(1)}%
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <>
+                {/* Left Column - Ranks 1-8 */}
+                <div className="flex-1 border-r border-slate-700">
+                  <table className="w-full">
+                    <thead className="bg-slate-800">
+                      <tr className="text-xs text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                        <th className="text-left px-3 py-2 w-12">Rank</th>
+                        <th className="text-left px-2 py-2">Team</th>
+                        <th className="text-right px-3 py-2">Price</th>
+                        <th className="text-right px-3 py-2">TSR</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leftColumnTeams.map((team, index) => (
+                        <tr 
+                          key={team.teamId}
+                          className="border-b border-slate-700/50"
+                        >
+                          <td className="px-3 py-1.5">
+                            <div className={cn(
+                              "w-6 h-6 rounded flex items-center justify-center font-bold text-sm",
+                              index === 0 && "bg-yellow-500/20 text-yellow-400",
+                              index === 1 && "bg-slate-400/20 text-slate-300",
+                              index === 2 && "bg-amber-600/20 text-amber-500",
+                              index > 2 && "bg-slate-600/30 text-slate-400"
+                            )}>
+                              {index + 1}
+                            </div>
+                          </td>
+                          <td className="px-2 py-1.5">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-3 h-3 rounded-full flex-shrink-0"
+                                style={{ backgroundColor: TEAM_COLORS[index % TEAM_COLORS.length] }}
+                              />
+                              <span className="font-medium text-white text-sm truncate max-w-[120px]">
+                                {team.teamName}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-3 py-1.5 text-right">
+                            <span className="font-mono font-semibold text-white text-sm">
+                              ${team.currentStockPrice.toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="px-3 py-1.5 text-right">
+                            <span className={cn(
+                              "flex items-center justify-end gap-1 font-medium text-sm",
+                              team.cumulativeTSR >= 0 ? "text-emerald-400" : "text-red-400"
+                            )}>
+                              {team.cumulativeTSR >= 0 ? (
+                                <TrendingUp className="w-3 h-3" />
+                              ) : (
+                                <TrendingDown className="w-3 h-3" />
+                              )}
+                              {team.cumulativeTSR >= 0 ? '+' : ''}
+                              {(team.cumulativeTSR * 100).toFixed(1)}%
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                
+                {/* Right Column - Ranks 9-15 */}
+                <div className="flex-1">
+                  <table className="w-full">
+                    <thead className="bg-slate-800">
+                      <tr className="text-xs text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                        <th className="text-left px-3 py-2 w-12">Rank</th>
+                        <th className="text-left px-2 py-2">Team</th>
+                        <th className="text-right px-3 py-2">Price</th>
+                        <th className="text-right px-3 py-2">TSR</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rightColumnTeams.map((team, index) => {
+                        const actualRank = index + 8;
+                        return (
+                          <tr 
+                            key={team.teamId}
+                            className="border-b border-slate-700/50"
+                          >
+                            <td className="px-3 py-1.5">
+                              <div className="w-6 h-6 rounded flex items-center justify-center font-bold text-sm bg-slate-600/30 text-slate-400">
+                                {actualRank + 1}
+                              </div>
+                            </td>
+                            <td className="px-2 py-1.5">
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className="w-3 h-3 rounded-full flex-shrink-0"
+                                  style={{ backgroundColor: TEAM_COLORS[actualRank % TEAM_COLORS.length] }}
+                                />
+                                <span className="font-medium text-white text-sm truncate max-w-[120px]">
+                                  {team.teamName}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-3 py-1.5 text-right">
+                              <span className="font-mono font-semibold text-white text-sm">
+                                ${team.currentStockPrice.toFixed(2)}
+                              </span>
+                            </td>
+                            <td className="px-3 py-1.5 text-right">
+                              <span className={cn(
+                                "flex items-center justify-end gap-1 font-medium text-sm",
+                                team.cumulativeTSR >= 0 ? "text-emerald-400" : "text-red-400"
+                              )}>
+                                {team.cumulativeTSR >= 0 ? (
+                                  <TrendingUp className="w-3 h-3" />
+                                ) : (
+                                  <TrendingDown className="w-3 h-3" />
+                                )}
+                                {team.cumulativeTSR >= 0 ? '+' : ''}
+                                {(team.cumulativeTSR * 100).toFixed(1)}%
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {/* Fill empty rows if less than 7 teams in right column */}
+                      {rightColumnTeams.length < 7 && Array.from({ length: 7 - rightColumnTeams.length }).map((_, i) => (
+                        <tr key={`empty-${i}`} className="border-b border-slate-700/50">
+                          <td className="px-3 py-1.5"><div className="h-6" /></td>
+                          <td className="px-2 py-1.5" />
+                          <td className="px-3 py-1.5" />
+                          <td className="px-3 py-1.5" />
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             ) : (
-              <div className="flex items-center justify-center h-full text-slate-400 p-8">
+              <div className="flex items-center justify-center w-full text-slate-400 p-8">
                 <p>Waiting for teams to join...</p>
               </div>
             )}
@@ -269,8 +356,8 @@ export const ScoreboardDisplay: React.FC = () => {
         </div>
         
         {/* Right Side - Chart */}
-        <div className="flex-1 bg-slate-800 rounded-xl border border-slate-700 p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-6">
+        <div className="flex-1 bg-slate-800 rounded-xl border border-slate-700 p-4 flex flex-col min-h-0">
+          <div className="flex items-center justify-between mb-2 flex-shrink-0">
             <h2 className="text-lg font-semibold text-white">
               Stock Price Performance
             </h2>
@@ -284,20 +371,20 @@ export const ScoreboardDisplay: React.FC = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={chartData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                   <XAxis
                     dataKey="round"
                     stroke="#64748b"
-                    tick={{ fill: '#94a3b8', fontSize: 14 }}
+                    tick={{ fill: '#94a3b8', fontSize: 12 }}
                     tickFormatter={(value) => ROUND_LABELS[value] || `R${value}`}
                     ticks={[1, 2, 3, 4, 5]}
                     domain={[1, 5]}
                   />
                   <YAxis
                     stroke="#64748b"
-                    tick={{ fill: '#94a3b8', fontSize: 14 }}
+                    tick={{ fill: '#94a3b8', fontSize: 12 }}
                     tickFormatter={(value) => `$${value}`}
                     domain={['auto', 'auto']}
                   />
@@ -312,8 +399,8 @@ export const ScoreboardDisplay: React.FC = () => {
                     labelFormatter={(label) => ROUND_LABELS[label] || `Round ${label}`}
                   />
                   <Legend
-                    wrapperStyle={{ paddingTop: '20px' }}
-                    formatter={(value) => <span className="text-slate-300 text-sm">{value}</span>}
+                    wrapperStyle={{ paddingTop: '10px' }}
+                    formatter={(value) => <span className="text-slate-300 text-xs">{value}</span>}
                   />
                   {data.teams.map((team, index) => (
                     <Line
@@ -321,9 +408,9 @@ export const ScoreboardDisplay: React.FC = () => {
                       type="monotone"
                       dataKey={team.teamName}
                       stroke={TEAM_COLORS[index % TEAM_COLORS.length]}
-                      strokeWidth={3}
-                      dot={{ r: 5, fill: TEAM_COLORS[index % TEAM_COLORS.length] }}
-                      activeDot={{ r: 7 }}
+                      strokeWidth={2}
+                      dot={{ r: 4, fill: TEAM_COLORS[index % TEAM_COLORS.length] }}
+                      activeDot={{ r: 6 }}
                       connectNulls
                     />
                   ))}
@@ -341,14 +428,26 @@ export const ScoreboardDisplay: React.FC = () => {
         </div>
       </main>
       
-      {/* Footer */}
-      <footer className="bg-slate-800 border-t border-slate-700 px-8 py-3">
-        <div className="flex items-center justify-between text-sm text-slate-500">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span>Live • Auto-updating every 3 seconds</span>
+      {/* Bottom Banner - Reserved space for stage */}
+      <footer className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 border-t border-slate-600 px-8 py-8 flex-shrink-0">
+        <div className="flex items-center justify-center">
+          <div className="flex items-center gap-8">
+            <MagnaLogo variant="white" size="md" />
+            <div className="h-12 w-px bg-slate-600" />
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-white tracking-wide">
+                Value Creation Challenge
+              </h2>
+              <p className="text-slate-400 text-sm mt-1">
+                Strategic Decision Making in Action
+              </p>
+            </div>
+            <div className="h-12 w-px bg-slate-600" />
+            <div className="flex items-center gap-2 text-slate-400 text-sm">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              <span>Live • Auto-updating</span>
+            </div>
           </div>
-          <span>Value Creation Challenge</span>
         </div>
       </footer>
     </div>
