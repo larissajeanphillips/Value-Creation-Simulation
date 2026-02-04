@@ -17,8 +17,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     restart: unless-stopped
     networks:
       - app-network
@@ -42,8 +41,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-postgres}
       - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost}
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     restart: unless-stopped
     networks:
       - app-network

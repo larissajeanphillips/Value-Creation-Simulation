@@ -36,6 +36,8 @@ import {
   generateFinalResults,
 } from './calculation-engine.js';
 
+import { calculateConsolidatedProjection } from './consolidation-engine.js';
+
 // =============================================================================
 // Constants
 // =============================================================================
@@ -865,6 +867,61 @@ export class GameStateManager {
   }
 
   /**
+   * Calculate Round 1 results using the consolidation engine
+   */
+  private calculateRound1Results(): void {
+    console.log('[Round1] Calculating results using consolidation engine...');
+    
+    for (const team of Object.values(this.state.teams)) {
+      if (!team.isClaimed) continue;
+      
+      // Extract decision numbers from string IDs
+      const decisionNumbers: number[] = team.currentRoundDecisions
+        .map(td => {
+          const decision = getDecisionById(td.decisionId);
+          return decision?.decisionNumber;
+        })
+        .filter((num): num is number => num !== undefined);
+      
+      console.log(`[Round1] Team ${team.teamId}: Calculating with decisions [${decisionNumbers.join(', ')}]`);
+      
+      // Get starting share price (Round 0 BAU price - validated at $52.27)
+      const startingSharePrice = 52.27;
+      
+      // Calculate consolidated projection
+      try {
+        const result = calculateConsolidatedProjection(
+          1,  // round
+          decisionNumbers,
+          0,  // cumulativeGrowthDecline (0 for Round 1)
+          startingSharePrice
+        );
+        
+        // Update team stock price (primary field)
+        team.stockPrice = result.share_price;
+        
+        // Update team metrics
+        team.metrics.stockPrice = result.share_price;
+        team.metrics.revenue = result.years[0].revenue_total;  // 2026 revenue
+        team.metrics.ebitda = result.years[0].ebitda;
+        team.metrics.ebit = result.years[0].ebit;
+        team.metrics.fcf = result.years[0].fcf;
+        team.metrics.roic = (result.years[0].nopat / result.years[0].ic_ending) * 100;  // Convert to percentage
+        team.metrics.enterpriseValue = result.enterprise_value;
+        team.metrics.tsr = result.tsr * 100;  // Convert to percentage
+        
+        console.log(`[Round1] Team ${team.teamId}: Share Price $${result.share_price.toFixed(2)}, TSR ${(result.tsr * 100).toFixed(2)}%`);
+        
+      } catch (error) {
+        console.error(`[Round1] Error calculating for team ${team.teamId}:`, error);
+        // Fall back to baseline metrics if calculation fails
+        team.stockPrice = startingSharePrice;
+        team.metrics.stockPrice = startingSharePrice;
+      }
+    }
+  }
+
+  /**
    * Process the end of a round
    */
   private processRoundEnd(): void {
@@ -878,13 +935,19 @@ export class GameStateManager {
       }
     }
 
-    // Calculate financial impacts using the calculation engine
-    this.state.teams = calculateRoundEnd(
-      this.state.teams,
-      this.state.currentRound,
-      this.state.scenario.modifiers,
-      this.state.riskyEvents
-    );
+    // Calculate financial impacts
+    if (this.state.currentRound === 1) {
+      // Use new consolidation engine for Round 1
+      this.calculateRound1Results();
+    } else {
+      // Use old calculation engine for Rounds 2-5 (to be migrated later)
+      this.state.teams = calculateRoundEnd(
+        this.state.teams,
+        this.state.currentRound,
+        this.state.scenario.modifiers,
+        this.state.riskyEvents
+      );
+    }
 
     // Capture round snapshots for Game Recap feature
     this.captureRoundSnapshots();
