@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1,
+    "name": "Grow",
+    "detail": "Organic",
+    "lever": "1. Grow profitably",
+    "type": "Expand Manufacturing Footprint",
+    "category": "Mexico Capacity Expansion",
+    "narrative": "Expand existing Mexican operations to increase capacity for North American OEMs. Nearshoring trend favors this investment with relatively predictable returns.",
+    "round": 1
+  },
+  {
+    "id": 2,
+    "name": "Grow",
+    "detail": "Organic",
+    "lever": "1. Grow profitably",
+    "type": "Scale R&D for Next-Gen Portfolio",
+    "category": "Advanced Powertrain R&D Expansion",
+    "narrative": "Invest in expanding R&D capabilities for next-generation vehicle powertrains and propulsion systems. This positions Magna to capture growing market share in advanced mobility but requires significant upfront investment with returns materializing over 2-3 years.",
+    "round": 1
+  },
+  {
+    "id": 3,
+    "name": "Grow",
+    "detail": "Organic",
+    "lever": "1. Grow profitably",
+    "type": "Enter New Geography / Market",
+    "category": "Southeast Asia Market Entry",
+    "narrative": "Establish manufacturing presence in Thailand/Vietnam to serve growing ASEAN automotive market. Lower labor costs and proximity to emerging markets, but execution risk in new geography.",
+    "round": 1
+  },
+  {
+    "id": 4,
+    "name": "Grow",
+    "detail": "Organic",
+    "lever": "3. Stay flexible",
+    "type": "JV / Strategic Partnership",
+    "category": "Battery Technology JV",
+    "narrative": "Form joint venture with battery cell manufacturer to secure supply and develop integrated battery systems. Strategic hedge against vertical integration by OEMs.",
+    "round": 1
+  },
+  {
+    "id": 5,
+    "name": "Grow",
+    "detail": "Organic",
+    "lever": "1. Grow profitably",
+    "type": "Expand Manufacturing Footprint",
+    "category": "Concentrated OEM Capacity Investment",
+    "narrative": "Major capacity investment dedicated to a single OEM's flagship vehicle program. The OEM has committed to unprecedented volumes and offered favorable terms for exclusive supply. Higher projected returns than diversified approach, with dedicated production lines and simpler logistics. A strategic bet on this OEM's success.",
+    "round": 1
+  },
+  {
+    "id": 6,
+    "name": "Optimize",
+    "detail": "Manufacturing OH savings",
+    "lever": "1. Grow profitably",
+    "type": "Factory of the Future",
+    "category": "Smart Factory Pilot Program",
+    "narrative": "Implement Industry 4.0 technologies in flagship facility. IoT sensors, AI-driven quality control, and predictive maintenance. Proof of concept for broader rollout.",
+    "round": 1
+  },
+  {
+    "id": 7,
+    "name": "Optimize",
+    "detail": "SGA savings",
+    "lever": "1. Grow profitably",
+    "type": "SG&A Optimization",
+    "category": "Shared Services Consolidation",
+    "narrative": "Consolidate back-office functions (finance, HR, IT) into regional shared services centers. Upfront investment yields ongoing cost savings.",
+    "round": 1
+  },
+  {
+    "id": 8,
+    "name": "Optimize",
+    "detail": "COGS savings",
+    "lever": "1. Grow profitably",
+    "type": "Global Supply Chain Redesign",
+    "category": "Supplier Dual-Sourcing Initiative",
+    "narrative": "Establish secondary suppliers for critical components. Increases supply chain resilience and negotiating leverage. Small cost premium offset by risk reduction.",
+    "round": 1
+  },
+  {
+    "id": 9,
+    "name": "Optimize",
+    "detail": "Manufacturing OH savings",
+    "lever": "2. Cash is king",
+    "type": "Enterprise Digital Transformation",
+    "category": "ERP System Upgrade",
+    "narrative": "Launch enterprise-wide Data & ERP Transformation, migrating core ERP to a modern cloud platform while redesigning data architecture, analytics, and end-to-end processes. Enables advanced analytics, AI-driven automation, and materially improved decision-making across the business.",
+    "round": 1
+  },
+  {
+    "id": 10,
+    "name": "Optimize",
+    "detail": "SGA savings",
+    "lever": "3. Stay flexible",
+    "type": "Organizational Restructure",
+    "category": "Management Delayering",
+    "narrative": "Execute a management reorganization to de-layer the organization, accelerating decision-making, clarifying accountability, and sustainably reducing overhead.",
+    "round": 1
+  },
+  {
+    "id": 11,
+    "name": "Sustain",
+    "detail": "Sustain Topline",
+    "lever": "1. Grow profitably",
+    "type": "Portfolio management (maintenance)",
+    "category": "Customer Diversification Initiative",
+    "narrative": "Allocate incremental investment to expand sales coverage and key-account capabilities beyond top customers, deliberately diversifying the revenue base and mitigating concentration risk.",
+    "round": 1
+  },
+  {
+    "id": 12,
+    "name": "Sustain",
+    "detail": "COGS savings",
+    "lever": "1. Grow profitably",
+    "type": "Talent & Leadership Upskilling",
+    "category": "Technical Talent Development",
+    "narrative": "Investment in training and development for engineering workforce. Essential to maintain competitive capabilities. Retention and capability building.",
+    "round": 1
+  },
+  {
+    "id": 13,
+    "name": "Sustain",
+    "detail": "Sustain Topline",
+    "lever": "3. Stay flexible",
+    "type": "Risk & Compliance Upgrade",
+    "category": "Cybersecurity Enhancement",
+    "narrative": "Comprehensive cybersecurity upgrade across IT infrastructure. Essential protection against growing cyber threats. No direct return but prevents catastrophic risk.",
+    "round": 1
+  },
+  {
+    "id": 14,
+    "name": "Sustain",
+    "detail": "Sustain Topline",
+    "lever": "1. Grow profitably",
+    "type": "Capital allocation strategy (maintenance)",
+    "category": "Equipment Refresh Program",
+    "narrative": "Scheduled replacement of aging manufacturing equipment. Maintains reliability and quality. Deferred investment risks production disruptions.",
+    "round": 1
+  },
+  {
+    "id": 15,
+    "name": "Sustain",
+    "detail": "SGA savings",
+    "lever": "3. Stay flexible",
+    "type": "Risk & Compliance Upgrade",
+    "category": "Environmental Compliance Investment",
+    "narrative": "Proactive investment to meet upcoming environmental regulations. Mandatory compliance but early investment avoids rushed future spending.",
+    "round": 1
+  }
+]

@@ -88,11 +88,26 @@ export function useSocket(): UseSocketReturn {
       console.log('[Socket] Connected to server');
       setConnected(true);
       
-      // Auto-reconnection is disabled - teams must always enter their name
-      // This ensures fresh team selection each time the page loads
-      // Clear any stored credentials to prevent confusion
-      useGameStore.getState().clearStoredCredentials();
-      console.log('[Socket] Ready for team to join');
+      // Auto-rejoin if we have stored credentials
+      const store = useGameStore.getState();
+      const storedTeamName = store.teamName;
+      const storedReconnectToken = store.reconnectToken;
+      
+      if (storedTeamName && storedReconnectToken && store.hasJoinedGame) {
+        console.log('[Socket] Auto-rejoining as:', storedTeamName);
+        socket.emit('join-game', storedTeamName, storedReconnectToken, (success, error, teamId, newToken) => {
+          if (success && teamId) {
+            console.log('[Socket] Auto-rejoin successful, Team ID:', teamId);
+            store.setTeamId(teamId);
+            store.setTeamName(storedTeamName);
+            if (newToken) store.setReconnectToken(newToken);
+          } else {
+            console.error('[Socket] Auto-rejoin failed:', error);
+          }
+        });
+      } else {
+        console.log('[Socket] Ready for team to join');
+      }
     });
     
     socket.on('disconnect', (reason) => {
