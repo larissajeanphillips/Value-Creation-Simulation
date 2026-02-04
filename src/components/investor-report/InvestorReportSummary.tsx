@@ -519,136 +519,157 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
           </div>
         </section>
         
-        {/* Key Metrics - Compact Single Row */}
-        <div className="bg-white rounded-xl border border-magna-cool-gray/20 p-4 mb-4">
-          <div className="grid grid-cols-7 gap-4 text-center">
-            <div>
-              <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Revenue Growth</div>
-              <div className={cn("text-lg font-bold", derivedMetrics.revenueGrowth >= 0 ? "text-emerald-600" : "text-red-600")}>
-                {formatPercent(derivedMetrics.revenueGrowth)}
+        {/* Key Metrics + Wall Street Expectations - Side by Side */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+          {/* Key Metrics - Takes 2/3 width */}
+          <div className="lg:col-span-2 bg-white rounded-xl border border-magna-cool-gray/20 p-4">
+            <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-3 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-magna-ignition-red" />
+              End of Year Performance
+            </h2>
+            <div className="grid grid-cols-4 gap-4 text-center">
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Revenue Growth</div>
+                <div className={cn("text-lg font-bold", derivedMetrics.revenueGrowth >= 0 ? "text-emerald-600" : "text-red-600")}>
+                  {formatPercent(derivedMetrics.revenueGrowth)}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EBIT Margin</div>
+                <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.ebitMargin, false)}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">ROIC</div>
+                <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.roic, false)}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Share Price</div>
+                <div className="text-lg font-bold text-magna-carbon-black">${team.stockPrice.toFixed(2)}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EV/EBIT</div>
+                <div className="text-lg font-bold text-magna-carbon-black">{derivedMetrics.evToEbit.toFixed(1)}x</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Operating FCF</div>
+                <div className="text-lg font-bold text-magna-carbon-black">{formatCurrency(team.metrics.operatingFCF)}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Debt/EBITDA</div>
+                <div className="text-lg font-bold text-magna-carbon-black">{derivedMetrics.debtToEbitda.toFixed(1)}x</div>
               </div>
             </div>
-            <div>
-              <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EBIT Margin</div>
-              <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.ebitMargin, false)}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">ROIC</div>
-              <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.roic, false)}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Share Price</div>
-              <div className="text-lg font-bold text-magna-carbon-black">${team.stockPrice.toFixed(2)}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EV/EBIT</div>
-              <div className="text-lg font-bold text-magna-carbon-black">{derivedMetrics.evToEbit.toFixed(1)}x</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Operating FCF</div>
-              <div className="text-lg font-bold text-magna-carbon-black">{formatCurrency(team.metrics.operatingFCF)}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Debt/EBITDA</div>
-              <div className="text-lg font-bold text-magna-carbon-black">{derivedMetrics.debtToEbitda.toFixed(1)}x</div>
-            </div>
           </div>
-        </div>
-        
-        {/* Performance vs. Wall Street - Compact */}
-        <section className="bg-white rounded-xl border border-magna-cool-gray/20 p-4 mb-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-magna-ignition-red" />
-              vs. Wall Street Expectations
-            </h2>
-            {/* Inline Summary Badge */}
-            {(() => {
-              const beats = consensusEstimates.filter(e => e.difference > 0.001).length;
-              const misses = consensusEstimates.filter(e => e.difference < -0.001).length;
-              
-              if (beats >= 3) {
-                return <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">Beat {beats}/4</span>;
-              } else if (misses >= 3) {
-                return <span className="text-xs font-bold bg-red-100 text-red-700 px-2 py-1 rounded-full">Missed {misses}/4</span>;
-              } else if (beats > misses) {
-                return <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">Beat {beats}/4</span>;
-              } else {
-                return <span className="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-1 rounded-full">Mixed</span>;
-              }
-            })()}
-          </div>
-          <div className="grid grid-cols-4 gap-3">
-            {consensusEstimates.map((est) => {
-              const isBeat = est.difference > 0.001;
-              const isMiss = est.difference < -0.001;
-              
-              return (
-                <div key={est.metric} className="text-center">
-                  <div className="text-xs text-magna-cool-gray mb-1">{est.metric}</div>
-                  <div className="text-sm font-bold text-magna-carbon-black">{est.actual}</div>
-                  <div className={cn(
-                    "text-xs font-semibold",
-                    isBeat && "text-emerald-600",
-                    isMiss && "text-red-600",
-                    !isBeat && !isMiss && "text-magna-cool-gray"
-                  )}>
-                    {isBeat ? `+${(est.difference * 100).toFixed(0)}%` : isMiss ? `${(est.difference * 100).toFixed(0)}%` : 'In Line'}
+          
+          {/* Wall Street Expectations - Takes 1/3 width */}
+          <div className="bg-white rounded-xl border border-magna-cool-gray/20 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide flex items-center gap-2">
+                <Target className="w-4 h-4 text-magna-ignition-red" />
+                vs. Wall Street
+              </h2>
+              {(() => {
+                const beats = consensusEstimates.filter(e => e.difference > 0.001).length;
+                const misses = consensusEstimates.filter(e => e.difference < -0.001).length;
+                
+                if (beats >= 3) {
+                  return <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">Beat {beats}/4</span>;
+                } else if (misses >= 3) {
+                  return <span className="text-xs font-bold bg-red-100 text-red-700 px-2 py-1 rounded-full">Missed {misses}/4</span>;
+                } else if (beats > misses) {
+                  return <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">Beat {beats}/4</span>;
+                } else {
+                  return <span className="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-1 rounded-full">Mixed</span>;
+                }
+              })()}
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {consensusEstimates.map((est) => {
+                const isBeat = est.difference > 0.001;
+                const isMiss = est.difference < -0.001;
+                
+                return (
+                  <div key={est.metric} className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs text-magna-cool-gray mb-1">{est.metric}</div>
+                    <div className="text-sm font-bold text-magna-carbon-black">{est.actual}</div>
+                    <div className={cn(
+                      "text-xs font-semibold",
+                      isBeat && "text-emerald-600",
+                      isMiss && "text-red-600",
+                      !isBeat && !isMiss && "text-magna-cool-gray"
+                    )}>
+                      {isBeat ? `+${(est.difference * 100).toFixed(0)}%` : isMiss ? `${(est.difference * 100).toFixed(0)}%` : 'In Line'}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </section>
         
-        {/* Analyst Commentary - Compact */}
-        {analystQuotes.length > 0 && (
-          <section className="mb-4">
-            <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-3 flex items-center gap-2">
-              <Quote className="w-4 h-4 text-magna-ignition-red" />
-              Analyst Commentary
-            </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-              {analystQuotes.slice(0, 3).map((quote, index) => (
-                <AnalystQuoteCard key={index} quote={quote} />
-              ))}
+        {/* Analyst Commentary + Market Outlook - Side by Side */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+          {/* Analyst Commentary */}
+          {analystQuotes.length > 0 && (
+            <div className="bg-white rounded-xl border border-magna-cool-gray/20 p-4">
+              <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-3 flex items-center gap-2">
+                <Quote className="w-4 h-4 text-magna-ignition-red" />
+                Analyst Commentary
+              </h2>
+              <div className="space-y-3">
+                {analystQuotes.slice(0, 2).map((quote, index) => (
+                  <AnalystQuoteCard key={index} quote={quote} />
+                ))}
+              </div>
             </div>
-          </section>
-        )}
-        
-        {/* Market Outlook - Compact */}
-        <section className="bg-white rounded-xl border border-magna-cool-gray/20 p-4 mb-4">
-          <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-2 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-magna-ignition-red" />
-            Market Outlook
-          </h2>
-          
-          {(roundResults.marketOutlook?.backwardStatements?.length > 0 || roundResults.marketOutlook?.forwardStatements?.length > 0) ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {roundResults.marketOutlook?.backwardStatements?.length > 0 && (
-                <ul className="space-y-1 text-sm">
-                  {roundResults.marketOutlook.backwardStatements.slice(0, 2).map((statement, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-magna-ignition-red rounded-full mt-1.5 flex-shrink-0" />
-                      <span className="text-magna-carbon-black">{statement}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {roundResults.marketOutlook?.forwardStatements?.length > 0 && (
-                <ul className="space-y-1 text-sm">
-                  {roundResults.marketOutlook.forwardStatements.slice(0, 2).map((statement, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-magna-electric-blue rounded-full mt-1.5 flex-shrink-0" />
-                      <span className="text-magna-carbon-black">{statement}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ) : (
-            <p className="text-magna-carbon-black text-sm">{roundResults.scenarioNarrative}</p>
           )}
+          
+          {/* Market Outlook */}
+          <div className="bg-white rounded-xl border border-magna-cool-gray/20 p-4">
+            <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-3 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-magna-ignition-red" />
+              Market Outlook
+            </h2>
+            
+            {(roundResults.marketOutlook?.backwardStatements?.length > 0 || roundResults.marketOutlook?.forwardStatements?.length > 0) ? (
+              <div className="space-y-4">
+                {roundResults.marketOutlook?.backwardStatements?.length > 0 && (
+                  <div>
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-2 flex items-center gap-1">
+                      <History className="w-3 h-3" />
+                      What Happened
+                    </div>
+                    <ul className="space-y-2 text-sm">
+                      {roundResults.marketOutlook.backwardStatements.slice(0, 2).map((statement, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 bg-magna-ignition-red rounded-full mt-1.5 flex-shrink-0" />
+                          <span className="text-magna-carbon-black">{statement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {roundResults.marketOutlook?.forwardStatements?.length > 0 && (
+                  <div>
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-2 flex items-center gap-1">
+                      <ArrowRight className="w-3 h-3" />
+                      Looking Ahead
+                    </div>
+                    <ul className="space-y-2 text-sm">
+                      {roundResults.marketOutlook.forwardStatements.slice(0, 2).map((statement, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 bg-magna-electric-blue rounded-full mt-1.5 flex-shrink-0" />
+                          <span className="text-magna-carbon-black">{statement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-magna-carbon-black text-sm">{roundResults.scenarioNarrative}</p>
+            )}
+          </div>
         </section>
         
         {/* Footer - Compact */}
