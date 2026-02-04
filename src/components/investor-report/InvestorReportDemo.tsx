@@ -315,12 +315,6 @@ export const InvestorReportDemo: React.FC = () => {
                     <div className="font-medium text-magna-carbon-black">
                       ${team.stockPrice.toFixed(2)}
                     </div>
-                    <div className={cn(
-                      "text-xs font-medium",
-                      team.cumulativeTSR >= 0 ? "text-emerald-600" : "text-magna-ignition-red"
-                    )}>
-                      {formatPercent(team.cumulativeTSR)} TSR
-                    </div>
                   </div>
                 </div>
               ))}

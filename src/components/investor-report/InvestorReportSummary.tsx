@@ -510,12 +510,6 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
             </div>
             <div className="ml-auto text-3xl font-bold">
               ${team.stockPrice.toFixed(2)}
-              <span className={cn(
-                "text-lg ml-3",
-                team.cumulativeTSR >= 0 ? "text-emerald-400" : "text-red-400"
-              )}>
-                {formatPercent(team.cumulativeTSR)} TSR
-              </span>
             </div>
           </div>
         </header>

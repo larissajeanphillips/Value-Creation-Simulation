@@ -222,3 +222,4 @@ build/
 ### Temporary files ###
 *.csv
 *-output.txt
+.vercel
