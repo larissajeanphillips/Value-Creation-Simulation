@@ -6,7 +6,7 @@
  * NOTE: Impact values are placeholder estimates and will be tuned during Phase 7
  */
 
-import type { Decision, RoundNumber } from '../types/game.js';
+import type { Decision, RoundNumber, GrowMetrics } from '../types/game.js';
 
 // =============================================================================
 // GROW DECISIONS (Based on Excel - Lever = "Grow")
@@ -32,6 +32,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.02,
     recurringBenefit: 80,
+    growMetrics: {
+      revenue1Year: 1600,
+      fiveYearGrowth: 5.0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 11.0,
+    },
   },
   {
     id: 'grow-1-2',
@@ -51,6 +58,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.03,
     recurringBenefit: 150,
+    growMetrics: {
+      revenue1Year: 2000,
+      fiveYearGrowth: 5.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 3,
+      ebitMargin: 11.0,
+    },
   },
   {
     id: 'grow-1-3',
@@ -89,6 +103,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.035,
     recurringBenefit: 140,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 10.0,
+    },
   },
   {
     id: 'grow-1-5',
@@ -110,6 +131,13 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 120,
     // NOTE: This decision's returns go to $0 when OEM Program Cancellation event triggers
     vulnerableTo: 'oem_program_cancellation',
+    growMetrics: {
+      revenue1Year: 1500,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 5.0,
+    },
   },
 
   // ===== ROUND 2 =====
@@ -131,6 +159,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.04,
     recurringBenefit: 180,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 10.0,
+    },
   },
   {
     id: 'grow-2-2',
@@ -151,6 +186,13 @@ const GROW_DECISIONS: Decision[] = [
     revenueImpact: 0.018,
     recurringBenefit: 80,
     riskPrevention: 'oem_program_cancellation',
+    growMetrics: {
+      revenue1Year: 1600,
+      fiveYearGrowth: 0.0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 6.0,
+    },
   },
   {
     id: 'grow-2-3',
@@ -170,6 +212,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.015,
     recurringBenefit: 70,
+    growMetrics: {
+      revenue1Year: 2000,
+      fiveYearGrowth: 10.0,
+      investmentsTotal: 0,
+      investmentPeriod: 1,
+      ebitMargin: 11.0,
+    },
   },
   {
     id: 'grow-2-4',
@@ -208,6 +257,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.04,
     recurringBenefit: 160,
+    growMetrics: {
+      revenue1Year: 1500,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 3,
+      ebitMargin: 5.0,
+    },
   },
 
   // ===== ROUND 3 =====
@@ -229,6 +285,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.035,
     recurringBenefit: 140,
+    growMetrics: {
+      revenue1Year: 1500,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 1,
+      ebitMargin: 5.0,
+    },
   },
   {
     id: 'grow-3-2',
@@ -248,6 +311,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.05,
     recurringBenefit: 180,
+    growMetrics: {
+      revenue1Year: 1500,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 1,
+      ebitMargin: 5.0,
+    },
   },
   {
     id: 'grow-3-3',
@@ -267,6 +337,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.08,
     recurringBenefit: 250,
+    growMetrics: {
+      revenue1Year: 8000,
+      fiveYearGrowth: 10.0,
+      investmentsTotal: 0,
+      investmentPeriod: 1,
+      ebitMargin: 11.0,
+    },
   },
   {
     id: 'grow-3-4',
@@ -286,6 +363,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.025,
     recurringBenefit: 120,
+    growMetrics: {
+      revenue1Year: 1500,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 1,
+      ebitMargin: 5.0,
+    },
   },
   {
     id: 'grow-3-5',
@@ -305,6 +389,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.02,
     recurringBenefit: 90,
+    growMetrics: {
+      revenue1Year: 900,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 600,
+      investmentPeriod: 1,
+      ebitMargin: 5.0,
+    },
   },
 
   // ===== ROUND 4 =====
@@ -326,6 +417,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.07,
     recurringBenefit: 280,
+    growMetrics: {
+      revenue1Year: 8000,
+      fiveYearGrowth: 10.0,
+      investmentsTotal: 0,
+      investmentPeriod: 1,
+      ebitMargin: 11.0,
+    },
   },
   {
     id: 'grow-4-2',
@@ -346,6 +444,13 @@ const GROW_DECISIONS: Decision[] = [
     revenueImpact: 0.03,
     recurringBenefit: 60,
     cogsImpact: 0.01, // Slightly higher costs due to aggressive pricing
+    growMetrics: {
+      revenue1Year: 640,
+      fiveYearGrowth: 0.0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 10.0,
+    },
   },
   {
     id: 'grow-4-3',
@@ -365,6 +470,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.02,
     recurringBenefit: 90,
+    growMetrics: {
+      revenue1Year: 1200,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 5.0,
+    },
   },
   {
     id: 'grow-4-4',
@@ -384,6 +496,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.01,
     recurringBenefit: 50,
+    growMetrics: {
+      revenue1Year: 1200,
+      fiveYearGrowth: 0.0,
+      investmentsTotal: 600,
+      investmentPeriod: 2,
+      ebitMargin: 6.0,
+    },
   },
   {
     id: 'grow-4-5',
@@ -403,6 +522,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.025,
     recurringBenefit: 100,
+    growMetrics: {
+      revenue1Year: 1200,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 5.0,
+    },
   },
 
   // ===== ROUND 5 =====
@@ -424,6 +550,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.015,
     recurringBenefit: 50,
+    growMetrics: {
+      revenue1Year: 1600,
+      fiveYearGrowth: 5.0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 11.0,
+    },
   },
   {
     id: 'grow-5-2',
@@ -443,6 +576,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.06,
     recurringBenefit: 240,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 10.0,
+    },
   },
   {
     id: 'grow-5-3',
@@ -462,6 +602,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.03,
     recurringBenefit: 130,
+    growMetrics: {
+      revenue1Year: 4000,
+      fiveYearGrowth: 10.0,
+      investmentsTotal: 0,
+      investmentPeriod: 1,
+      ebitMargin: 11.0,
+    },
   },
   {
     id: 'grow-5-4',
@@ -481,6 +628,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.05,
     recurringBenefit: 200,
+    growMetrics: {
+      revenue1Year: 2000,
+      fiveYearGrowth: 0.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 6.0,
+    },
   },
   {
     id: 'grow-5-5',
@@ -500,6 +654,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.02,
     recurringBenefit: 80,
+    growMetrics: {
+      revenue1Year: 1200,
+      fiveYearGrowth: 3.0,
+      investmentsTotal: 800,
+      investmentPeriod: 1,
+      ebitMargin: 5.0,
+    },
   },
   {
     id: 'grow-5-6',
@@ -519,6 +680,13 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.04,
     recurringBenefit: 160,
+    growMetrics: {
+      revenue1Year: 2000,
+      fiveYearGrowth: 5.0,
+      investmentsTotal: 1000,
+      investmentPeriod: 1,
+      ebitMargin: 11.0,
+    },
   },
 ];
 
