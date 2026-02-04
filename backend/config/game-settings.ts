@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Game Settings
+ * Value Creation Simulation - Game Settings
  * Configurable game parameters
  */
 

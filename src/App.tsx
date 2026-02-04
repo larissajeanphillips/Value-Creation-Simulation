@@ -1,7 +1,7 @@
 /**
  * App Component
  * 
- * Main application entry point for the Value Creation Challenge.
+ * Main application entry point for the Value Creation Simulation.
  * Handles routing between screens based on URL and game state:
  * 
  * Demo Routes (no backend required, each visitor gets fresh game):
@@ -41,6 +41,7 @@ import { MagnaLogo } from '@/components/MagnaLogo';
 import { MacroEnvironmentDisplay } from '@/components/MacroEnvironmentDisplay';
 import { DisplayHub } from '@/components/DisplayHub';
 import { ScoreboardDisplay } from '@/components/ScoreboardDisplay';
+import { GamePrimer } from '@/components/GamePrimer';
 
 // =============================================================================
 // ACCESS CODE - Change this to control who can access the app
@@ -199,6 +200,9 @@ function TeamInterface() {
   
   // Game state
   const hasJoinedGame = useGameStore((s) => s.hasJoinedGame);
+  const hasPrimerShown = useGameStore((s) => s.hasPrimerShown);
+  const setPrimerShown = useGameStore((s) => s.setPrimerShown);
+  const teamName = useGameStore((s) => s.teamName);
   const gameStatus = useGameStatus();
   const availableDecisions = useGameStore((s) => s.availableDecisions);
   const currentRound = useGameStore((s) => s.gameState?.currentRound);
@@ -292,11 +296,26 @@ function TeamInterface() {
     );
   }
   
+  // Handle primer completion
+  const handlePrimerContinue = () => {
+    setPrimerShown(true);
+  };
+  
   // Determine which screen to show
   const renderScreen = () => {
     // Not joined yet - show team selection
     if (!hasJoinedGame) {
       return <TeamSelection />;
+    }
+    
+    // Joined but haven't seen primer yet - show primer page
+    if (!hasPrimerShown && gameStatus === 'lobby') {
+      return (
+        <GamePrimer 
+          teamName={teamName || 'Your Team'} 
+          onContinue={handlePrimerContinue} 
+        />
+      );
     }
     
     // Game finished - show final results

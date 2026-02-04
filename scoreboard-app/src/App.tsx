@@ -1,5 +1,5 @@
 /**
- * Standalone Value Creation Challenge Scoreboard
+ * Standalone Value Creation Simulation Scoreboard
  * 
  * This is a standalone deployment of the scoreboard display
  * designed for big screen presentations.
@@ -155,7 +155,7 @@ function LoginScreen({ pin, setPin, onSubmit, error, isLoading }: LoginScreenPro
             className="h-10 mb-4"
           />
           <h1 className="text-xl font-semibold text-white">
-            Value Creation Challenge
+            Value Creation Simulation
           </h1>
           <p className="text-slate-400 text-sm mt-1">
             Scoreboard Display
@@ -266,7 +266,7 @@ function Scoreboard() {
             />
             <div className="h-6 w-px bg-slate-700" />
             <h1 className="text-lg font-semibold text-white">
-              Value Creation Challenge Scoreboard
+              Value Creation Simulation Scoreboard
             </h1>
           </div>
           
@@ -416,7 +416,7 @@ function Scoreboard() {
       {/* Footer */}
       <footer className="bg-slate-800 border-t border-slate-700 px-6 py-2">
         <div className="flex items-center justify-between text-xs text-slate-500">
-          <span>Value Creation Challenge</span>
+          <span>Value Creation Simulation</span>
           <span>Display optimized for large screens</span>
         </div>
       </footer>

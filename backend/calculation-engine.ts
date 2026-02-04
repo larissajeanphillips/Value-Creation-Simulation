@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Financial Calculation Engine
+ * Value Creation Simulation - Financial Calculation Engine
  * 
  * Processes team decisions and calculates:
  * - Financial metric impacts (revenue, COGS, SG&A, EBITDA, EBIT, FCF)

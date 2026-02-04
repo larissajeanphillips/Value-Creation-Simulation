@@ -19,7 +19,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { TrendingUp, TrendingDown, Trophy, Users } from 'lucide-react';
+import { TrendingUp, TrendingDown, Trophy, Users, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MagnaLogo } from './MagnaLogo';
 
@@ -68,6 +68,31 @@ export const ScoreboardDisplay: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [connectionError, setConnectionError] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  // Toggle fullscreen mode to hide URL bar
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.log('Fullscreen not supported:', err);
+    }
+  };
+  
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
   
   // Fetch scoreboard data from the public API endpoint
   const fetchData = useCallback(async () => {
@@ -129,7 +154,7 @@ export const ScoreboardDisplay: React.FC = () => {
     return (
       <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center">
         <MagnaLogo variant="white" size="lg" />
-        <h1 className="text-3xl font-bold mt-8 mb-4">Value Creation Challenge</h1>
+        <h1 className="text-3xl font-bold mt-8 mb-4">Value Creation Simulation</h1>
         <div className="text-slate-400 text-xl mb-8">Scoreboard</div>
         <div className="bg-slate-800 border border-slate-700 rounded-xl p-8 text-center max-w-md">
           <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -150,10 +175,13 @@ export const ScoreboardDisplay: React.FC = () => {
     );
   }
   
-  // Use two columns only when there are more than 8 teams
+  // Always use two columns to fit all 15 teams: 8 on left, 7 on right
   const useTwoColumns = data.teams.length > 8;
   const leftColumnTeams = useTwoColumns ? data.teams.slice(0, 8) : data.teams;
   const rightColumnTeams = useTwoColumns ? data.teams.slice(8, 15) : [];
+  
+  // If there are fewer teams but we want to show 15 team capacity, pad the display
+  const totalTeamsCapacity = 15;
   
   return (
     <div className="h-screen bg-slate-900 text-white flex flex-col overflow-hidden">
@@ -165,7 +193,7 @@ export const ScoreboardDisplay: React.FC = () => {
             <div className="h-8 w-px bg-slate-700" />
             <div>
               <h1 className="text-xl font-bold text-white">
-                Value Creation Challenge
+                Value Creation Simulation
               </h1>
               <p className="text-slate-400 text-sm">Live Scoreboard</p>
             </div>
@@ -196,6 +224,15 @@ export const ScoreboardDisplay: React.FC = () => {
                 />
               ))}
             </div>
+            
+            {/* Fullscreen Button */}
+            <button
+              onClick={toggleFullscreen}
+              className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors"
+              title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen (hides URL)"}
+            >
+              <Maximize2 className="w-5 h-5 text-white" />
+            </button>
           </div>
         </div>
       </header>
@@ -425,23 +462,23 @@ export const ScoreboardDisplay: React.FC = () => {
         </div>
       </main>
       
-      {/* Bottom Banner - Reserved space for stage */}
-      <footer className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 border-t border-slate-600 px-8 py-8 flex-shrink-0">
+      {/* Bottom Banner - Reserved space for stage (extra height for stage obstruction) */}
+      <footer className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 border-t-4 border-slate-600 px-8 py-12 flex-shrink-0">
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-8">
-            <MagnaLogo variant="white" size="md" />
-            <div className="h-12 w-px bg-slate-600" />
+            <MagnaLogo variant="white" size="lg" />
+            <div className="h-16 w-px bg-slate-600" />
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-white tracking-wide">
-                Value Creation Challenge
+              <h2 className="text-3xl font-bold text-white tracking-wide">
+                Value Creation Simulation
               </h2>
-              <p className="text-slate-400 text-sm mt-1">
+              <p className="text-slate-400 text-lg mt-2">
                 Strategic Decision Making in Action
               </p>
             </div>
-            <div className="h-12 w-px bg-slate-600" />
-            <div className="flex items-center gap-2 text-slate-400 text-sm">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <div className="h-16 w-px bg-slate-600" />
+            <div className="flex items-center gap-2 text-slate-400 text-lg">
+              <span className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
               <span>Live • Auto-updating</span>
             </div>
           </div>

@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Configuration Exports
+ * Value Creation Simulation - Configuration Exports
  */
 
 // Financial baseline data

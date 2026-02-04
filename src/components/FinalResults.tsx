@@ -114,7 +114,7 @@ const BEST_DECISIONS = [
     name: 'Battery Technology JV',
     round: 1,
     category: 'Grow',
-    reason: 'This joint venture secured supply chain positioning and technology access early, before EV competition intensified. The strategic value compounded over multiple rounds as electrification accelerated.',
+    reason: 'This joint venture secured supply chain positioning and technology access early, before competition intensified. The strategic value compounded over multiple rounds as new technology adoption accelerated.',
   },
 ];
 
@@ -672,7 +672,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
         <p className="text-slate-700 text-lg mb-3">Thank you for participating in the</p>
         <div className="flex items-center justify-center gap-3">
           <MagnaLogo variant="color" size="sm" />
-          <span className="text-2xl font-semibold text-slate-800">Value Creation Challenge</span>
+          <span className="text-2xl font-semibold text-slate-800">Value Creation Simulation</span>
         </div>
         <p className="text-slate-700 text-lg mt-3">2026</p>
       </div>

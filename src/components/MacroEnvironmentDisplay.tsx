@@ -34,7 +34,7 @@ const ROUND_DATA: Record<number, RoundData> = {
     scenario: 'Business as Usual',
     narrative: 'The automotive market remains stable with moderate growth expectations. OEMs are investing in next-generation platforms while maintaining current production volumes. Supply chains have stabilized post-pandemic.',
     details: [
-      'Steady demand across traditional and EV segments',
+      'Steady demand across all vehicle segments',
       'Normal competitive dynamics',
       'Standard capital allocation decisions',
     ],
@@ -143,7 +143,7 @@ export const MacroEnvironmentDisplay: React.FC<MacroEnvironmentDisplayProps> = (
         <MagnaLogo variant="white" size="lg" />
         <div className="flex items-center gap-4">
           <div className="text-white/60 text-xl font-medium">
-            Value Creation Challenge
+            Value Creation Simulation
           </div>
           <div className="w-px h-8 bg-white/20" />
           <div className={cn(

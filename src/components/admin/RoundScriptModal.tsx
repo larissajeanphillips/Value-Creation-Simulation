@@ -51,10 +51,10 @@ const ROUND_SCRIPTS: Record<number, RoundScript> = {
     keyPoints: [
       'Automotive market remains stable with moderate growth',
       'Supply chains have normalized post-pandemic',
-      'Steady demand across ICE and EV segments',
+      'Steady demand across all vehicle segments',
       'Standard capital allocation decisions apply',
     ],
-    script: `Good morning everyone, and welcome to Round 1 of the Value Creation Challenge.
+    script: `Good morning everyone, and welcome to Round 1 of the Value Creation Simulation.
 
 The year is FY26. You are now the leadership team of Magna International, and your mission is simple but challenging: maximize shareholder value over the next five years.
 

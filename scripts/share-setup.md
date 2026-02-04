@@ -1,4 +1,4 @@
-# 🚀 Share Value Creation Challenge for Testing
+# 🚀 Share Value Creation Simulation for Testing
 
 This guide helps you share the game with testers using ngrok.
 

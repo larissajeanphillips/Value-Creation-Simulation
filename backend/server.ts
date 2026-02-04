@@ -152,7 +152,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 
 app.get('/api', (_req: Request, res: Response) => {
   res.json({
-    name: 'Value Creation Challenge API',
+    name: 'Value Creation Simulation API',
     version: '0.2.0',
     documentation: '/api/docs',
     gameConfig: {
@@ -628,7 +628,7 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 const HOST = process.env.HOST || '0.0.0.0';
 
 httpServer.listen(Number(PORT), HOST, () => {
-  console.log(`\n🎮 Value Creation Challenge Server`);
+  console.log(`\n🎮 Value Creation Simulation Server`);
   console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
   console.log(`🌐 HTTP:      http://${HOST}:${PORT}`);
   console.log(`🔌 WebSocket: ws://${HOST}:${PORT}`);

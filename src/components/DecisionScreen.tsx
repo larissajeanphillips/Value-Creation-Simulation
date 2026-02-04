@@ -310,7 +310,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-800">How to Play</h2>
-                  <p className="text-slate-700">Value Creation Challenge Rules & Mechanics</p>
+                  <p className="text-slate-700">Value Creation Simulation Rules & Mechanics</p>
                 </div>
               </div>
               <button

@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Game Types
+ * Value Creation Simulation - Game Types
  * Core data models for the capital allocation simulation game
  * 
  * NOTE: This file is shared between frontend and backend.

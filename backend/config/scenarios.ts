@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Scenario Configuration
+ * Value Creation Simulation - Scenario Configuration
  * Defines the market conditions and modifiers for each round
  */
 

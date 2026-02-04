@@ -64,7 +64,7 @@ const YEAR_SCENARIOS: Record<number, {
     theme: 'Stable Growth',
     description: 'The automotive market remains stable with moderate growth expectations. OEMs are investing in next-generation platforms while maintaining current production volumes.',
     keyDynamics: [
-      'Steady demand across traditional and EV segments',
+      'Steady demand across all vehicle segments',
       'Normal competitive dynamics',
       'Standard capital allocation decisions',
     ],

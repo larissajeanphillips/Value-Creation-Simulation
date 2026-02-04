@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Value Creation Challenge",
+  "description": "Value Creation Simulation",
   "scripts": {
     "dev": "vite",
     "dev:backend": "cd backend && npm run dev",

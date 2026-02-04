@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { Monitor, BarChart3, Calendar, ExternalLink } from 'lucide-react';
+import { Monitor, BarChart3, Calendar, ExternalLink, Maximize2, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MagnaLogo } from './MagnaLogo';
 
@@ -80,6 +80,30 @@ const DISPLAY_OPTIONS: DisplayOption[] = [
 ];
 
 export const DisplayHub: React.FC = () => {
+  /**
+   * Open scoreboard in a fullscreen popup window (hides URL bar)
+   */
+  const openScoreboardPopup = () => {
+    const width = window.screen.width;
+    const height = window.screen.height;
+    const popup = window.open(
+      '/display/scoreboard',
+      'scoreboard',
+      `width=${width},height=${height},left=0,top=0,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`
+    );
+    if (popup) {
+      popup.moveTo(0, 0);
+      popup.resizeTo(width, height);
+    }
+  };
+
+  /**
+   * Navigate directly to scoreboard in same window
+   */
+  const goToScoreboard = () => {
+    window.location.href = '/display/scoreboard';
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
@@ -118,47 +142,63 @@ export const DisplayHub: React.FC = () => {
           <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">
             Live Display (Auto-Updates)
           </h3>
-          <a
-            href="/display/scoreboard"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block group"
-          >
-            <div className={cn(
-              "bg-gradient-to-br from-blue-600 to-blue-800",
-              "rounded-xl p-8 border border-blue-500/30",
-              "hover:scale-[1.02] transition-all duration-200",
-              "shadow-lg hover:shadow-blue-500/20"
-            )}>
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
-                    <BarChart3 className="w-8 h-8 text-blue-200" />
-                  </div>
-                  <div>
-                    <h4 className="text-2xl font-bold text-white mb-1">Live Scoreboard</h4>
-                    <p className="text-blue-200">
-                      Real-time team rankings, stock prices, and performance chart
-                    </p>
-                  </div>
+          <div className={cn(
+            "bg-gradient-to-br from-blue-600 to-blue-800",
+            "rounded-xl p-8 border border-blue-500/30",
+            "shadow-lg"
+          )}>
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
+                  <BarChart3 className="w-8 h-8 text-blue-200" />
                 </div>
-                <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg text-blue-200 group-hover:bg-white/20 transition-colors">
-                  <span className="text-sm font-medium">Open Display</span>
-                  <ExternalLink className="w-4 h-4" />
+                <div>
+                  <h4 className="text-2xl font-bold text-white mb-1">Live Scoreboard</h4>
+                  <p className="text-blue-200">
+                    Real-time team rankings (all 15 teams), stock prices, and performance chart
+                  </p>
                 </div>
-              </div>
-              <div className="mt-4 flex items-center gap-4 text-sm text-blue-300">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  Auto-updates every 3 seconds
-                </span>
-                <span>•</span>
-                <span>Shows all team rankings</span>
-                <span>•</span>
-                <span>Stock price history chart</span>
               </div>
             </div>
-          </a>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-3 mb-4">
+              <button
+                onClick={goToScoreboard}
+                className="flex items-center gap-2 px-6 py-3 bg-white text-blue-700 rounded-xl font-bold hover:bg-blue-50 transition-colors shadow-lg"
+              >
+                <ArrowRight className="w-5 h-5" />
+                Go to Scoreboard
+              </button>
+              <button
+                onClick={openScoreboardPopup}
+                className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-colors border border-white/20"
+              >
+                <Maximize2 className="w-5 h-5" />
+                Open Fullscreen (No URL Bar)
+              </button>
+              <a
+                href="/display/scoreboard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-colors border border-white/20"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Open in New Tab
+              </a>
+            </div>
+            
+            <div className="flex items-center gap-4 text-sm text-blue-300">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                Auto-updates every 3 seconds
+              </span>
+              <span>•</span>
+              <span>Shows all 15 team rankings</span>
+              <span>•</span>
+              <span>Stock price history chart</span>
+            </div>
+          </div>
         </div>
 
         {/* Round Displays */}
@@ -236,7 +276,7 @@ export const DisplayHub: React.FC = () => {
       {/* Footer */}
       <footer className="border-t border-slate-800 px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between text-sm text-slate-500">
-          <span>Value Creation Challenge - Display Hub</span>
+          <span>Value Creation Simulation - Display Hub</span>
           <span>All displays optimized for large screens</span>
         </div>
       </footer>
