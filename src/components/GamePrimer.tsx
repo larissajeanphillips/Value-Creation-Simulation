@@ -206,18 +206,6 @@ export const GamePrimer: React.FC<GamePrimerProps> = ({ teamName, onContinue, cl
             </div>
           </div>
 
-          {/* Warning */}
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8 flex items-start gap-3">
-            <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
-            <div>
-              <div className="font-semibold text-red-800 mb-1">Important!</div>
-              <p className="text-red-700 text-sm">
-                One risky event will trigger during the game—but you won't know which one! 
-                Sustain investments can protect you, but they reduce capital available for growth.
-              </p>
-            </div>
-          </div>
-
           {/* Continue Button */}
           <div className="text-center">
             <button

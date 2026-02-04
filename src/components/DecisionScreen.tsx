@@ -422,8 +422,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                   Some decisions are marked with a <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-sm font-medium">
                     <AlertTriangle className="w-3 h-3" /> Risky
                   </span> tag. 
-                  These offer higher potential returns but come with a chance of negative outcomes. 
-                  One risky event will trigger during the game — but you won't know which one!
+                  These offer higher potential returns but come with a chance of negative outcomes.
                 </p>
               </div>
               

@@ -36,7 +36,7 @@ const ROUND_DATA: Record<number, RoundData> = {
     details: [
       'Steady demand across all vehicle segments',
       'Normal competitive dynamics',
-      'Standard capital allocation decisions',
+      'Supply chains operating smoothly',
     ],
     color: 'emerald',
     bgGradient: 'from-emerald-900 via-emerald-800 to-slate-900',
@@ -48,6 +48,7 @@ const ROUND_DATA: Record<number, RoundData> = {
     details: [
       'Technology investments progressing as planned',
       'Healthy OEM order books',
+      'Consumer demand steady across segments',
     ],
     color: 'emerald',
     bgGradient: 'from-emerald-900 via-emerald-800 to-slate-900',

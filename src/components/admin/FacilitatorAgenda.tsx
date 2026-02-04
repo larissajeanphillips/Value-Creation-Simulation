@@ -89,12 +89,12 @@ const AGENDA_DATA: AgendaSection[] = [
     items: [
       {
         id: 'overview-0',
-        activity: 'Role Types & Decision Ownership\n• Growth Officer – owns Grow decisions\n• COO – owns Optimize decisions\n• Transformation Officer – owns Sustain decisions\n• CFO – enters decisions, ultimate accountability for results',
+        activity: 'Role Types & Decision Ownership\n• Growth Officer – owns Grow decisions\n• COO – owns Sustain decisions\n• Transformation Officer – owns Optimize decisions\n• CFO – enters decisions, ultimate accountability for results',
         speaker: 'Phil',
         duration: 3,
         startMinute: 6,
         endMinute: 9,
-        script: 'Before we dive into the mechanics, let me explain how decisions work in this simulation. Each team has four key roles that mirror real executive accountability. Your Growth Officer owns decisions in the Grow category—these drive revenue growth through new products, markets, and capabilities. Your COO owns the Optimize decisions—these improve margins and operational efficiency. Your Transformation Officer owns the Sustain decisions—these protect against risks and ensure business continuity. And critically, your CFO enters all decisions into the system and has ultimate ownership accountability for results. In real life, the CFO is the one who stands up in front of investors and explains your performance. Same here. Discuss as a team, but the CFO submits and owns the outcome.',
+        script: 'Before we dive into the mechanics, let me explain how decisions work in this simulation. Each team has four key roles that mirror real executive accountability. Your Growth Officer owns decisions in the Grow category—these drive revenue growth through new products, markets, and capabilities. Your COO owns the Sustain decisions—these protect against risks and ensure business continuity. Your Transformation Officer owns the Optimize decisions—these improve margins and operational efficiency. And critically, your CFO enters all decisions into the system and has ultimate ownership accountability for results. In real life, the CFO is the one who stands up in front of investors and explains your performance. Same here. Discuss as a team, but the CFO submits and owns the outcome.',
       },
       {
         id: 'overview-1',
@@ -807,19 +807,19 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-slate-200">
-                          <th className="text-left py-3 px-2 font-medium text-slate-600 w-[60%]">
+                          <th className="text-left py-3 px-2 font-medium text-slate-600" style={{ width: '75%' }}>
                             What Happens
                           </th>
-                          <th className="text-left py-3 px-2 font-medium text-slate-600 w-[10%]">
+                          <th className="text-left py-3 px-1 font-medium text-slate-600" style={{ width: '10%' }}>
                             Speaker
                           </th>
-                          <th className="text-center py-3 px-2 font-medium text-slate-600 w-[10%]">
+                          <th className="text-center py-3 px-1 font-medium text-slate-600" style={{ width: '5%' }}>
                             Min
                           </th>
-                          <th className="text-center py-3 px-2 font-medium text-slate-600 w-[10%]">
+                          <th className="text-center py-3 px-1 font-medium text-slate-600" style={{ width: '5%' }}>
                             Start
                           </th>
-                          <th className="text-center py-3 px-2 font-medium text-slate-600 w-[10%]">
+                          <th className="text-center py-3 px-1 font-medium text-slate-600" style={{ width: '5%' }}>
                             End
                           </th>
                         </tr>
@@ -877,11 +877,12 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
                                   </div>
                                 )}
                               </td>
-                              <td className="py-3 px-2">
+                              <td className="py-3 px-1">
                                 {item.speaker && (
-                                  <div className="flex items-center gap-1.5">
-                                    <User className="w-4 h-4 text-slate-400" />
+                                  <div className="flex items-center gap-1">
+                                    <User className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                                     <span className={cn(
+                                      "text-xs",
                                       item.speaker === 'Teams' 
                                         ? 'text-emerald-600 font-medium' 
                                         : 'text-slate-700'
@@ -891,17 +892,17 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
                                   </div>
                                 )}
                               </td>
-                              <td className="py-3 px-2 text-center">
+                              <td className="py-3 px-1 text-center text-xs">
                                 {!isRoundHeader && (
-                                  <span className="inline-flex items-center gap-1 text-slate-700">
+                                  <span className="text-slate-700">
                                     {item.duration}
                                   </span>
                                 )}
                               </td>
-                              <td className="py-3 px-2 text-center font-mono text-slate-600">
+                              <td className="py-3 px-1 text-center font-mono text-xs text-slate-600">
                                 {!isRoundHeader && item.startMinute}
                               </td>
-                              <td className="py-3 px-2 text-center font-mono text-slate-600">
+                              <td className="py-3 px-1 text-center font-mono text-xs text-slate-600">
                                 {!isRoundHeader && item.endMinute}
                               </td>
                             </tr>

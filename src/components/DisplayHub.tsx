@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { Monitor, BarChart3, Calendar, ExternalLink, Maximize2, ArrowRight } from 'lucide-react';
+import { Monitor, BarChart3, Calendar, ExternalLink, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MagnaLogo } from './MagnaLogo';
 
@@ -81,14 +81,14 @@ const DISPLAY_OPTIONS: DisplayOption[] = [
 
 export const DisplayHub: React.FC = () => {
   /**
-   * Open scoreboard in a fullscreen popup window (hides URL bar)
+   * Open any display URL in a fullscreen popup window (hides URL bar)
    */
-  const openScoreboardPopup = () => {
+  const openFullscreenPopup = (url: string, name: string) => {
     const width = window.screen.width;
     const height = window.screen.height;
     const popup = window.open(
-      '/display/scoreboard',
-      'scoreboard',
+      url,
+      name,
       `width=${width},height=${height},left=0,top=0,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`
     );
     if (popup) {
@@ -98,10 +98,10 @@ export const DisplayHub: React.FC = () => {
   };
 
   /**
-   * Navigate directly to scoreboard in same window
+   * Open scoreboard in a fullscreen popup window (hides URL bar)
    */
-  const goToScoreboard = () => {
-    window.location.href = '/display/scoreboard';
+  const openScoreboardPopup = () => {
+    openFullscreenPopup('/display/scoreboard', 'scoreboard');
   };
 
   return (
@@ -164,15 +164,8 @@ export const DisplayHub: React.FC = () => {
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-3 mb-4">
               <button
-                onClick={goToScoreboard}
-                className="flex items-center gap-2 px-6 py-3 bg-white text-blue-700 rounded-xl font-bold hover:bg-blue-50 transition-colors shadow-lg"
-              >
-                <ArrowRight className="w-5 h-5" />
-                Go to Scoreboard
-              </button>
-              <button
                 onClick={openScoreboardPopup}
-                className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-colors border border-white/20"
+                className="flex items-center gap-2 px-6 py-3 bg-white text-blue-700 rounded-xl font-bold hover:bg-blue-50 transition-colors shadow-lg"
               >
                 <Maximize2 className="w-5 h-5" />
                 Open Fullscreen (No URL Bar)
@@ -208,33 +201,46 @@ export const DisplayHub: React.FC = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {DISPLAY_OPTIONS.filter(opt => opt.id.startsWith('round')).map((option) => (
-              <a
+              <div
                 key={option.id}
-                href={option.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block group"
-              >
-                <div className={cn(
+                className={cn(
                   "bg-gradient-to-br",
                   option.bgGradient,
                   "rounded-xl p-6 border border-white/10",
-                  "hover:scale-[1.02] transition-all duration-200",
                   "shadow-lg"
-                )}>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className={cn(
-                      "w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center",
-                      option.color
-                    )}>
-                      {option.icon}
-                    </div>
-                    <ExternalLink className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
+                )}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className={cn(
+                    "w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center",
+                    option.color
+                  )}>
+                    {option.icon}
                   </div>
-                  <h4 className="text-lg font-bold text-white mb-1">{option.title}</h4>
-                  <p className="text-white/70 text-sm">{option.description}</p>
                 </div>
-              </a>
+                <h4 className="text-lg font-bold text-white mb-1">{option.title}</h4>
+                <p className="text-white/70 text-sm mb-4">{option.description}</p>
+                
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => openFullscreenPopup(option.url, option.id)}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-white/10 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-colors border border-white/20"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                    Fullscreen
+                  </button>
+                  <a
+                    href={option.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-2 bg-white/10 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-colors border border-white/20"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    New Tab
+                  </a>
+                </div>
+              </div>
             ))}
           </div>
         </div>

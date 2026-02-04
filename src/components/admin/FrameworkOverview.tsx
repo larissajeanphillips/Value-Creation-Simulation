@@ -259,15 +259,15 @@ export const FrameworkOverview: React.FC<FrameworkOverviewProps> = ({ onBack, cl
   const [view, setView] = useState<DetailView>('landing');
 
   return (
-    <div className={cn("min-h-screen bg-magna-darker", className)}>
+    <div className={cn("min-h-screen bg-slate-100", className)}>
       {/* Header */}
-      <header className="bg-magna-dark border-b border-white/10 sticky top-0 z-40">
+      <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={view === 'landing' ? onBack : () => setView('landing')}
-                className="flex items-center gap-2 text-magna-gray hover:text-white transition-colors"
+                className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
                 {view === 'landing' ? 'Back to Dashboard' : 'Back to Overview'}
@@ -275,8 +275,8 @@ export const FrameworkOverview: React.FC<FrameworkOverviewProps> = ({ onBack, cl
             </div>
             
             <div className="flex items-center gap-3">
-              <MagnaLogo variant="white" size="xs" />
-              <span className="text-white font-semibold">Principles, Lessons & Dynamics</span>
+              <MagnaLogo variant="color" size="xs" />
+              <span className="text-slate-800 font-semibold">Principles, Lessons & Dynamics</span>
             </div>
           </div>
         </div>
@@ -305,35 +305,39 @@ const LandingView: React.FC<{ onNavigate: (view: DetailView) => void }> = ({ onN
       title: 'Guiding Principles & Lessons',
       description: "Magna's 4 strategic principles and the 5 core lessons the game teaches",
       icon: Lightbulb,
-      color: 'from-blue-500/20 to-blue-600/20',
-      borderColor: 'border-blue-500/30',
-      iconColor: 'text-blue-400',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200',
+      iconBg: 'bg-blue-100',
+      iconColor: 'text-blue-600',
     },
     {
       id: 'kpis' as DetailView,
       title: 'KPI Scorecard',
       description: 'Financial framework targets teams are assessed against',
       icon: Gauge,
-      color: 'from-emerald-500/20 to-emerald-600/20',
-      borderColor: 'border-emerald-500/30',
-      iconColor: 'text-emerald-400',
+      bgColor: 'bg-emerald-50',
+      borderColor: 'border-emerald-200',
+      iconBg: 'bg-emerald-100',
+      iconColor: 'text-emerald-600',
     },
     {
       id: 'scenarios' as DetailView,
       title: 'Macro Dynamics',
       description: 'Round-by-round scenarios, multipliers, and expected responses',
       icon: Calendar,
-      color: 'from-amber-500/20 to-amber-600/20',
-      borderColor: 'border-amber-500/30',
-      iconColor: 'text-amber-400',
+      bgColor: 'bg-amber-50',
+      borderColor: 'border-amber-200',
+      iconBg: 'bg-amber-100',
+      iconColor: 'text-amber-600',
     },
     {
       id: 'events' as DetailView,
       title: 'Events & Risk Outcomes',
       description: 'Special events, bait cards, and pre-determined risky decision outcomes',
       icon: Zap,
-      color: 'from-magna-red/20 to-red-600/20',
-      borderColor: 'border-magna-red/30',
+      bgColor: 'bg-red-50',
+      borderColor: 'border-red-200',
+      iconBg: 'bg-red-100',
       iconColor: 'text-magna-red',
     },
   ];
@@ -342,10 +346,10 @@ const LandingView: React.FC<{ onNavigate: (view: DetailView) => void }> = ({ onN
     <div>
       {/* Hero */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-white mb-4">
+        <h1 className="text-4xl font-bold text-slate-800 mb-4">
           Learning Framework
         </h1>
-        <p className="text-xl text-magna-gray max-w-2xl mx-auto">
+        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
           The strategic principles and game dynamics designed to create memorable, 
           actionable learning for Magna's leadership team.
         </p>
@@ -358,24 +362,25 @@ const LandingView: React.FC<{ onNavigate: (view: DetailView) => void }> = ({ onN
             key={card.id}
             onClick={() => onNavigate(card.id)}
             className={cn(
-              "group relative bg-gradient-to-br p-8 rounded-2xl border transition-all duration-300",
+              "group relative p-8 rounded-2xl border transition-all duration-300",
               "hover:scale-[1.02] hover:shadow-xl",
-              card.color,
+              card.bgColor,
               card.borderColor
             )}
           >
             <div className="flex items-start gap-4">
               <div className={cn(
-                "w-14 h-14 rounded-xl bg-black/30 flex items-center justify-center",
+                "w-14 h-14 rounded-xl flex items-center justify-center",
+                card.iconBg,
                 card.iconColor
               )}>
                 <card.icon className="w-7 h-7" />
               </div>
               <div className="flex-1 text-left">
-                <h3 className="text-xl font-bold text-white mb-2">{card.title}</h3>
-                <p className="text-magna-gray">{card.description}</p>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">{card.title}</h3>
+                <p className="text-slate-600">{card.description}</p>
               </div>
-              <ChevronRight className="w-6 h-6 text-magna-gray group-hover:text-white group-hover:translate-x-1 transition-all" />
+              <ChevronRight className="w-6 h-6 text-slate-400 group-hover:text-slate-600 group-hover:translate-x-1 transition-all" />
             </div>
           </button>
         ))}
@@ -389,9 +394,9 @@ const LandingView: React.FC<{ onNavigate: (view: DetailView) => void }> = ({ onN
           { label: '5', sublabel: 'Rounds/Scenarios' },
           { label: '6', sublabel: 'Special Events' },
         ].map((stat, i) => (
-          <div key={i} className="bg-magna-dark border border-white/10 rounded-xl p-6 text-center">
+          <div key={i} className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 text-center">
             <div className="text-4xl font-bold text-magna-red mb-1">{stat.label}</div>
-            <div className="text-sm text-magna-gray">{stat.sublabel}</div>
+            <div className="text-sm text-slate-600">{stat.sublabel}</div>
           </div>
         ))}
       </div>
@@ -406,14 +411,14 @@ const LandingView: React.FC<{ onNavigate: (view: DetailView) => void }> = ({ onN
 const PrinciplesView: React.FC = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold text-white mb-2">Guiding Principles & Lessons</h2>
-      <p className="text-magna-gray mb-8">The game reinforces Magna's strategic framework through experiential learning.</p>
+      <h2 className="text-3xl font-bold text-slate-800 mb-2">Guiding Principles & Lessons</h2>
+      <p className="text-slate-600 mb-8">The game reinforces Magna's strategic framework through experiential learning.</p>
 
       <div className="space-y-6">
         {GUIDING_PRINCIPLES.map((principle) => (
           <div
             key={principle.id}
-            className="bg-magna-dark border border-white/10 rounded-2xl overflow-hidden"
+            className="bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden"
           >
             <div className={cn("bg-gradient-to-r p-6", principle.color)}>
               <div className="flex items-center gap-4">
@@ -430,25 +435,25 @@ const PrinciplesView: React.FC = () => {
             <div className="p-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-sm font-semibold text-magna-gray uppercase tracking-wide mb-3">
+                  <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
                     Key Behaviors
                   </h4>
                   <ul className="space-y-2">
                     {principle.behaviors.map((behavior, i) => (
-                      <li key={i} className="flex items-start gap-2 text-white">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                      <li key={i} className="flex items-start gap-2 text-slate-700">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                         {behavior}
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-magna-gray uppercase tracking-wide mb-3">
+                  <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
                     Related Lessons
                   </h4>
                   <div className="space-y-2">
                     {principle.lessons.map((lesson, i) => (
-                      <div key={i} className="bg-black/30 rounded-xl px-4 py-3 text-magna-red font-medium">
+                      <div key={i} className="bg-magna-red/10 border border-magna-red/20 rounded-xl px-4 py-3 text-magna-red font-medium">
                         {lesson}
                       </div>
                     ))}
@@ -461,12 +466,12 @@ const PrinciplesView: React.FC = () => {
       </div>
 
       {/* Core Lesson Summary */}
-      <div className="mt-8 bg-magna-red/10 border border-magna-red/30 rounded-2xl p-6">
+      <div className="mt-8 bg-red-50 border border-red-200 rounded-2xl p-6">
         <h3 className="text-lg font-bold text-magna-red mb-4 flex items-center gap-2">
           <AlertTriangle className="w-5 h-5" />
           Key Insight for MGA
         </h3>
-        <p className="text-white text-lg">
+        <p className="text-slate-700 text-lg">
           <strong>Margin improvement is worth much more than growth</strong> based on Magna's position on the growth spread matrix 
           (ROIC slightly above WACC). Teams who prioritize Optimize decisions over Grow decisions will tend to outperform.
         </p>
@@ -482,28 +487,28 @@ const PrinciplesView: React.FC = () => {
 const KPIsView: React.FC = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold text-white mb-2">KPI Scorecard</h2>
-      <p className="text-magna-gray mb-8">Teams are assessed against Magna's Financial Framework targets.</p>
+      <h2 className="text-3xl font-bold text-slate-800 mb-2">KPI Scorecard</h2>
+      <p className="text-slate-600 mb-8">Teams are assessed against Magna's Financial Framework targets.</p>
 
-      <div className="bg-magna-dark border border-white/10 rounded-2xl overflow-hidden">
+      <div className="bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="bg-black/30">
-              <th className="text-left p-4 text-magna-gray font-semibold">KPI</th>
-              <th className="text-center p-4 text-magna-gray font-semibold">Target</th>
-              <th className="text-center p-4 text-emerald-400 font-semibold">🟢 On Track</th>
-              <th className="text-center p-4 text-amber-400 font-semibold">🟡 Warning</th>
-              <th className="text-center p-4 text-red-400 font-semibold">🔴 Off Track</th>
+            <tr className="bg-slate-50">
+              <th className="text-left p-4 text-slate-600 font-semibold">KPI</th>
+              <th className="text-center p-4 text-slate-600 font-semibold">Target</th>
+              <th className="text-center p-4 text-emerald-600 font-semibold">🟢 On Track</th>
+              <th className="text-center p-4 text-amber-600 font-semibold">🟡 Warning</th>
+              <th className="text-center p-4 text-red-600 font-semibold">🔴 Off Track</th>
             </tr>
           </thead>
           <tbody>
             {KPI_SCORECARD.map((kpi, i) => (
-              <tr key={i} className="border-t border-white/10">
-                <td className="p-4 text-white font-medium">{kpi.name}</td>
+              <tr key={i} className="border-t border-slate-200">
+                <td className="p-4 text-slate-800 font-medium">{kpi.name}</td>
                 <td className="p-4 text-center text-magna-red font-bold">{kpi.target}</td>
-                <td className="p-4 text-center text-emerald-400">{kpi.green}</td>
-                <td className="p-4 text-center text-amber-400">{kpi.yellow}</td>
-                <td className="p-4 text-center text-red-400">{kpi.red}</td>
+                <td className="p-4 text-center text-emerald-600">{kpi.green}</td>
+                <td className="p-4 text-center text-amber-600">{kpi.yellow}</td>
+                <td className="p-4 text-center text-red-600">{kpi.red}</td>
               </tr>
             ))}
           </tbody>
@@ -511,19 +516,19 @@ const KPIsView: React.FC = () => {
       </div>
 
       {/* Visual Framework */}
-      <div className="mt-8 bg-magna-dark border border-white/10 rounded-2xl p-8">
-        <h3 className="text-xl font-bold text-white mb-6 text-center">Financial Framework to Drive Value</h3>
+      <div className="mt-8 bg-white border border-slate-200 shadow-sm rounded-2xl p-8">
+        <h3 className="text-xl font-bold text-slate-800 mb-6 text-center">Financial Framework to Drive Value</h3>
         <div className="flex items-center justify-center gap-4">
-          <div className="bg-black/30 rounded-2xl p-6 text-center w-48">
-            <TrendingUp className="w-8 h-8 text-magna-gray mx-auto mb-2" />
-            <div className="text-white font-semibold">Sales Growth</div>
-            <div className="text-magna-gray text-sm">Over Market</div>
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center w-48">
+            <TrendingUp className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+            <div className="text-slate-800 font-semibold">Sales Growth</div>
+            <div className="text-slate-500 text-sm">Over Market</div>
           </div>
           <div className="text-4xl text-magna-red font-bold">+</div>
-          <div className="bg-black/30 rounded-2xl p-6 text-center w-48">
-            <BarChart3 className="w-8 h-8 text-magna-gray mx-auto mb-2" />
-            <div className="text-white font-semibold">Profitability</div>
-            <div className="text-magna-gray text-sm">Top 25% of Peers</div>
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center w-48">
+            <BarChart3 className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+            <div className="text-slate-800 font-semibold">Profitability</div>
+            <div className="text-slate-500 text-sm">Top 25% of Peers</div>
           </div>
           <div className="text-4xl text-magna-red font-bold">=</div>
           <div className="bg-magna-red rounded-2xl p-6 text-center w-48">
@@ -541,34 +546,38 @@ const KPIsView: React.FC = () => {
 // SCENARIOS VIEW
 // =============================================================================
 
-const scenarioColorClasses: Record<string, { bg: string; border: string; badge: string }> = {
+const scenarioColorClasses: Record<string, { bg: string; border: string; badge: string; cardBg: string }> = {
   emerald: { 
-    bg: 'bg-emerald-500/10', 
-    border: 'border-emerald-500/30',
+    bg: 'bg-emerald-50', 
+    border: 'border-emerald-200',
     badge: 'bg-emerald-500',
+    cardBg: 'bg-white',
   },
   amber: { 
-    bg: 'bg-amber-500/10', 
-    border: 'border-amber-500/30',
+    bg: 'bg-amber-50', 
+    border: 'border-amber-200',
     badge: 'bg-amber-500',
+    cardBg: 'bg-white',
   },
   red: { 
-    bg: 'bg-red-500/10', 
-    border: 'border-red-500/30',
+    bg: 'bg-red-50', 
+    border: 'border-red-200',
     badge: 'bg-red-500',
+    cardBg: 'bg-white',
   },
   blue: { 
-    bg: 'bg-blue-500/10', 
-    border: 'border-blue-500/30',
+    bg: 'bg-blue-50', 
+    border: 'border-blue-200',
     badge: 'bg-blue-500',
+    cardBg: 'bg-white',
   },
 };
 
 const ScenariosView: React.FC = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold text-white mb-2">Macro Dynamics & Round Details</h2>
-      <p className="text-magna-gray mb-8">Round-by-round scenarios, market conditions, and the strategic responses they reward or punish.</p>
+      <h2 className="text-3xl font-bold text-slate-800 mb-2">Macro Dynamics & Round Details</h2>
+      <p className="text-slate-600 mb-8">Round-by-round scenarios, market conditions, and the strategic responses they reward or punish.</p>
 
       {/* Timeline */}
       <div className="space-y-6">
@@ -577,7 +586,7 @@ const ScenariosView: React.FC = () => {
           return (
             <div
               key={scenario.round}
-              className={cn("bg-magna-dark border rounded-2xl overflow-hidden", colors.border)}
+              className={cn("bg-white border shadow-sm rounded-2xl overflow-hidden", colors.border)}
             >
               {/* Header */}
               <div className={cn("px-6 py-4 flex items-center justify-between", colors.bg)}>
@@ -586,12 +595,12 @@ const ScenariosView: React.FC = () => {
                     <span className="text-lg font-bold text-white">{scenario.round}</span>
                   </div>
                   <div>
-                    <div className="text-white/60 text-sm">{scenario.year}</div>
-                    <h3 className="text-xl font-bold text-white">{scenario.name}</h3>
+                    <div className="text-slate-500 text-sm">{scenario.year}</div>
+                    <h3 className="text-xl font-bold text-slate-800">{scenario.name}</h3>
                   </div>
                 </div>
                 {scenario.round === 3 && (
-                  <span className="px-3 py-1 bg-amber-500/20 text-amber-400 text-sm rounded-full font-medium">
+                  <span className="px-3 py-1 bg-amber-100 text-amber-700 text-sm rounded-full font-medium border border-amber-200">
                     OEM CANCELLATION EVENT
                   </span>
                 )}
@@ -608,18 +617,18 @@ const ScenariosView: React.FC = () => {
                 {/* Narrative & Key Details */}
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <h4 className="text-sm font-semibold text-magna-gray uppercase tracking-wide mb-3">
+                    <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
                       Market Narrative
                     </h4>
-                    <p className="text-white leading-relaxed">{scenario.narrative}</p>
+                    <p className="text-slate-700 leading-relaxed">{scenario.narrative}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-magna-gray uppercase tracking-wide mb-3">
+                    <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
                       Key Details
                     </h4>
                     <ul className="space-y-2">
                       {scenario.keyDetails.map((detail, i) => (
-                        <li key={i} className="flex items-start gap-2 text-white">
+                        <li key={i} className="flex items-start gap-2 text-slate-700">
                           <span className={cn("w-2 h-2 rounded-full mt-2 flex-shrink-0", colors.badge)} />
                           {detail}
                         </li>
@@ -630,17 +639,17 @@ const ScenariosView: React.FC = () => {
 
                 {/* Strategic Guidance */}
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
-                    <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold mb-2">
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-emerald-600 text-sm font-semibold mb-2">
                       <CheckCircle2 className="w-4 h-4" /> Smart Response
                     </div>
-                    <p className="text-white">{scenario.smartResponse}</p>
+                    <p className="text-slate-700">{scenario.smartResponse}</p>
                   </div>
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-                    <div className="flex items-center gap-2 text-red-400 text-sm font-semibold mb-2">
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-red-600 text-sm font-semibold mb-2">
                       <XCircle className="w-4 h-4" /> Trap to Avoid
                     </div>
-                    <p className="text-white">{scenario.trap}</p>
+                    <p className="text-slate-700">{scenario.trap}</p>
                   </div>
                 </div>
               </div>
@@ -650,34 +659,34 @@ const ScenariosView: React.FC = () => {
       </div>
 
       {/* Multiplier Legend */}
-      <div className="mt-8 bg-black/30 border border-white/10 rounded-2xl p-6">
-        <h4 className="text-sm font-semibold text-magna-gray uppercase tracking-wide mb-4">
+      <div className="mt-8 bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
+        <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
           Multiplier Impact on Returns
         </h4>
         <div className="flex gap-6 text-sm">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 bg-emerald-500 rounded-full" />
-            <span className="text-white">&gt;1.0x = Strategy outperforms</span>
+            <span className="text-slate-700">&gt;1.0x = Strategy outperforms</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 bg-magna-gray rounded-full" />
-            <span className="text-white">1.0x = Normal returns</span>
+            <span className="w-3 h-3 bg-slate-400 rounded-full" />
+            <span className="text-slate-700">1.0x = Normal returns</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 bg-red-500 rounded-full" />
-            <span className="text-white">&lt;1.0x = Strategy underperforms</span>
+            <span className="text-slate-700">&lt;1.0x = Strategy underperforms</span>
           </div>
         </div>
       </div>
 
       {/* Quick Reference Link */}
-      <div className="mt-6 bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
+      <div className="mt-6 bg-purple-50 border border-purple-200 rounded-xl p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-purple-400" />
+            <Calendar className="w-5 h-5 text-purple-600" />
             <div>
-              <div className="text-white font-medium">Big Screen Display Available</div>
-              <div className="text-purple-300 text-sm">Show round details on the conference room screen</div>
+              <div className="text-slate-800 font-medium">Big Screen Display Available</div>
+              <div className="text-purple-600 text-sm">Show round details on the conference room screen</div>
             </div>
           </div>
           <a
@@ -695,9 +704,9 @@ const ScenariosView: React.FC = () => {
 };
 
 const MultiplierBadge: React.FC<{ label: string; value: number }> = ({ label, value }) => {
-  const color = value > 1 ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' 
-    : value < 1 ? 'bg-red-500/20 text-red-400 border-red-500/30'
-    : 'bg-white/10 text-magna-gray border-white/20';
+  const color = value > 1 ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
+    : value < 1 ? 'bg-red-100 text-red-700 border-red-200'
+    : 'bg-slate-100 text-slate-600 border-slate-200';
   
   return (
     <div className={cn("px-3 py-1.5 rounded-lg border text-sm font-medium", color)}>
@@ -713,13 +722,13 @@ const MultiplierBadge: React.FC<{ label: string; value: number }> = ({ label, va
 const EventsView: React.FC = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold text-white mb-2">Events & Risk Outcomes</h2>
-      <p className="text-magna-gray mb-8">Special events and pre-determined outcomes for risky decisions.</p>
+      <h2 className="text-3xl font-bold text-slate-800 mb-2">Events & Risk Outcomes</h2>
+      <p className="text-slate-600 mb-8">Special events and pre-determined outcomes for risky decisions.</p>
 
       {/* Special Events */}
       <div className="mb-12">
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <Zap className="w-5 h-5 text-amber-400" />
+        <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <Zap className="w-5 h-5 text-amber-600" />
           Special Events
         </h3>
         <div className="grid md:grid-cols-2 gap-4">
@@ -727,25 +736,25 @@ const EventsView: React.FC = () => {
             <div
               key={i}
               className={cn(
-                "bg-magna-dark border rounded-xl p-5",
-                event.isCritical ? "border-amber-500/50" : "border-white/10"
+                "bg-white border shadow-sm rounded-xl p-5",
+                event.isCritical ? "border-amber-300" : "border-slate-200"
               )}
             >
               <div className="flex items-start justify-between mb-3">
-                <h4 className="font-bold text-white">{event.name}</h4>
-                <span className="text-xs bg-black/30 text-magna-gray px-2 py-1 rounded">
+                <h4 className="font-bold text-slate-800">{event.name}</h4>
+                <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200">
                   Round {event.round}
                 </span>
               </div>
-              <p className="text-magna-gray text-sm mb-3">{event.description}</p>
+              <p className="text-slate-600 text-sm mb-3">{event.description}</p>
               <div className="space-y-2 text-sm">
                 <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-emerald-400">{event.protected}</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                  <span className="text-emerald-700">{event.protected}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-red-400">{event.punished}</span>
+                  <XCircle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
+                  <span className="text-red-700">{event.punished}</span>
                 </div>
               </div>
             </div>
@@ -754,63 +763,63 @@ const EventsView: React.FC = () => {
       </div>
 
       {/* Bait Card Callout */}
-      <div className="mb-12 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6">
-        <h3 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
+      <div className="mb-12 bg-amber-50 border border-amber-200 rounded-2xl p-6">
+        <h3 className="text-lg font-bold text-amber-700 mb-4 flex items-center gap-2">
           <AlertTriangle className="w-5 h-5" />
           Round 2 Bait Cards
         </h3>
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-black/30 rounded-xl p-4">
-            <div className="text-emerald-400 font-semibold mb-2">Diversified OEM Capacity Investment</div>
-            <div className="text-magna-gray text-sm mb-2">Cost: $200M | Return: +$80M/yr</div>
-            <div className="text-white text-sm">✓ Spreads risk across multiple OEMs - PROTECTED from cancellation</div>
+          <div className="bg-white border border-emerald-200 rounded-xl p-4">
+            <div className="text-emerald-700 font-semibold mb-2">Diversified OEM Capacity Investment</div>
+            <div className="text-slate-600 text-sm mb-2">Cost: $200M | Return: +$80M/yr</div>
+            <div className="text-slate-700 text-sm">✓ Spreads risk across multiple OEMs - PROTECTED from cancellation</div>
           </div>
-          <div className="bg-black/30 rounded-xl p-4">
-            <div className="text-red-400 font-semibold mb-2">Concentrated OEM Capacity Investment</div>
-            <div className="text-magna-gray text-sm mb-2">Cost: $180M | Projected: +$120M/yr</div>
-            <div className="text-white text-sm">✗ Looks better but → <strong className="text-red-400">$0 return</strong> when OEM cancels in R3</div>
+          <div className="bg-white border border-red-200 rounded-xl p-4">
+            <div className="text-red-700 font-semibold mb-2">Concentrated OEM Capacity Investment</div>
+            <div className="text-slate-600 text-sm mb-2">Cost: $180M | Projected: +$120M/yr</div>
+            <div className="text-slate-700 text-sm">✗ Looks better but → <strong className="text-red-600">$0 return</strong> when OEM cancels in R3</div>
           </div>
         </div>
       </div>
 
       {/* Risky Decision Outcomes */}
       <div>
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-red-400" />
+        <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <AlertTriangle className="w-5 h-5 text-red-600" />
           Risky Decision Outcomes (Pre-Determined)
         </h3>
-        <p className="text-magna-gray text-sm mb-4">
+        <p className="text-slate-600 text-sm mb-4">
           3 of 10 risky decisions fail (30% failure rate) - teaching that high-risk bets should be selective.
         </p>
-        <div className="bg-magna-dark border border-white/10 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="bg-black/30">
-                <th className="text-left p-4 text-magna-gray font-semibold">Decision</th>
-                <th className="text-center p-4 text-magna-gray font-semibold">Round</th>
-                <th className="text-center p-4 text-magna-gray font-semibold">Outcome</th>
-                <th className="text-left p-4 text-magna-gray font-semibold">Actual Result</th>
+              <tr className="bg-slate-50">
+                <th className="text-left p-4 text-slate-600 font-semibold">Decision</th>
+                <th className="text-center p-4 text-slate-600 font-semibold">Round</th>
+                <th className="text-center p-4 text-slate-600 font-semibold">Outcome</th>
+                <th className="text-left p-4 text-slate-600 font-semibold">Actual Result</th>
               </tr>
             </thead>
             <tbody>
               {RISKY_DECISIONS.map((decision, i) => (
-                <tr key={i} className="border-t border-white/10">
-                  <td className="p-4 text-white">{decision.name}</td>
-                  <td className="p-4 text-center text-magna-gray">{decision.round}</td>
+                <tr key={i} className="border-t border-slate-200">
+                  <td className="p-4 text-slate-800">{decision.name}</td>
+                  <td className="p-4 text-center text-slate-600">{decision.round}</td>
                   <td className="p-4 text-center">
                     {decision.outcome === 'success' ? (
-                      <span className="inline-flex items-center gap-1 text-emerald-400">
+                      <span className="inline-flex items-center gap-1 text-emerald-600">
                         <CheckCircle2 className="w-4 h-4" /> Success
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-red-400">
+                      <span className="inline-flex items-center gap-1 text-red-600">
                         <XCircle className="w-4 h-4" /> Fails
                       </span>
                     )}
                   </td>
                   <td className={cn(
                     "p-4",
-                    decision.outcome === 'success' ? 'text-emerald-400' : 'text-red-400'
+                    decision.outcome === 'success' ? 'text-emerald-600' : 'text-red-600'
                   )}>
                     {decision.actual}
                   </td>
