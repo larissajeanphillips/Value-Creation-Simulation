@@ -6,7 +6,7 @@
  * NOTE: Impact values are placeholder estimates and will be tuned during Phase 7
  */
 
-import type { Decision, RoundNumber, GrowMetrics } from '../types/game.js';
+import type { Decision, RoundNumber, GrowMetrics, OptimizeMetrics, SustainMetrics } from '../types/game.js';
 
 // =============================================================================
 // GROW DECISIONS (Based on Excel - Lever = "Grow")
@@ -39,6 +39,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 11.0,
     },
+
   },
   {
     id: 'grow-1-2',
@@ -65,6 +66,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 3,
       ebitMargin: 11.0,
     },
+
   },
   {
     id: 'grow-1-3',
@@ -91,6 +93,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 5.0,
     },
+
   },
   {
     id: 'grow-1-4',
@@ -117,6 +120,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 10.0,
     },
+
   },
   {
     id: 'grow-1-5',
@@ -145,6 +149,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 5.0,
     },
+
   },
 
   // ===== ROUND 2 =====
@@ -173,6 +178,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 10.0,
     },
+
   },
   {
     id: 'grow-2-2',
@@ -200,6 +206,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 6.0,
     },
+
   },
   {
     id: 'grow-2-3',
@@ -222,10 +229,11 @@ const GROW_DECISIONS: Decision[] = [
     growMetrics: {
       revenue1Year: 2000,
       fiveYearGrowth: 10.0,
-      investmentsTotal: 0,
+      investmentsTotal: 3941.579663324627,
       investmentPeriod: 1,
       ebitMargin: 11.0,
     },
+
   },
   {
     id: 'grow-2-4',
@@ -252,6 +260,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 10.0,
     },
+
   },
   {
     id: 'grow-2-5',
@@ -278,6 +287,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 3,
       ebitMargin: 5.0,
     },
+
   },
 
   // ===== ROUND 3 =====
@@ -306,6 +316,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 1,
       ebitMargin: 5.0,
     },
+
   },
   {
     id: 'grow-3-2',
@@ -332,6 +343,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 1,
       ebitMargin: 5.0,
     },
+
   },
   {
     id: 'grow-3-3',
@@ -354,10 +366,11 @@ const GROW_DECISIONS: Decision[] = [
     growMetrics: {
       revenue1Year: 8000,
       fiveYearGrowth: 10.0,
-      investmentsTotal: 0,
+      investmentsTotal: 15795.290340825411,
       investmentPeriod: 1,
       ebitMargin: 11.0,
     },
+
   },
   {
     id: 'grow-3-4',
@@ -384,6 +397,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 1,
       ebitMargin: 5.0,
     },
+
   },
   {
     id: 'grow-3-5',
@@ -410,6 +424,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 1,
       ebitMargin: 5.0,
     },
+
   },
 
   // ===== ROUND 4 =====
@@ -434,10 +449,11 @@ const GROW_DECISIONS: Decision[] = [
     growMetrics: {
       revenue1Year: 8000,
       fiveYearGrowth: 10.0,
-      investmentsTotal: 0,
+      investmentsTotal: 15826.579763354473,
       investmentPeriod: 1,
       ebitMargin: 11.0,
     },
+
   },
   {
     id: 'grow-4-2',
@@ -465,6 +481,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 10.0,
     },
+
   },
   {
     id: 'grow-4-3',
@@ -491,6 +508,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 5.0,
     },
+
   },
   {
     id: 'grow-4-4',
@@ -517,6 +535,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 6.0,
     },
+
   },
   {
     id: 'grow-4-5',
@@ -543,6 +562,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 5.0,
     },
+
   },
 
   // ===== ROUND 5 =====
@@ -571,6 +591,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 11.0,
     },
+
   },
   {
     id: 'grow-5-2',
@@ -597,6 +618,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 10.0,
     },
+
   },
   {
     id: 'grow-5-3',
@@ -619,10 +641,11 @@ const GROW_DECISIONS: Decision[] = [
     growMetrics: {
       revenue1Year: 4000,
       fiveYearGrowth: 10.0,
-      investmentsTotal: 0,
+      investmentsTotal: 7391.040974737654,
       investmentPeriod: 1,
       ebitMargin: 11.0,
     },
+
   },
   {
     id: 'grow-5-4',
@@ -649,6 +672,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 2,
       ebitMargin: 6.0,
     },
+
   },
   {
     id: 'grow-5-5',
@@ -675,6 +699,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 1,
       ebitMargin: 5.0,
     },
+
   },
   {
     id: 'grow-5-6',
@@ -701,6 +726,7 @@ const GROW_DECISIONS: Decision[] = [
       investmentPeriod: 1,
       ebitMargin: 11.0,
     },
+
   },
 ];
 
@@ -728,6 +754,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.01,
     recurringBenefit: 60,
+    optimizeMetrics: {
+      implementationCost: 120,
+      investment: 120,
+      investmentPeriod: 2,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-1-2',
@@ -747,6 +780,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.02,
     recurringBenefit: 40,
+    optimizeMetrics: {
+      implementationCost: 2.5,
+      investment: 100,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-1-3',
@@ -767,6 +807,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: 0.005,
     riskPrevention: 'supply_chain_disruption',
     recurringBenefit: 30,
+    optimizeMetrics: {
+      implementationCost: 2,
+      investment: 160,
+      investmentPeriod: 1,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-1-4',
@@ -787,6 +834,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     sgaImpact: -0.01,
     cogsImpact: -0.005,
     recurringBenefit: 50,
+    optimizeMetrics: {
+      implementationCost: 120,
+      investment: 120,
+      investmentPeriod: 2,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-1-5',
@@ -806,6 +860,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.015,
     recurringBenefit: 35,
+    optimizeMetrics: {
+      implementationCost: 1,
+      investment: 40,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 2 =====
@@ -828,6 +889,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.008,
     sgaImpact: -0.005,
     recurringBenefit: 50,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-2-2',
@@ -847,6 +915,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.02,
     recurringBenefit: 100,
+    optimizeMetrics: {
+      implementationCost: 360,
+      investment: 360,
+      investmentPeriod: 1,
+      annualCost: 120,
+    },
+
   },
   {
     id: 'optimize-2-3',
@@ -867,6 +942,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.015,
     sgaImpact: -0.01,
     recurringBenefit: 80,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 240,
+      investmentPeriod: 1,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-2-4',
@@ -886,6 +968,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.01,
     recurringBenefit: 55,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 240,
+      investmentPeriod: 1,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-2-5',
@@ -906,6 +995,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     sgaImpact: -0.01,
     cogsImpact: -0.005,
     recurringBenefit: 45,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 3 =====
@@ -927,6 +1023,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: true,
     revenueImpact: -0.02,
     recurringBenefit: 350,
+    optimizeMetrics: {
+      implementationCost: 598.6536752491337,
+      investment: 598.6536752491337,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'optimize-3-2',
@@ -946,6 +1049,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.008,
     recurringBenefit: 30,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 240,
+      investmentPeriod: 1,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-3-3',
@@ -965,6 +1075,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.012,
     recurringBenefit: 55,
+    optimizeMetrics: {
+      implementationCost: 120,
+      investment: 120,
+      investmentPeriod: 2,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-3-4',
@@ -985,6 +1102,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     sgaImpact: -0.025,
     cogsImpact: -0.01,
     recurringBenefit: 90,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 360,
+      investmentPeriod: 1,
+      annualCost: 120,
+    },
+
   },
   {
     id: 'optimize-3-5',
@@ -1004,6 +1128,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.025,
     recurringBenefit: 120,
+    optimizeMetrics: {
+      implementationCost: 1.5,
+      investment: 180,
+      investmentPeriod: 1,
+      annualCost: 120,
+    },
+
   },
 
   // ===== ROUND 4 =====
@@ -1025,6 +1156,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.01,
     recurringBenefit: 40,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-4-2',
@@ -1043,6 +1181,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     rampUpYears: 1,
     isOneTimeBenefit: true,
     recurringBenefit: 200,
+    optimizeMetrics: {
+      implementationCost: 599.7459692690644,
+      investment: 599.7459692690644,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'optimize-4-3',
@@ -1062,6 +1207,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.015,
     recurringBenefit: 35,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-4-4',
@@ -1081,6 +1233,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.015,
     recurringBenefit: 60,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 240,
+      investmentPeriod: 1,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-4-5',
@@ -1100,6 +1259,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.012,
     recurringBenefit: 45,
+    optimizeMetrics: {
+      implementationCost: 120,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 5 =====
@@ -1122,6 +1288,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.015,
     sgaImpact: -0.008,
     recurringBenefit: 75,
+    optimizeMetrics: {
+      implementationCost: 2.5,
+      investment: 200,
+      investmentPeriod: 1,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-5-2',
@@ -1141,6 +1314,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.005,
     recurringBenefit: 40,
+    optimizeMetrics: {
+      implementationCost: 2,
+      investment: 80,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-5-3',
@@ -1160,6 +1340,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.01,
     recurringBenefit: 40,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-5-4',
@@ -1180,6 +1367,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: 0.005,
     riskPrevention: 'supply_chain_disruption',
     recurringBenefit: 50,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 240,
+      investmentPeriod: 1,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-5-5',
@@ -1199,6 +1393,13 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.025,
     recurringBenefit: 130,
+    optimizeMetrics: {
+      implementationCost: 360,
+      investment: 360,
+      investmentPeriod: 1,
+      annualCost: 120,
+    },
+
   },
 ];
 
@@ -1226,6 +1427,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'key_customer_loss',
     recurringBenefit: 30,
+    sustainMetrics: {
+      implementationCost: 40,
+      investment: 40,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-1-2',
@@ -1244,6 +1452,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     rampUpYears: 2,
     isOneTimeBenefit: false,
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'sustain-1-3',
@@ -1263,6 +1478,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'cyber_attack',
     recurringBenefit: 0,
+    sustainMetrics: {
+      implementationCost: 80,
+      investment: 80,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-1-4',
@@ -1282,6 +1504,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'equipment_failure',
     recurringBenefit: 25,
+    sustainMetrics: {
+      implementationCost: 80,
+      investment: 80,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-1-5',
@@ -1301,6 +1530,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'regulatory_penalty',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 2 =====
@@ -1321,6 +1557,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     rampUpYears: 2,
     isOneTimeBenefit: false,
     recurringBenefit: 25,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'sustain-2-2',
@@ -1340,6 +1583,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'quality_failure',
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 80,
+      investment: 80,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-2-3',
@@ -1359,6 +1609,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'system_failure',
     recurringBenefit: 30,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'sustain-2-4',
@@ -1378,6 +1635,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'safety_incident',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 40,
+      investment: 40,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-2-5',
@@ -1397,6 +1661,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'supply_chain_disruption',
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 3 =====
@@ -1418,6 +1689,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'key_customer_loss',
     recurringBenefit: 35,
+    sustainMetrics: {
+      implementationCost: 80,
+      investment: 80,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-3-2',
@@ -1437,6 +1715,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'equipment_failure',
     recurringBenefit: 30,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 240,
+      investmentPeriod: 1,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'sustain-3-3',
@@ -1456,6 +1741,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'talent_loss',
     recurringBenefit: 25,
+    sustainMetrics: {
+      implementationCost: 120,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-3-4',
@@ -1475,6 +1767,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'business_disruption',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 80,
+      investment: 80,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-3-5',
@@ -1494,6 +1793,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'catastrophic_loss',
     recurringBenefit: 10,
+    sustainMetrics: {
+      implementationCost: 40,
+      investment: 40,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
 
   // ===== ROUND 4 =====
@@ -1516,6 +1822,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     sgaImpact: -0.04,
     cogsImpact: -0.02,
     recurringBenefit: 150,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 480,
+      investmentPeriod: 1,
+      annualCost: 160,
+    },
+
   },
   {
     id: 'sustain-4-2',
@@ -1535,6 +1848,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'regulatory_penalty',
     recurringBenefit: 10,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'sustain-4-3',
@@ -1554,6 +1874,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'equipment_failure',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 80,
+      investment: 80,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-4-4',
@@ -1573,6 +1900,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'talent_loss',
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 120,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-4-5',
@@ -1592,6 +1926,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'financial_risk',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 5 =====
@@ -1613,6 +1954,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'equipment_failure',
     recurringBenefit: 40,
+    sustainMetrics: {
+      implementationCost: 120,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-5-2',
@@ -1631,6 +1979,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     rampUpYears: 2,
     isOneTimeBenefit: false,
     recurringBenefit: 35,
+    sustainMetrics: {
+      implementationCost: 120,
+      investment: 120,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-5-3',
@@ -1650,6 +2005,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'esg_risk',
     recurringBenefit: 30,
+    sustainMetrics: {
+      implementationCost: 40,
+      investment: 40,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-5-4',
@@ -1669,6 +2031,13 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'business_disruption',
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 40,
+      investment: 40,
+      investmentPeriod: 1,
+      annualCost: 0,
+    },
+
   },
 ];
 

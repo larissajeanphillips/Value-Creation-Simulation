@@ -303,14 +303,6 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             {decision.category === 'grow' && decision.growMetrics && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
-                  label="Investment (total)" 
-                  value={`$${decision.growMetrics.investmentsTotal}M`} 
-                />
-                <DetailItem 
-                  label="Investment Period" 
-                  value={`${decision.growMetrics.investmentPeriod} year${decision.growMetrics.investmentPeriod > 1 ? 's' : ''}`} 
-                />
-                <DetailItem 
                   label="Revenue Year 1" 
                   value={`$${decision.growMetrics.revenue1Year}M`} 
                 />
@@ -318,12 +310,20 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                   label="5-Year Growth" 
                   value={`${decision.growMetrics.fiveYearGrowth}% y-o-y`} 
                 />
-                <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
-                  <div className="text-sm text-slate-700 mb-1">EBIT Margin</div>
-                  <div className="text-slate-800 text-lg font-semibold">
-                    {decision.growMetrics.ebitMargin}%
+                <div className="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                  <div className="text-sm text-emerald-700 mb-1">Investment (total)</div>
+                  <div className="text-emerald-800 text-2xl font-bold">
+                    ${decision.growMetrics.investmentsTotal}M
                   </div>
                 </div>
+                <DetailItem 
+                  label="Investment Period" 
+                  value={`${decision.growMetrics.investmentPeriod} year${decision.growMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+                <DetailItem 
+                  label="EBIT Margin" 
+                  value={`${decision.growMetrics.ebitMargin}%`} 
+                />
               </div>
             )}
             {decision.category === 'grow' && !decision.growMetrics && (
@@ -338,7 +338,29 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                 />
               </div>
             )}
-            {decision.category === 'optimize' && (
+            {decision.category === 'optimize' && decision.optimizeMetrics && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="Implementation Cost" 
+                  value={`$${decision.optimizeMetrics.implementationCost}M`} 
+                />
+                <div className="col-span-2 bg-blue-50 border border-blue-200 rounded-xl p-4">
+                  <div className="text-sm text-blue-700 mb-1">Investment</div>
+                  <div className="text-blue-800 text-2xl font-bold">
+                    ${decision.optimizeMetrics.investment}M
+                  </div>
+                </div>
+                <DetailItem 
+                  label="Investment Period" 
+                  value={`${decision.optimizeMetrics.investmentPeriod} year${decision.optimizeMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+                <DetailItem 
+                  label="Annual Cost" 
+                  value={`$${decision.optimizeMetrics.annualCost}M`} 
+                />
+              </div>
+            )}
+            {decision.category === 'optimize' && !decision.optimizeMetrics && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
                   label="Implementation Cost" 
@@ -354,7 +376,29 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                 />
               </div>
             )}
-            {decision.category === 'sustain' && (
+            {decision.category === 'sustain' && decision.sustainMetrics && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="Implementation Cost" 
+                  value={`$${decision.sustainMetrics.implementationCost}M`} 
+                />
+                <div className="col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                  <div className="text-sm text-amber-700 mb-1">Investment (total)</div>
+                  <div className="text-amber-800 text-2xl font-bold">
+                    ${decision.sustainMetrics.investment}M
+                  </div>
+                </div>
+                <DetailItem 
+                  label="Investment Period" 
+                  value={`${decision.sustainMetrics.investmentPeriod} year${decision.sustainMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+                <DetailItem 
+                  label="Annual Cost" 
+                  value={`$${decision.sustainMetrics.annualCost}M`} 
+                />
+              </div>
+            )}
+            {decision.category === 'sustain' && !decision.sustainMetrics && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
                   label="Investment (total)" 

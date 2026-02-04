@@ -105,6 +105,12 @@ export interface Decision {
   /** Metrics displayed on card back - specific to decision category */
   /** Grow-specific metrics from Excel columns AS-AW */
   growMetrics?: GrowMetrics;
+  
+  /** Optimize-specific metrics from Excel columns AY-BB */
+  optimizeMetrics?: OptimizeMetrics;
+  
+  /** Sustain-specific metrics from Excel columns BD-BG */
+  sustainMetrics?: SustainMetrics;
 }
 
 /**
@@ -126,6 +132,42 @@ export interface GrowMetrics {
   
   /** EBIT margin (as percentage, e.g., 11.0 = 11%) */
   ebitMargin: number;
+}
+
+/**
+ * OptimizeMetrics - Metrics displayed on the back of Optimize decision cards
+ * Data from Excel Decisions tab columns AY-BB
+ */
+export interface OptimizeMetrics {
+  /** Implementation cost (in USD millions) */
+  implementationCost: number;
+  
+  /** Total investment (in USD millions) - same as cost on front of card */
+  investment: number;
+  
+  /** Investment period in years */
+  investmentPeriod: number;
+  
+  /** Annual cost savings (in USD millions) */
+  annualCost: number;
+}
+
+/**
+ * SustainMetrics - Metrics displayed on the back of Sustain decision cards
+ * Data from Excel Decisions tab columns BD-BG
+ */
+export interface SustainMetrics {
+  /** Implementation cost (in USD millions) */
+  implementationCost: number;
+  
+  /** Total investment (in USD millions) - same as cost on front of card */
+  investment: number;
+  
+  /** Investment period in years */
+  investmentPeriod: number;
+  
+  /** Annual cost (in USD millions) */
+  annualCost: number;
 }
 
 // =============================================================================
