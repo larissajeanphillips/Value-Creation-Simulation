@@ -424,19 +424,26 @@ export function calculateCumulativeTSR(
 // =============================================================================
 
 /**
- * Ranks teams by cumulative TSR
- * Returns teams sorted by TSR (descending) with rank assigned
+ * Ranks teams by stock price (highest share price = rank #1)
+ * Returns teams sorted by stock price (descending) with rank assigned
  */
-export function rankTeamsByTSR(teams: TeamState[]): TeamState[] {
-  const sorted = [...teams].sort((a, b) => b.cumulativeTSR - a.cumulativeTSR);
+export function rankTeamsByStockPrice(teams: TeamState[]): TeamState[] {
+  const sorted = [...teams].sort((a, b) => b.stockPrice - a.stockPrice);
   return sorted;
 }
 
 /**
- * Gets ranking position for a specific team
+ * Legacy function name for backward compatibility - now ranks by stock price
+ */
+export function rankTeamsByTSR(teams: TeamState[]): TeamState[] {
+  return rankTeamsByStockPrice(teams);
+}
+
+/**
+ * Gets ranking position for a specific team (based on stock price)
  */
 export function getTeamRank(teamId: number, allTeams: TeamState[]): number {
-  const sorted = rankTeamsByTSR(allTeams.filter(t => t.isClaimed));
+  const sorted = rankTeamsByStockPrice(allTeams.filter(t => t.isClaimed));
   const index = sorted.findIndex(t => t.teamId === teamId);
   return index >= 0 ? index + 1 : allTeams.length;
 }
@@ -495,7 +502,8 @@ export function generateRoundResults(
   roundHistories: Record<number, TeamRoundSnapshot[]> = {}
 ): RoundResults {
   const claimedTeams = Object.values(teams).filter(t => t.isClaimed);
-  const sorted = rankTeamsByTSR(claimedTeams);
+  // Rank by stock price (highest share price = rank #1)
+  const sorted = rankTeamsByStockPrice(claimedTeams);
   
   const teamResults: TeamRoundResult[] = sorted.map((team, index) => {
     // Build stock price history from round histories
@@ -619,8 +627,8 @@ export function generateFinalResults(
     };
   });
   
-  // Sort by TSR and assign ranks
-  simulatedTeams.sort((a, b) => b.totalTSR - a.totalTSR);
+  // Sort by final stock price and assign ranks (highest share price = rank #1)
+  simulatedTeams.sort((a, b) => b.finalStockPrice - a.finalStockPrice);
   simulatedTeams.forEach((team, index) => {
     team.rank = index + 1;
   });
