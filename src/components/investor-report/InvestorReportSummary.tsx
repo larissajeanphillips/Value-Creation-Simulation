@@ -543,7 +543,7 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
             </p>
             <p>
               The company's customer concentration with Detroit 3 and European OEMs provides stable baseload revenue, while 
-              recent contract wins in EV platforms and ADAS components position Magna to capture secular growth tailwinds. 
+              recent contract wins in new vehicle platforms and ADAS components position Magna to capture secular growth tailwinds. 
               Capital allocation discipline and the company's track record of operational execution through prior cycles 
               remain key differentiators versus peers.
             </p>

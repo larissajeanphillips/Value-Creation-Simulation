@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Baseline Financials
+ * Value Creation Simulation - Baseline Financials
  * Starting position for all teams (2024 EOY / 2025 Start)
  * 
  * Based on Magna International's 2024 Annual Report

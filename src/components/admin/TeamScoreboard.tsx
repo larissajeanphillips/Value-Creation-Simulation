@@ -116,7 +116,7 @@ export const TeamScoreboard: React.FC<TeamScoreboardProps> = ({ onBack }) => {
             <MagnaLogo variant="white" size="xs" />
             <div className="h-6 w-px bg-slate-700" />
             <h1 className="text-lg font-semibold text-white">
-              Value Creation Challenge Scoreboard
+              Value Creation Simulation Scoreboard
             </h1>
           </div>
           
@@ -259,7 +259,7 @@ export const TeamScoreboard: React.FC<TeamScoreboardProps> = ({ onBack }) => {
       {/* Footer */}
       <footer className="bg-slate-800 border-t border-slate-700 px-6 py-2">
         <div className="flex items-center justify-between text-xs text-slate-500">
-          <span>Value Creation Challenge</span>
+          <span>Value Creation Simulation</span>
           <span>Display optimized for large screens</span>
         </div>
       </footer>

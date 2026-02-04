@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Market Outlook Generator
+ * Value Creation Simulation - Market Outlook Generator
  * Generates dynamic backward-looking and forward-looking statements
  * based on team performance and upcoming scenario conditions
  */

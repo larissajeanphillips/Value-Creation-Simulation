@@ -51,7 +51,7 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
           <MagnaLogo variant="color" size="xl" />
         </div>
         <h1 className="text-4xl font-bold text-slate-800 mb-3 tracking-tight">
-          Value Creation Challenge
+          Value Creation Simulation
         </h1>
         <p className="text-slate-600 text-xl">
           Capital Allocation Simulation Game

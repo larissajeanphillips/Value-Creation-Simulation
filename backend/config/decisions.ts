@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Decision Cards Configuration
+ * Value Creation Simulation - Decision Cards Configuration
  * 75 total decision cards: Based on Excel Decisions tab
  * Updated with narratives from column AA and rounds from column AB
  * 

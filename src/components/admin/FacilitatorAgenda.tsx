@@ -70,30 +70,39 @@ const AGENDA_DATA: AgendaSection[] = [
       },
       {
         id: 'intro-2',
-        activity: 'Introduce the Magna Value Creation Challenge explaining that we will challenge teams to put themselves in the CEO seat and make the decisions required to meet or beat Magna\'s Business Plan',
+        activity: 'Introduce the Magna Value Creation Simulation explaining that we will challenge teams to put themselves in the CEO seat and make the decisions required to meet or beat Magna\'s Business Plan',
         speaker: 'Swamy',
         duration: 3,
         startMinute: 3,
         endMinute: 6,
-        script: 'Now, let me introduce the Magna Value Creation Challenge. Over the next two hours, you and your team will step into the role of Magna\'s executive leadership. You\'ll face real market scenarios—some good, some tough—and make capital allocation decisions that determine your share price. Your mission is simple: maximize shareholder value over five simulated years. But as you\'ll see, simple doesn\'t mean easy. Every decision has trade-offs. Every investment has risk. And the market will judge your performance round after round. Phil will walk you through the mechanics. Good luck.',
+        script: 'Now, let me introduce the Magna Value Creation Simulation. Over the next two hours, you and your team will step into the role of Magna\'s executive leadership. You\'ll face real market scenarios—some good, some tough—and make capital allocation decisions that determine your share price. Your mission is simple: maximize shareholder value over five simulated years. But as you\'ll see, simple doesn\'t mean easy. Every decision has trade-offs. Every investment has risk. And the market will judge your performance round after round. Phil will walk you through the mechanics. Good luck.',
       },
     ],
   },
   {
     id: 'overview',
     title: 'Challenge Overview',
-    duration: 10,
+    duration: 13,
     startMinute: 6,
-    endMinute: 16,
+    endMinute: 19,
     color: 'purple',
     items: [
+      {
+        id: 'overview-0',
+        activity: 'Role Types & Decision Ownership\n• Growth Officer – owns Grow decisions\n• COO – owns Sustain decisions\n• Transformation Officer – owns Optimize decisions\n• CFO – enters decisions, ultimate accountability for results',
+        speaker: 'Phil',
+        duration: 3,
+        startMinute: 6,
+        endMinute: 9,
+        script: 'Before we dive into the mechanics, let me explain how decisions work in this simulation. Each team has four key roles that mirror real executive accountability. Your Growth Officer owns decisions in the Grow category—these drive revenue growth through new products, markets, and capabilities. Your COO owns the Sustain decisions—these protect against risks and ensure business continuity. Your Transformation Officer owns the Optimize decisions—these improve margins and operational efficiency. And critically, your CFO enters all decisions into the system and has ultimate ownership accountability for results. In real life, the CFO is the one who stands up in front of investors and explains your performance. Same here. Discuss as a team, but the CFO submits and owns the outcome.',
+      },
       {
         id: 'overview-1',
         activity: 'Objective: Understand business decisions and tradeoffs to drive EPS and growth\n• Drivers of growth\n• Alignment of strategy and execution',
         speaker: 'Phil',
         duration: 2,
-        startMinute: 6,
-        endMinute: 8,
+        startMinute: 9,
+        endMinute: 11,
         script: 'Thank you, Swamy. Let me explain what we\'re trying to accomplish today. The goal of this challenge is simple: help you experience firsthand the business decisions and trade-offs that drive earnings per share and growth. You\'ll feel the tension between investing for the future and delivering results today. You\'ll see how strategic choices add up over time. And you\'ll see why getting strategy and execution aligned is so critical. Every decision you make will impact multiple levers: revenue growth, margins, capital efficiency, and ultimately, your share price.',
       },
       {
@@ -101,8 +110,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Structure: 5 scenarios, 10 min time constraints',
         speaker: 'Phil',
         duration: 1,
-        startMinute: 8,
-        endMinute: 9,
+        startMinute: 11,
+        endMinute: 12,
         script: 'Here\'s how the challenge works. You\'ll play through 5 rounds, each representing a fiscal year. Each round has a different market scenario—some stable, some turbulent. For each round, you\'ll have exactly 10 minutes to discuss as a team and submit your capital allocation decisions. When time runs out, decisions lock automatically. No extensions, no exceptions. Just like in real business, indecision is a decision.',
       },
       {
@@ -110,8 +119,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Rules: fixed capital pool, limited decisions per round',
         speaker: 'Phil',
         duration: 3,
-        startMinute: 9,
-        endMinute: 12,
+        startMinute: 12,
+        endMinute: 15,
         script: 'Now for the rules. Each round, you\'ll have a fixed pool of capital to allocate. You cannot spend more than you have. You must choose from a set of investment options across different categories: growth initiatives, operational improvements, M&A opportunities, and shareholder returns. You cannot select all options—you must prioritize. Some investments take time to pay off. Others deliver immediate results but may limit future flexibility. Read the decision cards carefully. The details matter. And remember: you\'re competing against every other team in this room. Your relative performance determines the winner.',
       },
       {
@@ -119,8 +128,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Scoring: Winner has highest Share Price by end of Round 5',
         speaker: 'Phil',
         duration: 1,
-        startMinute: 12,
-        endMinute: 13,
+        startMinute: 15,
+        endMinute: 16,
         script: 'Scoring is straightforward. The winning team is the one with the highest share price at the end of Round 5. Share price is calculated based on your earnings growth, return on invested capital, and strategic positioning. We\'ll show rankings after each round, so you\'ll always know where you stand. But don\'t get too focused on short-term rankings—sometimes the best strategy requires patience.',
       },
       {
@@ -128,8 +137,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Q&A',
         speaker: 'Phil',
         duration: 3,
-        startMinute: 13,
-        endMinute: 16,
+        startMinute: 16,
+        endMinute: 19,
         script: 'Before we begin, does anyone have questions about the rules or mechanics? [PAUSE FOR QUESTIONS] Common questions: Yes, decisions are final once submitted. No, you cannot change allocations after the timer ends. Yes, you can see what decisions other teams made—but only after the round ends. Any other questions? [PAUSE] Great. Let\'s begin Round 1.',
       },
     ],
@@ -138,8 +147,8 @@ const AGENDA_DATA: AgendaSection[] = [
     id: 'rounds',
     title: 'Rounds',
     duration: 85,
-    startMinute: 16,
-    endMinute: 101,
+    startMinute: 19,
+    endMinute: 104,
     color: 'emerald',
     items: [
       // Round 1
@@ -148,8 +157,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Round 1: Business as usual',
         speaker: '',
         duration: 16,
-        startMinute: 16,
-        endMinute: 32,
+        startMinute: 19,
+        endMinute: 35,
         notes: 'section-header',
       },
       {
@@ -157,8 +166,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Scenario introduction & market context',
         speaker: 'Phil',
         duration: 2,
-        startMinute: 16,
-        endMinute: 18,
+        startMinute: 19,
+        endMinute: 21,
         script: 'The year is FY26. The automotive market has stabilized. After years of supply chain disruptions and semiconductor shortages, we\'re finally operating in a more predictable environment. Vehicle demand is steady—nothing extraordinary, but solid. This is "business as usual." Your decisions today will set the foundation for everything that follows. You have a fixed capital pool to allocate across growth initiatives, operational improvements, and shareholder returns. You have 10 minutes to make your capital allocation decisions.',
       },
       {
@@ -166,8 +175,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Team discussion & capital allocation',
         speaker: 'Teams',
         duration: 10,
-        startMinute: 18,
-        endMinute: 28,
+        startMinute: 21,
+        endMinute: 31,
         script: '[FACILITATOR: Walk the room. Listen to team discussions. Note interesting debates for later debrief. Announce time remaining at 5 minutes, 2 minutes, and 30 seconds.]',
       },
       {
@@ -175,8 +184,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Decisions locked',
         speaker: 'Phil',
         duration: 1,
-        startMinute: 28,
-        endMinute: 29,
+        startMinute: 31,
+        endMinute: 32,
         script: 'Time! Decisions are now locked. If you didn\'t submit, your capital remains unallocated—which is rarely the optimal choice. Let\'s see how the market responds to your decisions.',
       },
       {
@@ -184,8 +193,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Results & recap reading',
         speaker: 'Phil',
         duration: 3,
-        startMinute: 29,
-        endMinute: 32,
+        startMinute: 32,
+        endMinute: 35,
         script: 'Let\'s look at the results from Round 1. [SHOW SCOREBOARD] You can see how each team\'s share price has moved based on their capital allocation decisions. Some of you invested heavily in growth. Others focused on operational efficiency. A few returned capital to shareholders. All valid strategies—but the market is starting to differentiate. Notice how [HIGHEST TEAM] has taken an early lead. Let\'s see if they can maintain it as conditions change. On to Round 2.',
       },
       // Round 2
@@ -194,8 +203,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Round 2: Business as usual',
         speaker: '',
         duration: 16,
-        startMinute: 32,
-        endMinute: 48,
+        startMinute: 35,
+        endMinute: 51,
         notes: 'section-header',
       },
       {
@@ -203,8 +212,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Scenario introduction',
         speaker: 'Phil',
         duration: 2,
-        startMinute: 32,
-        endMinute: 34,
+        startMinute: 35,
+        endMinute: 37,
         script: 'The year is now FY27. The good news: conditions remain favorable. Technology investments are progressing as expected. OEM order books are healthy, and those who invested in advanced capabilities last round may be starting to see early returns. Look around the room—some teams made very different decisions in Round 1. The market hasn\'t differentiated yet, but it will. You have 10 minutes. Your decisions are due when the timer ends.',
       },
       {
@@ -212,8 +221,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Team discussion & capital allocation',
         speaker: 'Teams',
         duration: 10,
-        startMinute: 34,
-        endMinute: 44,
+        startMinute: 37,
+        endMinute: 47,
         script: '[FACILITATOR: Continue walking the room. Listen for teams adjusting strategy based on Round 1 results. Note if any teams are doubling down vs. pivoting. Announce time remaining at 5 minutes, 2 minutes, and 30 seconds.]',
       },
       {
@@ -221,8 +230,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Decisions locked',
         speaker: 'Phil',
         duration: 1,
-        startMinute: 44,
-        endMinute: 45,
+        startMinute: 47,
+        endMinute: 48,
         script: 'Time! Decisions are locked. Two rounds down, three to go. The foundation you\'re building now will matter when conditions get tougher.',
       },
       {
@@ -230,8 +239,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Results & recap',
         speaker: 'Phil',
         duration: 3,
-        startMinute: 45,
-        endMinute: 48,
+        startMinute: 48,
+        endMinute: 51,
         script: 'Round 2 results are in. [SHOW SCOREBOARD] The pack is starting to spread. Some early investments are beginning to pay dividends, while others are still in build mode. Look at the gap between the top and bottom performers—it\'s widening. For those in the lead: don\'t get complacent. For those trailing: there\'s still time, but the clock is ticking. Here\'s what you need to know about Round 3: the environment is about to change. Cost pressures are coming.',
       },
       // Round 3
@@ -239,9 +248,9 @@ const AGENDA_DATA: AgendaSection[] = [
         id: 'round-3-header',
         activity: 'Round 3: Cost pressures',
         speaker: '',
-        duration: 13,
-        startMinute: 48,
-        endMinute: 61,
+        duration: 16,
+        startMinute: 51,
+        endMinute: 67,
         notes: 'section-header',
       },
       {
@@ -249,8 +258,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Scenario introduction',
         speaker: 'Phil',
         duration: 2,
-        startMinute: 48,
-        endMinute: 50,
+        startMinute: 51,
+        endMinute: 53,
         script: 'Round 3. The year is FY28. And the environment has changed. Costs are rising significantly—steel, aluminum, and key commodities are up 15 to 20 percent. Energy costs have spiked. Labor markets are tight. But here\'s the real pressure: your OEM customers aren\'t absorbing these costs. They\'re demanding price reductions. This is the squeeze that separates good companies from great ones. You have 10 minutes to navigate this challenge.',
       },
       {
@@ -258,8 +267,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Team discussion & capital allocation',
         speaker: 'Teams',
         duration: 10,
-        startMinute: 50,
-        endMinute: 60,
+        startMinute: 53,
+        endMinute: 63,
         script: '[FACILITATOR: This round tests operational discipline. Watch for teams that panic vs. stay strategic. Note teams that protect margins vs. those that try to grow through the pressure. Announce time remaining at 5 minutes, 2 minutes, and 30 seconds.]',
       },
       {
@@ -267,8 +276,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Decisions locked',
         speaker: 'Phil',
         duration: 1,
-        startMinute: 60,
-        endMinute: 61,
+        startMinute: 63,
+        endMinute: 64,
         script: 'Decisions locked. Cost pressures test your operational resilience. Let\'s see who maintained discipline and who got squeezed.',
       },
       {
@@ -276,8 +285,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Results & recap',
         speaker: 'Phil',
         duration: 3,
-        startMinute: 61,
-        endMinute: 64,
+        startMinute: 64,
+        endMinute: 67,
         script: 'Round 3 results. [SHOW SCOREBOARD] Cost pressures have shaken up the rankings. Some teams that invested in operational excellence earlier are now reaping the benefits—their margins held up better than competitors. Others saw their profits squeezed by the rising costs. This is a common pattern in business: the best time to prepare for a storm is when the sun is shining. Now, I have to warn you: Round 4 will test you even further. The scenario you\'re about to face will require you to adapt quickly.',
       },
       // Round 4
@@ -286,8 +295,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Round 4: Recession',
         speaker: '',
         duration: 20,
-        startMinute: 64,
-        endMinute: 84,
+        startMinute: 67,
+        endMinute: 87,
         notes: 'section-header',
       },
       {
@@ -295,8 +304,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Scenario introduction',
         speaker: 'Phil',
         duration: 2,
-        startMinute: 64,
-        endMinute: 66,
+        startMinute: 67,
+        endMinute: 69,
         script: 'Round 4. FY29. The market shows signs of cooling, but nothing dramatic. Consumer confidence has softened. Some OEMs are adjusting production forecasts downward. It feels like a typical cyclical adjustment. Begin your deliberations... [NOTE: After 2 minutes, interrupt with the recession announcement using the item below.]',
       },
       {
@@ -304,8 +313,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Team discussion & capital allocation',
         speaker: 'Teams',
         duration: 2,
-        startMinute: 66,
-        endMinute: 68,
+        startMinute: 69,
+        endMinute: 71,
         script: '[FACILITATOR: Let teams start deliberating normally. They think this is a standard round. After 2 minutes, you will interrupt with the recession announcement. Watch for initial strategies that are about to be disrupted.]',
       },
       {
@@ -313,8 +322,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Recession announcement is made and teams must re-calibrate decisions',
         speaker: 'Phil',
         duration: 2,
-        startMinute: 68,
-        endMinute: 70,
+        startMinute: 71,
+        endMinute: 73,
         script: 'STOP! Everyone, stop what you\'re doing. I have breaking news. [PAUSE FOR DRAMATIC EFFECT] The economy has just entered a recession. Vehicle sales are collapsing—down 20 to 25 percent from peak. OEMs are canceling programs. Credit markets are tightening. Several of your smaller competitors are facing bankruptcy. This changes everything. The decisions you were about to make? You need to reconsider them. Your capital allocation must now account for a dramatically different environment. The timer continues. You have 10 more minutes to recalibrate your strategy. Go!',
       },
       {
@@ -322,8 +331,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Team discussion & capital allocation',
         speaker: 'Teams',
         duration: 10,
-        startMinute: 70,
-        endMinute: 80,
+        startMinute: 73,
+        endMinute: 83,
         script: '[FACILITATOR: Watch for how teams respond to the shock. Some will panic. Some will see opportunity. Note the different crisis management styles. Announce time remaining at 5 minutes, 2 minutes, and 30 seconds.]',
       },
       {
@@ -331,8 +340,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Decisions locked',
         speaker: 'Phil',
         duration: 1,
-        startMinute: 80,
-        endMinute: 81,
+        startMinute: 83,
+        endMinute: 84,
         script: 'Decisions locked. The recession tests not just your strategy, but your ability to adapt under pressure. Some of you protected cash. Some saw acquisition opportunities. Let\'s see who read the situation correctly.',
       },
       {
@@ -340,8 +349,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Results & recap',
         speaker: 'Phil',
         duration: 3,
-        startMinute: 81,
-        endMinute: 84,
+        startMinute: 84,
+        endMinute: 87,
         script: 'Round 4 results—the recession round. [SHOW SCOREBOARD] This round separated the strong from the weak. Look at the share prices—some teams lost real value, while others held steady or even gained. In a real recession, companies with strong balance sheets survive. Companies that overextended get hurt. Notice how teams with financial flexibility had more options. Those who bet everything on growth got caught. One round left. The recovery is coming. The question is: are you positioned to capture it?',
       },
       // Round 5
@@ -350,8 +359,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Round 5: Recovery',
         speaker: '',
         duration: 17,
-        startMinute: 84,
-        endMinute: 101,
+        startMinute: 87,
+        endMinute: 104,
         notes: 'section-header',
       },
       {
@@ -359,8 +368,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Final scenario introduction',
         speaker: 'Phil',
         duration: 2,
-        startMinute: 84,
-        endMinute: 86,
+        startMinute: 87,
+        endMinute: 89,
         script: 'Final round. Round 5. The year is FY30. The storm has passed. The economy is recovering. Consumer confidence is rebounding. OEMs are ramping production back up. Pent-up demand is creating opportunities across every segment. But not everyone is positioned to capture it. The teams that maintained their capabilities through the downturn are now positioned to win. This is your final allocation—your last chance to shape Magna\'s trajectory. You have 10 minutes.',
       },
       {
@@ -368,8 +377,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Final team discussion & capital allocation',
         speaker: 'Teams',
         duration: 10,
-        startMinute: 86,
-        endMinute: 96,
+        startMinute: 89,
+        endMinute: 99,
         script: '[FACILITATOR: Final round energy! This is where winners are made. Watch for aggressive plays from trailing teams and defensive moves from leaders. Note teams going for M&A opportunities. Announce time remaining at 5 minutes, 2 minutes, 1 minute, and final countdown from 10 seconds.]',
       },
       {
@@ -377,8 +386,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Decisions locked',
         speaker: 'Phil',
         duration: 1,
-        startMinute: 96,
-        endMinute: 97,
+        startMinute: 99,
+        endMinute: 100,
         script: 'Final decisions are LOCKED! That\'s it—five years of capital allocation decisions are done. Now we see who created the most shareholder value.',
       },
       {
@@ -386,9 +395,9 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Final results & recap',
         speaker: 'Phil',
         duration: 4,
-        startMinute: 97,
-        endMinute: 101,
-        script: 'Alright, let\'s see the final results. [SHOW FINAL SCOREBOARD - BUILD SUSPENSE] In fifth place... [TEAM NAME] with a share price of [X]. Fourth place... [TEAM NAME]. Third place... [TEAM NAME]. In second place... [TEAM NAME] with a share price of [X]. And the winner of the Value Creation Challenge... [PAUSE] [TEAM NAME] with a final share price of [X]! [APPLAUSE] Congratulations. But before we celebrate, let\'s talk about what we learned today.',
+        startMinute: 100,
+        endMinute: 104,
+        script: 'Alright, let\'s see the final results. [SHOW FINAL SCOREBOARD - BUILD SUSPENSE] In fifth place... [TEAM NAME] with a share price of [X]. Fourth place... [TEAM NAME]. Third place... [TEAM NAME]. In second place... [TEAM NAME] with a share price of [X]. And the winner of the Value Creation Simulation... [PAUSE] [TEAM NAME] with a final share price of [X]! [APPLAUSE] Congratulations. But before we celebrate, let\'s talk about what we learned today.',
       },
     ],
   },
@@ -396,8 +405,8 @@ const AGENDA_DATA: AgendaSection[] = [
     id: 'takeaways',
     title: 'Takeaways & Debrief',
     duration: 14,
-    startMinute: 101,
-    endMinute: 115,
+    startMinute: 104,
+    endMinute: 118,
     color: 'amber',
     items: [
       {
@@ -405,8 +414,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Simulation Takeaways: Overall TSR results & patterns',
         speaker: 'Phil',
         duration: 7,
-        startMinute: 101,
-        endMinute: 108,
+        startMinute: 104,
+        endMinute: 111,
         script: 'Let\'s look at what drove the results today. [SHOW ANALYTICS DASHBOARD] Looking across all teams, a few clear patterns stand out. First, balance matters. Teams that went all-in on any single strategy—whether aggressive growth or pure cost-cutting—generally underperformed. The winners invested in the future while keeping operational discipline. Second, timing matters. Early investments in capabilities paid off when things got tough. Teams that waited until the recession to cut costs were already behind. Third, adaptability matters. The recession round showed who could pivot fast versus who was stuck in their strategy. Look at these numbers: [SHOW TSR BREAKDOWN]. The gap between the top and bottom teams is [X]%. That\'s the difference between creating value and destroying it. Every decision you made—or didn\'t make—contributed to that gap.',
       },
       {
@@ -414,8 +423,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Simulation Debrief: Discussion on trade-offs & lessons',
         speaker: 'Phil',
         duration: 7,
-        startMinute: 108,
-        endMinute: 115,
+        startMinute: 111,
+        endMinute: 118,
         script: 'Now I want to hear from you. What surprised you? [PAUSE - TAKE 2-3 RESPONSES] What was the toughest trade-off you faced? [PAUSE - TAKE 2-3 RESPONSES] Winning team: what was your strategy? Walk us through it. [PAUSE - LET WINNING TEAM EXPLAIN] For a team that struggled: where do you think it went wrong? [PAUSE - BE SUPPORTIVE, FOCUS ON LEARNING] Here\'s what I want you to take back to your jobs: These aren\'t hypothetical decisions. Every quarter, Magna\'s leadership faces the same trade-offs. Growth versus margins. Short-term versus long-term. Defense versus offense. The difference is, in the real world, you don\'t get five rounds—you get one shot. The discipline and thinking you practiced today is exactly what we need every day.',
       },
     ],
@@ -424,8 +433,8 @@ const AGENDA_DATA: AgendaSection[] = [
     id: 'closing',
     title: 'Closing',
     duration: 5,
-    startMinute: 115,
-    endMinute: 120,
+    startMinute: 118,
+    endMinute: 123,
     color: 'slate',
     items: [
       {
@@ -433,8 +442,8 @@ const AGENDA_DATA: AgendaSection[] = [
         activity: 'Closing messages & reflections',
         speaker: 'Swamy',
         duration: 5,
-        startMinute: 115,
-        endMinute: 120,
+        startMinute: 118,
+        endMinute: 123,
         script: 'Thank you all for your energy today. I saw great strategic thinking, good debate, and real learning happening in this room. Let me leave you with three things. First, value creation is a choice. Every day, every decision, you\'re either creating value or destroying it. We compressed years into hours today, but the principles are the same. Second, we win as a team. The best-performing groups today weren\'t dominated by one voice—they used different perspectives and made better decisions because of it. That\'s how we need to operate across Magna. Third, the real challenge starts tomorrow. Take what you learned today and use it. Ask yourself: Is this decision creating long-term value? Am I balancing growth with discipline? Am I adapting to change or sticking to old plans? Congratulations to our winners. Thank you all for your time today. Now let\'s go create value.',
       },
     ],
@@ -698,7 +707,7 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
             Facilitator Agenda & Scripts
           </h1>
           <p className="text-slate-600">
-            Minute-by-minute guide for running the Value Creation Challenge
+            Minute-by-minute guide for running the Value Creation Simulation
           </p>
           <div className="flex items-center gap-4 mt-4">
             <div className="flex items-center gap-2 text-slate-700">
@@ -798,19 +807,19 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-slate-200">
-                          <th className="text-left py-3 px-2 font-medium text-slate-600 w-[45%]">
+                          <th className="text-left py-3 px-2 font-medium text-slate-600" style={{ width: '75%' }}>
                             What Happens
                           </th>
-                          <th className="text-left py-3 px-2 font-medium text-slate-600 w-[15%]">
+                          <th className="text-left py-3 px-1 font-medium text-slate-600" style={{ width: '10%' }}>
                             Speaker
                           </th>
-                          <th className="text-center py-3 px-2 font-medium text-slate-600 w-[10%]">
-                            Duration
+                          <th className="text-center py-3 px-1 font-medium text-slate-600" style={{ width: '5%' }}>
+                            Min
                           </th>
-                          <th className="text-center py-3 px-2 font-medium text-slate-600 w-[15%]">
+                          <th className="text-center py-3 px-1 font-medium text-slate-600" style={{ width: '5%' }}>
                             Start
                           </th>
-                          <th className="text-center py-3 px-2 font-medium text-slate-600 w-[15%]">
+                          <th className="text-center py-3 px-1 font-medium text-slate-600" style={{ width: '5%' }}>
                             End
                           </th>
                         </tr>
@@ -868,11 +877,12 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
                                   </div>
                                 )}
                               </td>
-                              <td className="py-3 px-2">
+                              <td className="py-3 px-1">
                                 {item.speaker && (
-                                  <div className="flex items-center gap-1.5">
-                                    <User className="w-4 h-4 text-slate-400" />
+                                  <div className="flex items-center gap-1">
+                                    <User className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                                     <span className={cn(
+                                      "text-xs",
                                       item.speaker === 'Teams' 
                                         ? 'text-emerald-600 font-medium' 
                                         : 'text-slate-700'
@@ -882,17 +892,17 @@ export const FacilitatorAgenda: React.FC<FacilitatorAgendaProps> = ({ onBack }) 
                                   </div>
                                 )}
                               </td>
-                              <td className="py-3 px-2 text-center">
+                              <td className="py-3 px-1 text-center text-xs">
                                 {!isRoundHeader && (
-                                  <span className="inline-flex items-center gap-1 text-slate-700">
+                                  <span className="text-slate-700">
                                     {item.duration}
                                   </span>
                                 )}
                               </td>
-                              <td className="py-3 px-2 text-center font-mono text-slate-600">
+                              <td className="py-3 px-1 text-center font-mono text-xs text-slate-600">
                                 {!isRoundHeader && item.startMinute}
                               </td>
-                              <td className="py-3 px-2 text-center font-mono text-slate-600">
+                              <td className="py-3 px-1 text-center font-mono text-xs text-slate-600">
                                 {!isRoundHeader && item.endMinute}
                               </td>
                             </tr>

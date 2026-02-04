@@ -286,7 +286,7 @@ export function DemoLanding({ onSelectMode }: DemoLandingProps) {
           <MagnaLogo variant="white" size="xl" />
         </div>
         <h1 className="text-4xl font-bold text-white mb-3">
-          Value Creation Challenge
+          Value Creation Simulation
         </h1>
         <p className="text-slate-200 text-xl">
           Capital Allocation Simulation Game

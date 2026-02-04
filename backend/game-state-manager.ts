@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Game State Manager
+ * Value Creation Simulation - Game State Manager
  * In-memory game state management with state transitions and team operations
  */
 

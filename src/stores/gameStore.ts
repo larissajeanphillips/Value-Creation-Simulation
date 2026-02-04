@@ -1,5 +1,5 @@
 /**
- * Game Store - Client-side state management for Value Creation Challenge
+ * Game Store - Client-side state management for Value Creation Simulation
  * 
  * Manages:
  * - Team identity (which team the client is playing as)
@@ -39,6 +39,7 @@ interface GameStoreState {
   teamName: string | null;
   reconnectToken: string | null; // Token for reconnection after refresh
   hasJoinedGame: boolean;
+  hasPrimerShown: boolean; // Whether the player has seen the primer/rules page
   joinError: string | null;
   
   // Game state (from server)
@@ -70,6 +71,7 @@ interface GameStoreActions {
   setTeamName: (teamName: string) => void;
   setReconnectToken: (token: string) => void;
   setJoinedGame: (joined: boolean, error?: string) => void;
+  setPrimerShown: (shown: boolean) => void;
   leaveGame: () => void;
   
   // Persistence helpers
@@ -112,6 +114,7 @@ const initialState: GameStoreState = {
   teamName: null,
   reconnectToken: null,
   hasJoinedGame: false,
+  hasPrimerShown: false,
   joinError: null,
   
   gameState: null,
@@ -180,6 +183,8 @@ export const useGameStore = create<GameStore>()(
         joinError: error || null,
       }),
       
+      setPrimerShown: (shown) => set({ hasPrimerShown: shown }),
+      
       leaveGame: () => {
         // Clear localStorage
         try {
@@ -193,6 +198,7 @@ export const useGameStore = create<GameStore>()(
           teamName: null,
           reconnectToken: null,
           hasJoinedGame: false,
+          hasPrimerShown: false,
           joinError: null,
           selectedDecisionIds: new Set(),
           hasSubmitted: false,

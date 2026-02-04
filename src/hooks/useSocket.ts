@@ -1,5 +1,5 @@
 /**
- * useSocket Hook - WebSocket connection management for Value Creation Challenge
+ * useSocket Hook - WebSocket connection management for Value Creation Simulation
  * 
  * Handles:
  * - Socket.IO connection to game server

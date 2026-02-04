@@ -3,10 +3,11 @@
 # Local development script for running the Agent Chat app in Docker with hot reloading.
 #
 # Usage:
-#   ./scripts/docker-dev.sh [--build]
+#   ./scripts/docker-dev.sh [--build] [--ui-dev]
 #
 # Options:
 #   --build    Force rebuild the Docker image before running
+#   --ui-dev   Run Vite dev server for instant UI hot reload (no rebuild needed for UI changes)
 #
 # Prerequisites:
 #   - Docker installed and running
@@ -21,6 +22,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 IMAGE_NAME="agent-chat"
 CONTAINER_NAME="agent-chat-dev"
+UI_DEV_MODE=false
 
 # Colors for output
 RED='\033[0;31m'
@@ -81,19 +83,37 @@ if [ -f "api.py" ] && grep -q "AI_GATEWAY" api.py 2>/dev/null; then
     fi
 fi
 
-# Check if --build flag is passed or image doesn't exist
+# Parse command line arguments
 BUILD_IMAGE=false
-if [ "$1" == "--build" ]; then
-    BUILD_IMAGE=true
-elif ! docker image inspect "$IMAGE_NAME" &> /dev/null; then
-    echo -e "${YELLOW}📦 Docker image not found, building...${NC}"
-    BUILD_IMAGE=true
+for arg in "$@"; do
+    case $arg in
+        --build)
+            BUILD_IMAGE=true
+            ;;
+        --ui-dev)
+            UI_DEV_MODE=true
+            ;;
+    esac
+done
+
+
+# Determine which image to use
+if [ "$UI_DEV_MODE" = true ]; then
+    IMAGE_NAME="agent-chat-dev"
+    BUILD_TARGET="dev"
+else
+    BUILD_TARGET="runner"
 fi
 
 # Build image if needed
 if [ "$BUILD_IMAGE" = true ]; then
-    echo -e "${YELLOW}🔨 Building Docker image...${NC}"
-    docker build -t "$IMAGE_NAME" .
+    echo -e "${YELLOW}🔨 Building Docker image (target: $BUILD_TARGET)...${NC}"
+    docker build --target "$BUILD_TARGET" -t "$IMAGE_NAME" .
+    echo -e "${GREEN}✅ Image built successfully${NC}"
+    echo ""
+elif ! docker image inspect "$IMAGE_NAME" &> /dev/null; then
+    echo -e "${YELLOW}📦 Docker image '$IMAGE_NAME' not found, building...${NC}"
+    docker build --target "$BUILD_TARGET" -t "$IMAGE_NAME" .
     echo -e "${GREEN}✅ Image built successfully${NC}"
     echo ""
 fi
@@ -127,10 +147,21 @@ if [ -d "reference" ]; then
   echo "  - reference/  → Reference data (hot reload ✅)"
 fi
 echo ""
-echo -e "${YELLOW}Note: UI changes require rebuilding (run with --build)${NC}"
+
+if [ "$UI_DEV_MODE" = true ]; then
+    echo -e "${GREEN}🎨 UI Dev Mode enabled - UI changes hot reload instantly!${NC}"
+    echo "  - ui/src/     → React components (hot reload ✅)"
+    echo ""
+    echo -e "${GREEN}🌐 UI available at: http://localhost:5173${NC}"
+    echo -e "${GREEN}🌐 API available at: http://localhost:3000${NC}"
+else
+    echo -e "${YELLOW}Note: UI changes require rebuilding (run with --build)${NC}"
+    echo -e "${YELLOW}Tip: Use --ui-dev for instant UI hot reload${NC}"
+    echo ""
+    echo -e "${GREEN}🌐 App will be available at: http://localhost:3000${NC}"
+fi
+
 echo -e "${GREEN}Python files auto-reload thanks to uvicorn --reload flag${NC}"
-echo ""
-echo -e "${GREEN}🌐 App will be available at: http://localhost:3000${NC}"
 echo ""
 echo "Press Ctrl+C to stop"
 echo ""
@@ -151,12 +182,32 @@ ENV_ARGS=()
 [ -n "$AI_GATEWAY_INSTANCE_ID" ] && ENV_ARGS+=(-e "AI_GATEWAY_INSTANCE_ID=$AI_GATEWAY_INSTANCE_ID")
 [ -n "$AI_GATEWAY_API_KEY" ] && ENV_ARGS+=(-e "AI_GATEWAY_API_KEY=$AI_GATEWAY_API_KEY")
 
-# Run container with volume mounts for hot reloading
-# Using --reload flag for uvicorn to enable Python hot reloading
-docker run -it --rm \
-    --name "$CONTAINER_NAME" \
-    -p 3000:3000 \
-    "${VOLUME_MOUNTS[@]}" \
-    "${ENV_ARGS[@]}" \
-    "$IMAGE_NAME" \
-    uvicorn api:app --host 0.0.0.0 --port 3000 --reload
+# UI Dev Mode: Run both backend and Vite dev server
+if [ "$UI_DEV_MODE" = true ]; then
+    # Mount UI source for hot reloading
+    VOLUME_MOUNTS+=(-v "$PROJECT_DIR/ui/src:/app/ui/src")
+    VOLUME_MOUNTS+=(-v "$PROJECT_DIR/ui/index.html:/app/ui/index.html")
+    VOLUME_MOUNTS+=(-v "$PROJECT_DIR/ui/vite.config.ts:/app/ui/vite.config.ts")
+    VOLUME_MOUNTS+=(-v "$PROJECT_DIR/ui/tailwind.config.js:/app/ui/tailwind.config.js")
+    VOLUME_MOUNTS+=(-v "$PROJECT_DIR/ui/postcss.config.js:/app/ui/postcss.config.js")
+    VOLUME_MOUNTS+=(-v "$PROJECT_DIR/ui/tsconfig.json:/app/ui/tsconfig.json")
+    
+    # Run container with both services
+    docker run -it --rm \
+        --name "$CONTAINER_NAME" \
+        -p 3000:3000 \
+        -p 5173:5173 \
+        "${VOLUME_MOUNTS[@]}" \
+        "${ENV_ARGS[@]}" \
+        "$IMAGE_NAME" \
+        sh -c "cd /app/ui && npm install --silent && (npm run dev &) && cd /app && uvicorn api:app --host 0.0.0.0 --port 3000 --reload"
+else
+    # Standard mode: just run backend with pre-built UI
+    docker run -it --rm \
+        --name "$CONTAINER_NAME" \
+        -p 3000:3000 \
+        "${VOLUME_MOUNTS[@]}" \
+        "${ENV_ARGS[@]}" \
+        "$IMAGE_NAME" \
+        uvicorn api:app --host 0.0.0.0 --port 3000 --reload
+fi

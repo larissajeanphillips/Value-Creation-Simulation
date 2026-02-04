@@ -1,4 +1,4 @@
-# Value Creation Challenge
+# Value Creation Simulation
 
 A clean starter project built with the CST-Rewired-Starter template.
 

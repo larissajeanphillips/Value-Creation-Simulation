@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Backend Type Exports
+ * Value Creation Simulation - Backend Type Exports
  */
 
 export * from './game.js';

@@ -1,4 +1,4 @@
-# Value Creation Challenge - Development Backlog
+# Value Creation Simulation - Development Backlog
 
 > Living document for tracking development tasks, ideas, and improvements.
 > Updated: 2026-01-18

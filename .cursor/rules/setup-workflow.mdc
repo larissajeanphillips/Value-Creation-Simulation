@@ -24,7 +24,50 @@ Activated when user runs `/setup` command or says "set up my app", "configure my
 
 ## Workflow Steps
 
-### 0. Choose Approach
+### 0. Existing Webapp Detection
+
+**Before starting the wizard, check if there's an existing webapp.**
+
+#### Detection Logic
+
+Check the UI components directory for signs of customization:
+
+```
+deployer-apps/citizen-dev7/src/ui/src/components/
+```
+
+**Starter template has only:** `ChatWindow.tsx`, `MessageBubble.tsx`, `InputBar.tsx`, `Sidebar.tsx`, `TypingIndicator.tsx`
+
+**Custom webapp has:** Additional components like `Dashboard.tsx`, `ProjectsPage.tsx`, `AnalyticsPage.tsx`, forms, tables, etc.
+
+Also check for:
+- `ui/src/data/` folder with custom types
+- Custom name in `ui/package.json`
+- Modified `App.tsx` with routing/navigation
+
+#### If Existing Webapp Detected
+
+1. **Inform the user** what was found
+2. **Ask what to do:**
+
+| Option | Action |
+|--------|--------|
+| **Delete it** | Remove custom components, reset to starter template, continue setup |
+| **Keep it** | Create new app in `deployer-apps/citizen-dev7/src/apps/[new-app-name]/` with fresh starter template |
+
+3. **If delete selected:**
+   - Confirm deletion with a second prompt
+   - Remove all custom components (keep only Chat*, Message*, Input*, Sidebar, TypingIndicator)
+   - Remove `data/` folder
+   - Reset `App.tsx`, `package.json`, `index.html` to defaults
+   - Continue to Step 1
+
+4. **If keep selected:**
+   - Ask for new app name
+   - Create `apps/[new-app-name]/` folder with cloned starter template
+   - Continue setup targeting the new app folder
+
+### 0b. Choose Approach
 
 Before detailed questions, offer the user a choice:
 - **Quick Start**: Simple prompts, get building fast
@@ -420,13 +463,7 @@ If user requests changes, create a new plan file with the updates.
 
 After customization:
 
-**Docker (Recommended):**
-```bash
-cd deployer-apps/citizen-dev7/src
-./scripts/docker-dev.sh
-```
-
-**Local Development:**
+**Local Development (Recommended):**
 ```bash
 # Terminal 1: Backend
 cd deployer-apps/citizen-dev7/src
@@ -435,6 +472,12 @@ uvicorn api:app --reload --port 3000
 # Terminal 2: Frontend
 cd deployer-apps/citizen-dev7/src/ui
 npm install && npm run dev
+```
+
+**Docker (Alternative):**
+```bash
+cd deployer-apps/citizen-dev7/src
+./scripts/docker-dev.sh
 ```
 
 ### 6. Auto-Open Browser

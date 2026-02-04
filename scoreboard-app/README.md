@@ -1,6 +1,6 @@
-# Value Creation Challenge - Scoreboard Display
+# Value Creation Simulation - Scoreboard Display
 
-A standalone scoreboard display for the Value Creation Challenge game, designed for big screen presentations.
+A standalone scoreboard display for the Value Creation Simulation game, designed for big screen presentations.
 
 ## Features
 

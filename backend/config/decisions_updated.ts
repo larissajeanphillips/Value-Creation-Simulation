@@ -1,5 +1,5 @@
 /**
- * Value Creation Challenge - Decision Cards Configuration
+ * Value Creation Simulation - Decision Cards Configuration
  * 75 total decision cards: 25 Grow + 25 Optimize + 25 Sustain
  * 15 cards available per round (5 per category)
  * 
