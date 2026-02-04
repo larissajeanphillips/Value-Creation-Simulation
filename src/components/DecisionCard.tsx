@@ -300,7 +300,33 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-3">
               Key Metrics
             </h4>
-            {decision.category === 'grow' && (
+            {decision.category === 'grow' && decision.growMetrics && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="Investment (total)" 
+                  value={`$${decision.growMetrics.investmentsTotal}M`} 
+                />
+                <DetailItem 
+                  label="Investment Period" 
+                  value={`${decision.growMetrics.investmentPeriod} year${decision.growMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+                <DetailItem 
+                  label="Revenue Year 1" 
+                  value={`$${decision.growMetrics.revenue1Year}M`} 
+                />
+                <DetailItem 
+                  label="5-Year Growth" 
+                  value={`${decision.growMetrics.fiveYearGrowth}% y-o-y`} 
+                />
+                <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <div className="text-sm text-slate-700 mb-1">EBIT Margin</div>
+                  <div className="text-slate-800 text-lg font-semibold">
+                    {decision.growMetrics.ebitMargin}%
+                  </div>
+                </div>
+              </div>
+            )}
+            {decision.category === 'grow' && !decision.growMetrics && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
                   label="Investment (total)" 
@@ -310,20 +336,6 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                   label="Investment Period" 
                   value={`${decision.durationYears} year${decision.durationYears > 1 ? 's' : ''}`} 
                 />
-                <DetailItem 
-                  label="Revenue Year 1" 
-                  value={decision.recurringBenefit ? `$${decision.recurringBenefit}M` : '—'} 
-                />
-                <DetailItem 
-                  label="5-Year Growth" 
-                  value={decision.revenueImpact ? `${(decision.revenueImpact * 100).toFixed(1)}% y-o-y` : '—'} 
-                />
-                <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
-                  <div className="text-sm text-slate-700 mb-1">EBITDA Margin</div>
-                  <div className="text-slate-800 text-lg font-semibold">
-                    {decision.revenueImpact ? `${(9 + decision.revenueImpact * 20).toFixed(0)}%` : '9%'}
-                  </div>
-                </div>
               </div>
             )}
             {decision.category === 'optimize' && (
