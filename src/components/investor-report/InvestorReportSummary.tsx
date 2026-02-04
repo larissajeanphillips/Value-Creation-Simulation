@@ -519,55 +519,39 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
           <RatingBadge rating={rating} priceTarget={priceTarget} currentPrice={team.stockPrice} />
         </div>
         
-        {/* Executive Summary */}
-        <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8 mb-6">
-          <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
+        {/* Executive Summary - Concise */}
+        <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-6 mb-6">
+          <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-3 flex items-center gap-2">
             <Target className="w-5 h-5 text-magna-ignition-red" />
             Investment Thesis
           </h2>
-          <div className="text-magna-carbon-black text-lg leading-relaxed space-y-4">
-            {/* 80% Consistent - Core Company Thesis */}
-            <p>
-              Magna remains a core holding in our Automotive & Mobility coverage universe. As the largest North American-based 
-              automotive supplier and one of only two globally diversified full-vehicle manufacturers, the company occupies a 
-              differentiated position in the Tier 1 value chain. We continue to see strategic value in Magna's vertically 
-              integrated platform, spanning Complete Vehicles, Power & Vision, Seating Systems, and Body Exteriors & Structures, 
-              which provides unique cross-selling synergies and positions the company as a one-stop solution for OEM partners 
-              navigating electrification and lightweighting imperatives.
-            </p>
-            <p>
-              The company's customer concentration with Detroit 3 and European OEMs provides stable baseload revenue, while 
-              recent contract wins in new vehicle platforms and ADAS components position Magna to capture secular growth tailwinds. 
-              Capital allocation discipline and the company's track record of operational execution through prior cycles 
-              remain key differentiators versus peers.
-            </p>
-            {/* 20% Tailored - Performance-Specific Commentary */}
-            <p>
-              <strong>FY{fiscalYear} Update:</strong>{' '}
+          <div className="text-magna-carbon-black leading-relaxed">
+            <p className="text-base">
+              <strong>FY{fiscalYear}:</strong>{' '}
               {derivedMetrics.growthOverMarket > 0.02
-                ? `Management delivered revenue growth of ${formatPercent(derivedMetrics.revenueGrowth)}, outpacing market growth by ${formatPercent(derivedMetrics.growthOverMarket)}. This market share capture validates the commercial strategy and supports our constructive view.`
+                ? `Revenue ${formatPercent(derivedMetrics.revenueGrowth)}, outpacing market by ${formatPercent(derivedMetrics.growthOverMarket)}.`
                 : derivedMetrics.growthOverMarket > -0.01
-                  ? `Top-line growth of ${formatPercent(derivedMetrics.revenueGrowth)} was broadly in line with end-market demand. We see this as evidence of stable competitive positioning, though we await further catalysts to drive re-rating.`
-                  : `Revenue growth of ${formatPercent(derivedMetrics.revenueGrowth)} lagged broader market trends by ${formatPercent(Math.abs(derivedMetrics.growthOverMarket))}. We are monitoring for signs of stabilization in bookings activity and market share trends.`
+                  ? `Revenue ${formatPercent(derivedMetrics.revenueGrowth)}, in line with market.`
+                  : `Revenue ${formatPercent(derivedMetrics.revenueGrowth)}, lagging market by ${formatPercent(Math.abs(derivedMetrics.growthOverMarket))}.`
               }
               {' '}
               {team.metrics.ebitMargin > 0.055
-                ? `EBIT margin of ${formatPercent(team.metrics.ebitMargin, false)} reflects strong operating leverage and cost discipline, tracking ahead of our estimates.`
+                ? `EBIT margin ${formatPercent(team.metrics.ebitMargin, false)} shows strong cost discipline.`
                 : team.metrics.ebitMargin > 0.04
-                  ? `EBIT margin of ${formatPercent(team.metrics.ebitMargin, false)} is consistent with management's framework for balanced investment.`
-                  : `EBIT margin compression to ${formatPercent(team.metrics.ebitMargin, false)} warrants close monitoring; we are evaluating restructuring potential and cost-out initiatives.`
+                  ? `EBIT margin ${formatPercent(team.metrics.ebitMargin, false)} tracking plan.`
+                  : `EBIT margin ${formatPercent(team.metrics.ebitMargin, false)} under pressure.`
               }
               {' '}
               {team.metrics.roic > 0.09
-                ? `With ROIC at ${formatPercent(team.metrics.roic, false)}, returns remain well above cost of capital, supporting our thesis on capital efficiency.`
+                ? `ROIC ${formatPercent(team.metrics.roic, false)} well above cost of capital.`
                 : team.metrics.roic > 0.065
-                  ? `ROIC of ${formatPercent(team.metrics.roic, false)} is consistent with peer-group averages.`
-                  : `ROIC of ${formatPercent(team.metrics.roic, false)} remains a focal point for investor scrutiny.`
+                  ? `ROIC ${formatPercent(team.metrics.roic, false)} at peer average.`
+                  : `ROIC ${formatPercent(team.metrics.roic, false)} below expectations.`
               }
-            </p>
-            <p>
-              We {rating === 'BUY' ? 'reiterate our Overweight rating and recommend accumulating shares' : rating === 'SELL' ? 'move to Underweight and advise reducing exposure' : 'maintain our Neutral rating'} with 
-              a 12-month price target of ${priceTarget.toFixed(2)}, representing {((priceTarget / team.stockPrice - 1) * 100).toFixed(0)}% {priceTarget > team.stockPrice ? 'upside' : 'downside'} from current levels.
+              {' '}
+              <span className="font-semibold">
+                {rating === 'BUY' ? 'Overweight' : rating === 'SELL' ? 'Underweight' : 'Neutral'} with ${priceTarget.toFixed(2)} PT ({((priceTarget / team.stockPrice - 1) * 100).toFixed(0)}% {priceTarget > team.stockPrice ? 'upside' : 'downside'}).
+              </span>
             </p>
           </div>
         </section>
