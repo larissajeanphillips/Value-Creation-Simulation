@@ -29,6 +29,7 @@
     "grow": {
       "investmentsTotal": 800,
       "investmentPeriod": 3,
+      "inYearInvestment": 266.67,
       "revenue1Year": 1600,
       "fiveYearGrowth": 5,
       "ebitMargin": 11
@@ -46,6 +47,7 @@
     "grow": {
       "investmentsTotal": 800,
       "investmentPeriod": 2,
+      "inYearInvestment": 400,
       "revenue1Year": 1200,
       "fiveYearGrowth": 3,
       "ebitMargin": 5
@@ -63,6 +65,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 2,
+      "inYearInvestment": 500,
       "revenue1Year": 800,
       "fiveYearGrowth": 0,
       "ebitMargin": 10
@@ -80,6 +83,7 @@
     "grow": {
       "investmentsTotal": 600,
       "investmentPeriod": 2,
+      "inYearInvestment": 300,
       "revenue1Year": 900,
       "fiveYearGrowth": 3,
       "ebitMargin": 5
@@ -267,6 +271,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 2,
+      "inYearInvestment": 500,
       "revenue1Year": 800,
       "fiveYearGrowth": 0,
       "ebitMargin": 10
@@ -284,6 +289,7 @@
     "grow": {
       "investmentsTotal": 800,
       "investmentPeriod": 2,
+      "inYearInvestment": 400,
       "revenue1Year": 1600,
       "fiveYearGrowth": 0,
       "ebitMargin": 6
@@ -318,6 +324,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 2,
+      "inYearInvestment": 500,
       "revenue1Year": 800,
       "fiveYearGrowth": 0,
       "ebitMargin": 10
@@ -335,6 +342,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 3,
+      "inYearInvestment": 333.33,
       "revenue1Year": 1500,
       "fiveYearGrowth": 3,
       "ebitMargin": 5
@@ -522,6 +530,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 1,
+      "inYearInvestment": 1000,
       "revenue1Year": 1500,
       "fiveYearGrowth": 3,
       "ebitMargin": 5
@@ -539,6 +548,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 1,
+      "inYearInvestment": 1000,
       "revenue1Year": 2000,
       "fiveYearGrowth": 0,
       "ebitMargin": 6
@@ -573,6 +583,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 1,
+      "inYearInvestment": 1000,
       "revenue1Year": 1500,
       "fiveYearGrowth": 3,
       "ebitMargin": 5
@@ -590,6 +601,7 @@
     "grow": {
       "investmentsTotal": 400,
       "investmentPeriod": 1,
+      "inYearInvestment": 400,
       "revenue1Year": 800,
       "fiveYearGrowth": 5,
       "ebitMargin": 11
@@ -794,6 +806,7 @@
     "grow": {
       "investmentsTotal": 800,
       "investmentPeriod": 2,
+      "inYearInvestment": 400,
       "revenue1Year": 640,
       "fiveYearGrowth": 0,
       "ebitMargin": 10
@@ -811,6 +824,7 @@
     "grow": {
       "investmentsTotal": 800,
       "investmentPeriod": 2,
+      "inYearInvestment": 400,
       "revenue1Year": 1200,
       "fiveYearGrowth": 3,
       "ebitMargin": 5
@@ -828,6 +842,7 @@
     "grow": {
       "investmentsTotal": 600,
       "investmentPeriod": 2,
+      "inYearInvestment": 300,
       "revenue1Year": 1200,
       "fiveYearGrowth": 0,
       "ebitMargin": 6
@@ -845,6 +860,7 @@
     "grow": {
       "investmentsTotal": 800,
       "investmentPeriod": 2,
+      "inYearInvestment": 400,
       "revenue1Year": 1600,
       "fiveYearGrowth": 0,
       "ebitMargin": 6
@@ -1032,6 +1048,7 @@
     "grow": {
       "investmentsTotal": 400,
       "investmentPeriod": 2,
+      "inYearInvestment": 200,
       "revenue1Year": 800,
       "fiveYearGrowth": 0,
       "ebitMargin": 6
@@ -1049,6 +1066,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 2,
+      "inYearInvestment": 500,
       "revenue1Year": 800,
       "fiveYearGrowth": 0,
       "ebitMargin": 10
@@ -1083,6 +1101,7 @@
     "grow": {
       "investmentsTotal": 1000,
       "investmentPeriod": 2,
+      "inYearInvestment": 500,
       "revenue1Year": 800,
       "fiveYearGrowth": 0,
       "ebitMargin": 10
@@ -1100,6 +1119,7 @@
     "grow": {
       "investmentsTotal": 800,
       "investmentPeriod": 1,
+      "inYearInvestment": 800,
       "revenue1Year": 1200,
       "fiveYearGrowth": 3,
       "ebitMargin": 5
@@ -1117,6 +1137,7 @@
     "grow": {
       "investmentsTotal": 800,
       "investmentPeriod": 1,
+      "inYearInvestment": 800,
       "revenue1Year": 1600,
       "fiveYearGrowth": 5,
       "ebitMargin": 11

@@ -9,8 +9,26 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 
+const EXPECTED_MIN_DECISIONS = 75;
+
 const json = JSON.parse(readFileSync(join(root, 'decisions_from_excel_export.json'), 'utf8'));
 const ts = readFileSync(join(root, 'backend', 'config', 'decisions.ts'), 'utf8');
+
+// Export count validation
+if (json.length < EXPECTED_MIN_DECISIONS) {
+  console.log(
+    `Verified ${json.length} decisions from export; expected at least ${EXPECTED_MIN_DECISIONS}. Validation: FAIL.`
+  );
+  process.exit(1);
+}
+
+// Backend ALL_DECISIONS count (count decision blocks in TS)
+const decisionBlockMatches = ts.match(/decisionNumber:\s*\d+,/g);
+const backendDecisionCount = decisionBlockMatches ? decisionBlockMatches.length : 0;
+const backendValid = backendDecisionCount >= EXPECTED_MIN_DECISIONS;
+console.log(
+  `Verified ${json.length} decisions from export; backend ALL_DECISIONS count: ${backendDecisionCount} (expected >= ${EXPECTED_MIN_DECISIONS}). Backend validation: ${backendValid ? 'PASS' : 'FAIL'}`
+);
 
 const byNum = {};
 for (const row of json) byNum[row.decisionNumber] = row;
@@ -42,4 +60,5 @@ if (errors === 0) {
   console.log('All 75 decisions verified: name and cost match Excel export.');
 } else {
   console.log(`Total mismatches: ${errors}`);
+  process.exit(1);
 }

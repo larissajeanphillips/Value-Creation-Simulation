@@ -1,5 +1,7 @@
 # Implementation Plan: Value Creation Simulation
 
+**Derived from:** [PRD — Magna TSR Challenge](prd-tsr-challenge-game.md) (product source of truth)
+
 ## Overview
 
 This document breaks the PRD into implementable phases and tasks. Each phase builds on the previous, allowing for incremental testing.
@@ -268,6 +270,9 @@ This document breaks the PRD into implementable phases and tasks. Each phase bui
 - [ ] Balance costs across rounds
 - [ ] Tune impact values so lessons emerge naturally
 - [ ] Playtest and adjust
+
+### Task 7.5: Decision data import validation
+- [ ] When updating decisions from Excel/feed: run `npm run update-decisions` and check reported row counts (expected ~1,199 source rows, ≥75 decision records applied). See PRD section "Decision data import and validation" and `scripts/read-decisions-excel.mjs` (`EXPECTED_SOURCE_ROWS`), `scripts/apply-decisions-from-excel.mjs`, `scripts/verify-decisions.mjs`. Update expected counts when source format changes.
 
 ---
 

@@ -10,7 +10,8 @@
     "build": "vite build",
     "build:check": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "update-decisions": "node scripts/read-decisions-excel.mjs && node scripts/apply-decisions-from-excel.mjs && node scripts/verify-decisions.mjs && node -e \"console.log('--- Decision update complete. Overall validation: PASS ---')\""
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

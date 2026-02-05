@@ -9,7 +9,7 @@
  * - Team rankings
  * 
  * Key Constants:
- * - WACC: 7.5%
+ * - WACC: 8%
  * - Terminal Growth Rate: 2%
  * - Tax Rate: 22%
  */
@@ -61,8 +61,8 @@ const INVESTOR_NOISE_FACTOR = 0.05;
 /** Dividend payout ratio (simplified model) */
 const DIVIDEND_PAYOUT_RATIO = 0.25;
 
-/** Net debt for equity value calculation (simplified) */
-const NET_DEBT = 8574;  // $8,574M (NPV - Equity Value from baseline)
+/** Net debt for equity value calculation. Aligned with baseline-financials.netDebt and consolidation-engine (Excel model). */
+const NET_DEBT = 7765;  // $7,765M
 
 /** Stock price bounds - max is 2x starting price, min is 0.5x */
 const MAX_STOCK_PRICE_MULTIPLIER = 2.0;

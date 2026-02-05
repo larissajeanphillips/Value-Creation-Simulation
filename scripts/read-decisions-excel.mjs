@@ -2,8 +2,15 @@
  * Read decision card data from Excel "Decision card comparison.xlsx" (Desktop) Decisions tab.
  * Columns: A = decision #, B = lever, F = decision name, G = brief (front), H = detail (back), K = round.
  * Metrics: V–AK (indices 21–36) — Grow V–AA, Optimize AB–AF, Sustain AG–AK (In-Year columns are derived, not read).
+ *
+ * Validation: expects ~EXPECTED_SOURCE_ROWS rows from source; update when source structure changes.
  */
 import XLSX from 'xlsx';
+
+/** Expected total rows in Excel (including header). Update when source format changes. */
+const EXPECTED_SOURCE_ROWS = 1199;
+/** Tolerance: fail if rows < expected * (1 - tolerance/100). */
+const EXPECTED_SOURCE_ROWS_TOLERANCE_PCT = 10;
 import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -171,3 +178,14 @@ writeFileSync(
   JSON.stringify(dataWithLever, null, 2)
 );
 console.log('Wrote decisions_from_excel_export.json with', dataWithLever.length, 'rows');
+
+// Validation: check row count vs expected
+const minRows = Math.floor(EXPECTED_SOURCE_ROWS * (1 - EXPECTED_SOURCE_ROWS_TOLERANCE_PCT / 100));
+const sourceValid = rows.length >= minRows;
+const validationStatus = sourceValid ? 'PASS' : 'FAIL (missing chunks)';
+console.log(
+  `Pulled ${rows.length} rows from Excel (expected ~${EXPECTED_SOURCE_ROWS}). Data records extracted: ${dataWithLever.length}. Validation: ${validationStatus}`
+);
+if (!sourceValid) {
+  process.exit(1);
+}

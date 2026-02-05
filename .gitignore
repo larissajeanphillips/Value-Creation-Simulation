@@ -1,3 +1,6 @@
+# Temporary clone of CST-Rewired-Setup (skills installed into .cursor/skills)
+_cst-rewired-setup/
+
 ### Terraform ###
 # Local .terraform directories
 **/.terraform/*

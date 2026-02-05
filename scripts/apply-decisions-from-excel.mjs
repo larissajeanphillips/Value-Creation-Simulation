@@ -10,8 +10,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const jsonPath = join(root, 'decisions_from_excel_export.json');
 const tsPath = join(root, 'backend', 'config', 'decisions.ts');
+const summaryPath = join(__dirname, 'last-import-summary.txt');
+
+/** Minimum expected decision records to apply (game expects at least 75 cards). */
+const EXPECTED_MIN_RECORDS = 75;
 
 const excel = JSON.parse(readFileSync(jsonPath, 'utf8'));
+console.log('Loaded', excel.length, 'records from decisions_from_excel_export.json.');
 const byNum = {};
 for (const row of excel) byNum[row.decisionNumber] = row;
 
@@ -102,4 +107,24 @@ for (const { old, new: newBlock } of replacements) {
 }
 
 writeFileSync(tsPath, content);
-console.log('Applied', replacements.length, 'decision updates to', tsPath);
+console.log('Matched', replacements.length, 'decision blocks in backend/config/decisions.ts.');
+
+// Validation: expect at least 75 applied (or as many as we have records for)
+const expectedMin = Math.min(EXPECTED_MIN_RECORDS, excel.length);
+const applyValid = replacements.length >= expectedMin;
+const applyValidationStatus = applyValid ? 'PASS' : 'FAIL (missing chunks)';
+console.log(
+  'Applied',
+  replacements.length,
+  'updates; expected at least',
+  expectedMin,
+  '. Validation:',
+  applyValidationStatus
+);
+if (!applyValid) {
+  process.exit(1);
+}
+
+// Audit trail: one-line summary
+const summaryLine = `${new Date().toISOString()} | records: ${excel.length} | replacements: ${replacements.length} | validation: ${applyValidationStatus}\n`;
+writeFileSync(summaryPath, summaryLine);

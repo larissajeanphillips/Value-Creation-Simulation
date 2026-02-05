@@ -93,9 +93,9 @@ export const STARTING_INVESTMENT_CASH = 1200;  // $1,200M available per round in
 
 /**
  * WACC (Weighted Average Cost of Capital)
- * Used for NPV calculations
+ * Used for NPV calculations. Aligned with consolidation-engine and bau-engine (8%).
  */
-export const WACC = 0.075;  // 7.5%
+export const WACC = 0.08;  // 8%
 
 /**
  * Terminal growth rate for DCF calculations
