@@ -400,8 +400,8 @@ app.get('/admin/scoreboard', (req: Request, res: Response) => {
         stockPricesByRound,
       };
     })
-    // Sort by cumulative TSR (highest first)
-    .sort((a, b) => b.cumulativeTSR - a.cumulativeTSR);
+    // Sort by stock price (highest share price = rank #1)
+    .sort((a, b) => b.currentStockPrice - a.currentStockPrice);
   
   res.json({
     success: true,
@@ -442,8 +442,8 @@ app.get('/scoreboard', (_req: Request, res: Response) => {
         stockPricesByRound,
       };
     })
-    // Sort by cumulative TSR (highest first)
-    .sort((a, b) => b.cumulativeTSR - a.cumulativeTSR);
+    // Sort by stock price (highest share price = rank #1)
+    .sort((a, b) => b.currentStockPrice - a.currentStockPrice);
   
   res.json({
     success: true,

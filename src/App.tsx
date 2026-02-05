@@ -4,13 +4,9 @@
  * Main application entry point for the Value Creation Simulation.
  * Handles routing between screens based on URL and game state:
  * 
- * Demo Routes (no backend required, each visitor gets fresh game):
- * - / - Player demo (direct start)
- * - /admin - Admin demo (direct start)
- * 
- * Live Routes (requires backend server):
- * - /live - Live multiplayer team interface
- * - /live-admin - Live facilitator control panel
+ * Routes (requires backend server):
+ * - / - Team interface (default)
+ * - /admin - Facilitator control panel
  * 
  * Display Routes (for big screen presentation):
  * - /display - Display Hub - landing page for AV teams
@@ -36,7 +32,6 @@ import { RoundResults } from '@/components/RoundResults';
 import { FinalResults } from '@/components/FinalResults';
 import { AdminPanel } from '@/components/admin';
 import { RoundCountdown } from '@/components/RoundCountdown';
-import { DemoApp } from '@/demo';
 import { MagnaLogo } from '@/components/MagnaLogo';
 import { MacroEnvironmentDisplay } from '@/components/MacroEnvironmentDisplay';
 import { DisplayHub } from '@/components/DisplayHub';
@@ -48,7 +43,7 @@ import { GamePrimer } from '@/components/GamePrimer';
 // =============================================================================
 const ACCESS_CODE = 'magna2026';
 
-type Route = 'demo-player' | 'demo-admin' | 'live-team' | 'live-admin' | 'display-hub' | 'display-round' | 'display-scoreboard';
+type Route = 'team' | 'admin' | 'display-hub' | 'display-round' | 'display-scoreboard';
 
 /**
  * Determines the route based on current URL
@@ -97,23 +92,14 @@ function getRouteFromURL(): { route: Route; displayRound: number } {
     }
   }
   
-  // /admin or #admin - Admin demo mode
-  if (path === '/admin' || path === '/admin/' || hash === '#admin') {
-    return { route: 'demo-admin', displayRound: 1 };
+  // /admin or #admin - Admin/Facilitator mode
+  if (path === '/admin' || path === '/admin/' || hash === '#admin' ||
+      path === '/live-admin' || path === '/live-admin/' || hash === '#live-admin') {
+    return { route: 'admin', displayRound: 1 };
   }
   
-  // /live-admin - Live admin mode (requires backend)
-  if (path === '/live-admin' || path === '/live-admin/' || hash === '#live-admin') {
-    return { route: 'live-admin', displayRound: 1 };
-  }
-  
-  // /live - Live multiplayer mode (requires backend)
-  if (path === '/live' || path === '/live/' || hash === '#live') {
-    return { route: 'live-team', displayRound: 1 };
-  }
-  
-  // Everything else defaults to player demo mode
-  return { route: 'demo-player', displayRound: 1 };
+  // Everything else defaults to team interface
+  return { route: 'team', displayRound: 1 };
 }
 
 function App() {
@@ -174,19 +160,10 @@ function App() {
     );
   }
   
-  // Demo modes - no backend required, each visitor gets their own fresh game
-  if (route === 'demo-player') {
-    return <DemoApp startMode="player" />;
-  }
-  
-  if (route === 'demo-admin') {
-    return <DemoApp startMode="admin" />;
-  }
-  
-  // Live modes - wrap in AccessGate, requires backend
+  // Main app - wrap in AccessGate, requires backend
   return (
     <AccessGate accessCode={ACCESS_CODE}>
-      {route === 'live-admin' ? <AdminPanel /> : <TeamInterface />}
+      {route === 'admin' ? <AdminPanel /> : <TeamInterface />}
     </AccessGate>
   );
 }
@@ -251,7 +228,7 @@ function TeamInterface() {
     setShowCountdownOverlay(false);
   };
   
-  // Handle connection error - offer demo mode as fallback
+  // Handle connection error
   if (error && !isConnected && !isConnecting) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center p-8">
@@ -269,24 +246,15 @@ function TeamInterface() {
           
           <h2 className="text-2xl font-bold text-slate-800 mb-2">Game Server Unavailable</h2>
           <p className="text-slate-600 text-lg mb-6">
-            The live game server is not currently running. You can try the demo mode to explore the game experience.
+            The game server is not currently running. Please contact the facilitator to start the game.
           </p>
           
-          <div className="space-y-3">
-            <a
-              href="/"
-              className="block w-full px-6 py-4 bg-magna-red text-white rounded-xl font-semibold text-lg hover:bg-magna-red-dark transition-colors shadow-lg shadow-magna-red/20"
-            >
-              Try Demo Mode
-            </a>
-            
-            <button
-              onClick={() => window.location.reload()}
-              className="block w-full px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium text-lg hover:bg-slate-200 transition-colors"
-            >
-              Retry Connection
-            </button>
-          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="block w-full px-6 py-4 bg-magna-red text-white rounded-xl font-semibold text-lg hover:bg-magna-red-dark transition-colors shadow-lg shadow-magna-red/20"
+          >
+            Retry Connection
+          </button>
           
           <p className="text-slate-700 text-sm mt-6">
             If you're a facilitator, make sure the backend server is running.

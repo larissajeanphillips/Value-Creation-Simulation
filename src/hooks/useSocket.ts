@@ -44,6 +44,7 @@ interface UseSocketReturn {
 // =============================================================================
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+const API_BASE = SOCKET_URL;
 
 // =============================================================================
 // Hook
@@ -129,6 +130,19 @@ export function useSocket(): UseSocketReturn {
     socket.on('game-state-update', (state: GameState) => {
       console.log('[Socket] Game state update:', state.status, 'Round:', state.currentRound);
       updateGameState(state);
+      // If we're in an active round but might have missed round-start (e.g. refresh/late join),
+      // fetch decisions from API so we have full card data including narrative.
+      const round = state.currentRound;
+      if ((state.status === 'active' || state.status === 'paused') && round >= 1 && round <= 5) {
+        fetch(`${API_BASE}/api/decisions/${round}`)
+          .then((res) => (res.ok ? res.json() : Promise.reject(new Error(res.statusText))))
+          .then((decisions: Decision[]) => {
+            if (Array.isArray(decisions) && decisions.length > 0) {
+              setAvailableDecisions(decisions);
+            }
+          })
+          .catch((err) => console.warn('[Socket] Failed to fetch decisions for round', round, err));
+      }
     });
     
     socket.on('timer-tick', (secondsRemaining: number) => {

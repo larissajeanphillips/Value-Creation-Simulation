@@ -188,17 +188,11 @@ export const GamePrimer: React.FC<GamePrimerProps> = ({ teamName, onContinue, cl
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 bg-magna-red text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">2</div>
                 <p className="text-slate-700">
-                  <strong>Balance your portfolio</strong> – Don't put all your eggs in one basket. Diversify across Grow, Optimize, and Sustain.
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-magna-red text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
-                <p className="text-slate-700">
                   <strong>Think long-term</strong> – Some investments pay off over multiple rounds. Don't just optimize for now.
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-magna-red text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">4</div>
+                <div className="w-6 h-6 bg-magna-red text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
                 <p className="text-slate-700">
                   <strong>Watch your competitors</strong> – Check the scoreboard between rounds to see how you stack up.
                 </p>

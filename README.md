@@ -2,6 +2,8 @@
 
 A clean starter project built with the CST-Rewired-Starter template.
 
+**Product source of truth:** [PRD — Magna TSR Challenge](tasks/prd-tsr-challenge-game.md) · [Implementation Plan](tasks/implementation-plan.md)
+
 ## Quick Start
 
 ```bash
@@ -33,10 +35,10 @@ Open http://localhost:5173 in your browser.
 
 ## Next Steps
 
-1. Create a PRD in `tasks/` for your feature
-2. Build your application in `src/`
-3. Follow the style guide in `ui/STYLE_GUIDE.md`
-4. Use templates in `code-templates/` for consistency
+1. **Use the PRD** — [tasks/prd-tsr-challenge-game.md](tasks/prd-tsr-challenge-game.md) defines goals, user stories, functional requirements, and data models. Implement and validate against it.
+2. **Track work** — [tasks/implementation-plan.md](tasks/implementation-plan.md) breaks the PRD into phases and checklists.
+3. Build your application in `src/` following the style guide in `ui/STYLE_GUIDE.md`.
+4. Use templates in `code-templates/` for consistency.
 
 ## Documentation
 

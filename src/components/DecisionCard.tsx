@@ -80,9 +80,25 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
     setIsExpanded(true);
   };
   
-  // Impact summary for the card
-  const impactSummary = getImpactSummary(decision);
-  
+  // Total investment: category-specific total when available, else decision.cost
+  const displayInvestment =
+    decision.growMetrics?.investmentsTotal ??
+    decision.optimizeMetrics?.investment ??
+    decision.sustainMetrics?.investment ??
+    decision.cost;
+  // Investment period = backend durationYears (same as calculation engine: cost / durationYears per year)
+  const investmentPeriodYears = decision.durationYears;
+  // In-year investment: from Excel metrics when present, else total / period
+  const inYearFromMetrics =
+    decision.growMetrics?.inYearInvestment ??
+    decision.optimizeMetrics?.inYearInvestment ??
+    decision.sustainMetrics?.inYearInvestment;
+  const perYearInvestment =
+    inYearFromMetrics ??
+    (investmentPeriodYears > 0 ? Math.round(displayInvestment / investmentPeriodYears) : displayInvestment);
+  // Impact summary for the card (shows per-year when multi-year)
+  const impactSummary = getImpactSummary(decision, displayInvestment, investmentPeriodYears);
+
   return (
     <>
       {/* Card */}
@@ -150,15 +166,29 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           {decision.name}
         </h3>
         
-        {/* Cost */}
-        <div className="flex items-center gap-1.5 mb-3">
-          <DollarSign className="w-5 h-5 text-slate-700" />
-          <span className="text-xl font-bold text-slate-800">{decision.cost}M</span>
+        {/* Investment: total, period, in-year (front of card) */}
+        <div className="mb-3">
+          <div className="flex items-center gap-1.5 mb-1">
+            <DollarSign className="w-5 h-5 text-slate-700" />
+            <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
+            <span className="text-xl font-bold text-slate-800">${displayInvestment}M</span>
+          </div>
+          <div className="text-sm text-slate-600 pl-6 space-y-0.5">
+            <p>
+              <span className="text-slate-500">Period: </span>
+              <span className="font-medium text-slate-700">{investmentPeriodYears} year{investmentPeriodYears !== 1 ? 's' : ''}</span>
+            </p>
+            <p>
+              <span className="text-slate-500">In-year investment: </span>
+              <span className="font-medium text-slate-700">${typeof perYearInvestment === 'number' ? perYearInvestment : displayInvestment}M{investmentPeriodYears > 1 ? ' per year' : ''}</span>
+            </p>
+          </div>
         </div>
         
-        {/* Brief Description */}
+        {/* Business case summary (front of card: Excel column G brief, else first sentence of narrative) */}
+        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">Business case</p>
         <p className="text-base text-slate-600 line-clamp-3 mb-4">
-          {decision.narrative.split('.')[0]}.
+          {decision.brief?.trim() || (decision.narrative.split('.')[0]?.trim() ? `${decision.narrative.split('.')[0].trim()}.` : decision.narrative)}
         </p>
         
         {/* Impact Badges */}
@@ -177,14 +207,14 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         <div className="flex items-center justify-between pt-3 border-t border-slate-200">
           <div className="flex items-center gap-1 text-sm text-slate-700">
             <Clock className="w-4 h-4" />
-            {decision.durationYears} year{decision.durationYears > 1 ? 's' : ''} investment
+            <span className="font-medium">{decision.durationYears} year{decision.durationYears > 1 ? 's' : ''}</span> investment period
           </div>
           
           <button
             onClick={handleExpandClick}
             className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-800 transition-colors"
           >
-            Details
+            View business case
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -227,7 +257,20 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
   onClose,
 }) => {
   const CategoryIcon = config.icon;
-  
+  const displayInvestment =
+    decision.growMetrics?.investmentsTotal ??
+    decision.optimizeMetrics?.investment ??
+    decision.sustainMetrics?.investment ??
+    decision.cost;
+  const investmentPeriodYears = decision.durationYears;
+  const inYearFromMetrics =
+    decision.growMetrics?.inYearInvestment ??
+    decision.optimizeMetrics?.inYearInvestment ??
+    decision.sustainMetrics?.inYearInvestment;
+  const perYearInvestment =
+    inYearFromMetrics ??
+    (investmentPeriodYears > 0 ? Math.round(displayInvestment / investmentPeriodYears) : displayInvestment);
+
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm"
@@ -237,7 +280,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
         className="bg-white border border-slate-200 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* Header: name + investment up top in big font */}
         <div className={cn(
           "p-6 border-b border-slate-200",
           `bg-${config.accentColor}-50`
@@ -252,10 +295,8 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                 <CategoryIcon className="w-5 h-5" />
                 {config.label}
               </div>
-              {/* Decision Number in Modal */}
               <span className="text-sm text-slate-400">Decision #{decision.decisionNumber}</span>
             </div>
-            
             <button
               onClick={onClose}
               className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
@@ -263,17 +304,21 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
               <X className="w-6 h-6 text-slate-700" />
             </button>
           </div>
-          
-          <h2 className="text-3xl font-bold text-slate-800 mb-2">
+          <h2 className="text-3xl font-bold text-slate-800 mb-3">
             {decision.name}
           </h2>
-          
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5">
-              <DollarSign className="w-6 h-6 text-slate-700" />
-              <span className="text-3xl font-bold text-slate-800">{decision.cost}M</span>
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
+                <span className="text-3xl font-bold text-slate-800">${displayInvestment}M</span>
+                <span className="text-slate-500 font-medium">over {investmentPeriodYears} year{investmentPeriodYears > 1 ? 's' : ''}</span>
+              </div>
+              <p className="text-base text-slate-600">
+                <span className="text-slate-500">In-year investment: </span>
+                <span className="font-semibold text-slate-700">${perYearInvestment}M{investmentPeriodYears > 1 ? ' per year' : ' this year'}</span>
+              </p>
             </div>
-            
             {decision.isRisky && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 rounded-full">
                 <AlertTriangle className="w-5 h-5 text-red-600" />
@@ -285,71 +330,133 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
         
         {/* Content */}
         <div className="p-6 space-y-6">
-          {/* Narrative */}
+          {/* Business case (verbatim from Excel) – top of back so it’s read first */}
           <div>
-            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-2">
-              Investment Overview
+            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-1">
+              Business case
             </h4>
-            <p className="text-slate-700 text-lg leading-relaxed">
-              {decision.narrative}
+            <p className="text-sm text-slate-500 mb-2">
+              Modeled assumptions; actual outcomes may differ.
+            </p>
+            <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-line">
+              {decision.narrative?.trim() || 'No business case detail available for this card.'}
             </p>
           </div>
           
-          {/* Key Metrics Grid - Category Specific */}
+          {/* Expected outcomes (from business case model) */}
           <div>
-            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-3">
-              Key Metrics
+            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-1">
+              Expected outcomes
             </h4>
-            {decision.category === 'grow' && (
+            <p className="text-sm text-slate-500 mb-3">
+              Values from the business case model; real-world results will vary.
+            </p>
+            {decision.category === 'grow' && decision.growMetrics && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
-                  label="Investment (total)" 
+                  label="Revenue 1 year" 
+                  value={`$${decision.growMetrics.revenue1Year}M`} 
+                />
+                <DetailItem 
+                  label="5-year growth" 
+                  value={`${decision.growMetrics.fiveYearGrowth}% y-o-y`} 
+                />
+                <DetailItem 
+                  label="EBIT margin" 
+                  value={`${decision.growMetrics.ebitMargin}%`} 
+                />
+                <div className="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                  <div className="text-sm text-emerald-700 mb-1">Investments (total)</div>
+                  <div className="text-emerald-800 text-2xl font-bold">
+                    ${decision.growMetrics.investmentsTotal}M
+                  </div>
+                </div>
+                <DetailItem 
+                  label="Investment period" 
+                  value={`${decision.growMetrics.investmentPeriod} year${decision.growMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+              </div>
+            )}
+            {decision.category === 'grow' && !decision.growMetrics && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="Investments (total)" 
                   value={`$${decision.cost}M`} 
                 />
                 <DetailItem 
-                  label="Investment Period" 
+                  label="Investment period" 
                   value={`${decision.durationYears} year${decision.durationYears > 1 ? 's' : ''}`} 
                 />
+              </div>
+            )}
+            {decision.category === 'optimize' && decision.optimizeMetrics && (
+              <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
-                  label="Revenue Year 1" 
+                  label="Annual cost savings" 
+                  value={`$${decision.optimizeMetrics.annualCost}M`} 
+                />
+                <DetailItem 
+                  label="Implementation cost" 
+                  value={`$${decision.optimizeMetrics.implementationCost}M`} 
+                />
+                <div className="col-span-2 bg-blue-50 border border-blue-200 rounded-xl p-4">
+                  <div className="text-sm text-blue-700 mb-1">Investments</div>
+                  <div className="text-blue-800 text-2xl font-bold">
+                    ${decision.optimizeMetrics.investment}M
+                  </div>
+                </div>
+                <DetailItem 
+                  label="Investment period" 
+                  value={`${decision.optimizeMetrics.investmentPeriod} year${decision.optimizeMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+              </div>
+            )}
+            {decision.category === 'optimize' && !decision.optimizeMetrics && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="Annual cost savings" 
                   value={decision.recurringBenefit ? `$${decision.recurringBenefit}M` : '—'} 
                 />
                 <DetailItem 
-                  label="5-Year Growth" 
-                  value={decision.revenueImpact ? `${(decision.revenueImpact * 100).toFixed(1)}% y-o-y` : '—'} 
-                />
-                <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
-                  <div className="text-sm text-slate-700 mb-1">EBITDA Margin</div>
-                  <div className="text-slate-800 text-lg font-semibold">
-                    {decision.revenueImpact ? `${(9 + decision.revenueImpact * 20).toFixed(0)}%` : '9%'}
-                  </div>
-                </div>
-              </div>
-            )}
-            {decision.category === 'optimize' && (
-              <div className="grid grid-cols-2 gap-4">
-                <DetailItem 
-                  label="Implementation Cost" 
+                  label="Implementation cost" 
                   value={decision.recurringBenefit ? `${(decision.cost / decision.recurringBenefit).toFixed(1)}x annual savings` : `$${decision.cost}M`} 
                 />
                 <DetailItem 
-                  label="Investment Period" 
+                  label="Investment period" 
                   value={`${decision.durationYears} year${decision.durationYears > 1 ? 's' : ''}`} 
-                />
-                <DetailItem 
-                  label="Annual Cost Savings" 
-                  value={decision.recurringBenefit ? `$${decision.recurringBenefit}M` : '—'} 
                 />
               </div>
             )}
-            {decision.category === 'sustain' && (
+            {decision.category === 'sustain' && decision.sustainMetrics && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
-                  label="Investment (total)" 
+                  label="Annual cost savings" 
+                  value={`$${decision.sustainMetrics.annualCost}M`} 
+                />
+                <DetailItem 
+                  label="Implementation cost" 
+                  value={`$${decision.sustainMetrics.implementationCost}M`} 
+                />
+                <div className="col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                  <div className="text-sm text-amber-700 mb-1">Investments</div>
+                  <div className="text-amber-800 text-2xl font-bold">
+                    ${decision.sustainMetrics.investment}M
+                  </div>
+                </div>
+                <DetailItem 
+                  label="Investment period" 
+                  value={`${decision.sustainMetrics.investmentPeriod} year${decision.sustainMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+              </div>
+            )}
+            {decision.category === 'sustain' && !decision.sustainMetrics && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="Investments (total)" 
                   value={`$${decision.cost}M`} 
                 />
                 <DetailItem 
-                  label="Investment Period" 
+                  label="Investment period" 
                   value={`${decision.durationYears} year${decision.durationYears > 1 ? 's' : ''}`} 
                 />
                 <div className="col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-4">
@@ -417,12 +524,19 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }
 // Helper Functions
 // =============================================================================
 
-function getImpactSummary(decision: Decision): string[] {
+function getImpactSummary(
+  decision: Decision,
+  totalInvestment?: number,
+  periodYears?: number
+): string[] {
   const impacts: string[] = [];
-  
+  const total = totalInvestment ?? decision.cost;
+  const period = periodYears ?? decision.durationYears;
+  const perYear = period > 1 && period > 0 ? Math.round(total / period) : total;
+  const investLabel = period > 1 ? `$${perYear}M/yr` : `$${total}M invest`;
+
   if (decision.category === 'grow') {
-    // Growth-specific metrics
-    impacts.push(`$${decision.cost}M invest`);
+    impacts.push(investLabel);
     if (decision.revenueImpact) {
       impacts.push(`${(decision.revenueImpact * 100).toFixed(1)}% growth`);
     }
@@ -430,7 +544,6 @@ function getImpactSummary(decision: Decision): string[] {
       impacts.push(`$${decision.recurringBenefit}M rev`);
     }
   } else if (decision.category === 'optimize') {
-    // Optimize-specific metrics
     if (decision.cogsImpact) {
       impacts.push(`COGS -${Math.abs(decision.cogsImpact * 100).toFixed(0)}%`);
     }
@@ -438,14 +551,13 @@ function getImpactSummary(decision: Decision): string[] {
       impacts.push(`$${decision.recurringBenefit}M savings`);
     }
   } else if (decision.category === 'sustain') {
-    // Sustain-specific metrics
-    impacts.push(`$${decision.cost}M invest`);
+    impacts.push(investLabel);
     impacts.push('Protects revenue');
     if (decision.riskPrevention) {
       impacts.push('Risk Shield');
     }
   }
-  
+
   return impacts.slice(0, 3);
 }
 

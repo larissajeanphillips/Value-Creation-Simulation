@@ -55,7 +55,10 @@ export interface Decision {
   /** Short title for the decision */
   name: string;
   
-  /** Detailed description/narrative of the decision */
+  /** One-sentence brief for front of card (from Excel column G); if absent, first sentence of narrative is used */
+  brief?: string;
+  
+  /** Detailed description/narrative of the decision (back of card, from Excel column H) */
   narrative: string;
   
   /** One-time cost in USD millions */
@@ -104,6 +107,82 @@ export interface Decision {
   
   /** Which special event makes this decision's returns go to $0 (trap cards) */
   vulnerableTo?: string;
+  
+  /** Metrics displayed on card back - specific to decision category */
+  /** Grow-specific metrics from Excel columns V–AA */
+  growMetrics?: GrowMetrics;
+  
+  /** Optimize-specific metrics from Excel columns AB–AF */
+  optimizeMetrics?: OptimizeMetrics;
+  
+  /** Sustain-specific metrics from Excel columns AG–AK */
+  sustainMetrics?: SustainMetrics;
+}
+
+/**
+ * GrowMetrics - Metrics displayed on the back of Grow decision cards
+ * Data from Excel Decisions tab columns V–AA (Total Investment, Investment period, Revenue 1 year, 5-year growth %, EBIT margin %)
+ */
+export interface GrowMetrics {
+  /** Revenue in year 1 (in USD millions) */
+  revenue1Year: number;
+  
+  /** 5-year revenue growth rate (as percentage, e.g., 5.0 = 5%) */
+  fiveYearGrowth: number;
+  
+  /** Total investments required (in USD millions) */
+  investmentsTotal: number;
+  
+  /** Investment period in years */
+  investmentPeriod: number;
+  
+  /** In-year investment (total / period) in USD millions – shown on card front */
+  inYearInvestment?: number;
+  
+  /** EBIT margin (as percentage, e.g., 11.0 = 11%) */
+  ebitMargin: number;
+}
+
+/**
+ * OptimizeMetrics - Metrics displayed on the back of Optimize decision cards
+ * Data from Excel Decisions tab columns AB–AF (Total Investment, Investment period, Implementation cost, Annual cost savings)
+ */
+export interface OptimizeMetrics {
+  /** Implementation cost (in USD millions) */
+  implementationCost: number;
+  
+  /** Total investment (in USD millions) - same as cost on front of card */
+  investment: number;
+  
+  /** Investment period in years */
+  investmentPeriod: number;
+  
+  /** In-year investment (total / period) in USD millions – shown on card front */
+  inYearInvestment?: number;
+  
+  /** Annual cost savings (in USD millions) */
+  annualCost: number;
+}
+
+/**
+ * SustainMetrics - Metrics displayed on the back of Sustain decision cards
+ * Data from Excel Decisions tab columns AG–AK (Total Investment, Investment period, Implementation cost, Annual cost savings)
+ */
+export interface SustainMetrics {
+  /** Implementation cost (in USD millions) */
+  implementationCost: number;
+  
+  /** Total investment (in USD millions) - same as cost on front of card */
+  investment: number;
+  
+  /** Investment period in years */
+  investmentPeriod: number;
+  
+  /** In-year investment (total / period) in USD millions – shown on card front */
+  inYearInvestment?: number;
+  
+  /** Annual cost (in USD millions) */
+  annualCost: number;
 }
 
 // =============================================================================

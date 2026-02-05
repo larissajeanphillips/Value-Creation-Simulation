@@ -1,12 +1,11 @@
 /**
  * Value Creation Simulation - Decision Cards Configuration
- * 75 total decision cards: Based on Excel Decisions tab
- * Updated with narratives from column AA and rounds from column AB
- * 
- * NOTE: Impact values are placeholder estimates and will be tuned during Phase 7
+ * 75 total decision cards: From "Decision card comparison.xlsx" (Desktop) Decisions tab.
+ * Columns: A = decision #, B = lever, F = name, G = brief (front), H = detail (back), K = round; V–AK = metrics.
+ * Run: node scripts/read-decisions-excel.mjs then node scripts/apply-decisions-from-excel.mjs to refresh from Excel.
  */
 
-import type { Decision, RoundNumber } from '../types/game.js';
+import type { Decision, RoundNumber, GrowMetrics, OptimizeMetrics, SustainMetrics } from '../types/game.js';
 
 // =============================================================================
 // GROW DECISIONS (Based on Excel - Lever = "Grow")
@@ -20,8 +19,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Mexico Capacity Expansion',
+    brief: 'Expand existing Mexican operations to increase capacity for North American OEMs.',
     narrative: 'Expand existing Mexican operations to increase capacity for North American OEMs. Nearshoring trend favors this investment with relatively predictable returns.',
-    cost: 200,
+    cost: 800,
     impactMagnitude: 3,
     introducedYear: 1,
     type: 'organic',
@@ -32,6 +32,15 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.02,
     recurringBenefit: 80,
+    growMetrics: {
+      revenue1Year: 1600,
+      fiveYearGrowth: 5,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      inYearInvestment: 400,
+      ebitMargin: 11,
+    },
+
   },
   {
     id: 'grow-1-2',
@@ -39,8 +48,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Scale R&D for Next-Gen Portfolio',
     name: 'Advanced Powertrain R&D Expansion',
+    brief: 'Invest in expanding R&D capabilities for next-generation vehicle powertrains and propulsion systems.',
     narrative: 'Invest in expanding R&D capabilities for next-generation vehicle powertrains and propulsion systems. This positions Magna to capture growing market share in advanced mobility but requires significant upfront investment with returns materializing over 2-3 years.',
-    cost: 250,
+    cost: 800,
     impactMagnitude: 4,
     introducedYear: 1,
     type: 'organic',
@@ -51,6 +61,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.03,
     recurringBenefit: 150,
+    growMetrics: {
+      revenue1Year: 1600,
+      fiveYearGrowth: 5,
+      investmentsTotal: 800,
+      investmentPeriod: 3,
+      ebitMargin: 11,
+    },
+
   },
   {
     id: 'grow-1-3',
@@ -58,8 +76,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Enter New Geography / Market',
     name: 'Southeast Asia Market Entry',
+    brief: 'Establish manufacturing presence in Thailand/Vietnam to serve growing ASEAN automotive market.',
     narrative: 'Establish manufacturing presence in Thailand/Vietnam to serve growing ASEAN automotive market. Lower labor costs and proximity to emerging markets, but execution risk in new geography.',
-    cost: 300,
+    cost: 800,
     impactMagnitude: 3,
     introducedYear: 1,
     type: 'organic',
@@ -70,6 +89,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.025,
     recurringBenefit: 120,
+    growMetrics: {
+      revenue1Year: 1200,
+      fiveYearGrowth: 3,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 5,
+    },
+
   },
   {
     id: 'grow-1-4',
@@ -77,8 +104,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'JV / Strategic Partnership',
     name: 'Battery Technology JV',
+    brief: 'Form joint venture with battery cell manufacturer to secure supply and develop integrated battery systems.',
     narrative: 'Form joint venture with battery cell manufacturer to secure supply and develop integrated battery systems. Strategic hedge against vertical integration by OEMs.',
-    cost: 350,
+    cost: 1000,
     impactMagnitude: 4,
     introducedYear: 1,
     type: 'organic',
@@ -89,6 +117,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.035,
     recurringBenefit: 140,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 10,
+    },
+
   },
   {
     id: 'grow-1-5',
@@ -96,8 +132,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Concentrated OEM Capacity Investment',
-    narrative: 'Major capacity investment dedicated to a single OEM\'s flagship vehicle program. The OEM has committed to unprecedented volumes and offered favorable terms for exclusive supply. Higher projected returns than diversified approach, with dedicated production lines and simpler logistics. A strategic bet on this OEM\'s success.',
-    cost: 180,
+    brief: 'Major capacity investment for an OEM\'s flagship vehicle program.',
+    narrative: 'Major capacity investment for an OEM\'s flagship vehicle program. The OEM has committed to unprecedented volumes and offered favorable terms for exclusive supply. Higher projected returns than diversified approach, with dedicated production lines and simpler logistics.',
+    cost: 600,
     impactMagnitude: 4,
     introducedYear: 1,
     type: 'organic',
@@ -110,6 +147,14 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 120,
     // NOTE: This decision's returns go to $0 when OEM Program Cancellation event triggers
     vulnerableTo: 'oem_program_cancellation',
+    growMetrics: {
+      revenue1Year: 900,
+      fiveYearGrowth: 3,
+      investmentsTotal: 600,
+      investmentPeriod: 2,
+      ebitMargin: 5,
+    },
+
   },
 
   // ===== ROUND 2 =====
@@ -119,8 +164,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Launch a New Business',
     name: 'Autonomous Driving Systems Unit',
+    brief: 'Launch dedicated business unit for advanced driver assistance systems (ADAS) and autonomous driving technology.',
     narrative: 'Launch dedicated business unit for advanced driver assistance systems (ADAS) and autonomous driving technology. High potential but uncertain returns as technology evolves rapidly.',
-    cost: 400,
+    cost: 1000,
     impactMagnitude: 5,
     introducedYear: 2,
     type: 'organic',
@@ -131,6 +177,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.04,
     recurringBenefit: 180,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 10,
+    },
+
   },
   {
     id: 'grow-2-2',
@@ -138,8 +192,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Diversified OEM Capacity Investment',
+    brief: 'Invest in flexible powertrain manufacturing capacity additions across existing facilities globally to serve multiple OEM customers.',
     narrative: 'Invest in flexible powertrain manufacturing capacity additions across existing facilities globally to serve multiple OEM customers. Spreads investment across GM, Ford, Honda, and BMW programs. Lower per-unit returns but diversified risk exposure. Requires more coordination but provides insurance against customer-specific disruptions.',
-    cost: 200,
+    cost: 800,
     impactMagnitude: 3,
     introducedYear: 2,
     type: 'organic',
@@ -151,6 +206,14 @@ const GROW_DECISIONS: Decision[] = [
     revenueImpact: 0.018,
     recurringBenefit: 80,
     riskPrevention: 'oem_program_cancellation',
+    growMetrics: {
+      revenue1Year: 1600,
+      fiveYearGrowth: 0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 6,
+    },
+
   },
   {
     id: 'grow-2-3',
@@ -158,8 +221,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Acquire a Business',
     name: 'Bolt-on Sensor Acquisition',
+    brief: 'Acquire small sensor technology company to enhance ADAS capabilities.',
     narrative: 'Acquire small sensor technology company to enhance ADAS capabilities. Adds specialized engineering talent and IP. Integration risk exists but accelerates time-to-market.',
-    cost: 280,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 2,
     type: 'inorganic',
@@ -170,6 +234,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.015,
     recurringBenefit: 70,
+    growMetrics: {
+      revenue1Year: 2000,
+      fiveYearGrowth: 10,
+      investmentsTotal: 0,
+      investmentPeriod: 0,
+      ebitMargin: 11,
+    },
+
   },
   {
     id: 'grow-2-4',
@@ -177,8 +249,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Platform-Level Technology Bets',
     name: 'Software-Defined Vehicle Platform',
-    narrative: 'Make a targeted technology bet on modular, software-defined vehicle architectures, reflecting OEM demand for faster feature deployment, lower lifecycle cost, and vendor-agnostic platforms.',
-    cost: 450,
+    brief: 'Make a targeted technology bet on modular, software-defined vehicle architectures, reflecting OEM demand for faster feature deployment, lower lifecycle cost, and vendor-agnostic platforms.',
+    narrative: 'Make a targeted technology bet on modular, software-defined vehicle architectures, reflecting OEM demand for faster feature deployment, lower lifecycle cost, and vendor-agnostic platforms',
+    cost: 1000,
     impactMagnitude: 5,
     introducedYear: 2,
     type: 'organic',
@@ -189,6 +262,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.05,
     recurringBenefit: 200,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 10,
+    },
+
   },
   {
     id: 'grow-2-5',
@@ -196,8 +277,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'European Advanced Assembly Facility',
-    narrative: 'Build dedicated advanced vehicle assembly plant in Eastern Europe. Positions for European regulatory requirements and next-gen vehicle platforms. Significant investment with long payback period.',
-    cost: 500,
+    brief: 'Build dedicated advanced vehicle assembly plant in Eastern Europe.',
+    narrative: 'Build dedicated advanced vehicle assembly plant in Northern Africa. Positions for next-gen vehicle platforms. Significant investment with long payback period.',
+    cost: 1000,
     impactMagnitude: 4,
     introducedYear: 2,
     type: 'organic',
@@ -208,6 +290,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.04,
     recurringBenefit: 160,
+    growMetrics: {
+      revenue1Year: 1500,
+      fiveYearGrowth: 3,
+      investmentsTotal: 1000,
+      investmentPeriod: 3,
+      ebitMargin: 5,
+    },
+
   },
 
   // ===== ROUND 3 =====
@@ -217,8 +307,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'North America Advanced Component Hub',
+    brief: 'Consolidate advanced component manufacturing across business units into a single, dedicated cross-group facility, capturing scale efficiencies and capability depth while requiring a significant fixed-asset commitment amid uncertain market demand.',
     narrative: 'Consolidate advanced component manufacturing across business units into a single, dedicated cross-group facility, capturing scale efficiencies and capability depth while requiring a significant fixed-asset commitment amid uncertain market demand.',
-    cost: 380,
+    cost: 1000,
     impactMagnitude: 4,
     introducedYear: 3,
     type: 'organic',
@@ -229,6 +320,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.035,
     recurringBenefit: 140,
+    growMetrics: {
+      revenue1Year: 1500,
+      fiveYearGrowth: 3,
+      investmentsTotal: 1000,
+      investmentPeriod: 1,
+      ebitMargin: 5,
+    },
+
   },
   {
     id: 'grow-3-2',
@@ -236,8 +335,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'JV / Strategic Partnership',
     name: 'Chinese OEM Partnership',
+    brief: 'Strategic partnership with leading Chinese automotive manufacturer.',
     narrative: 'Strategic partnership with leading Chinese automotive manufacturer. Access to largest automotive growth market but geopolitical and IP concerns. High reward potential with elevated risk.',
-    cost: 350,
+    cost: 1000,
     impactMagnitude: 4,
     introducedYear: 3,
     type: 'inorganic',
@@ -248,6 +348,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.05,
     recurringBenefit: 180,
+    growMetrics: {
+      revenue1Year: 2000,
+      fiveYearGrowth: 0,
+      investmentsTotal: 1000,
+      investmentPeriod: 1,
+      ebitMargin: 6,
+    },
+
   },
   {
     id: 'grow-3-3',
@@ -255,8 +363,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Acquire a Business',
     name: 'Distressed Competitor Acquisition',
+    brief: 'Opportunity to acquire struggling competitor at attractive valuation.',
     narrative: 'Opportunity to acquire struggling competitor at attractive valuation. Significant capacity and customer relationships, but integration complexity and some legacy issues.',
-    cost: 600,
+    cost: 0,
     impactMagnitude: 5,
     introducedYear: 3,
     type: 'inorganic',
@@ -267,6 +376,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.08,
     recurringBenefit: 250,
+    growMetrics: {
+      revenue1Year: 8000,
+      fiveYearGrowth: 10,
+      investmentsTotal: 0,
+      investmentPeriod: 0,
+      ebitMargin: 11,
+    },
+
   },
   {
     id: 'grow-3-4',
@@ -274,8 +391,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Scale R&D for Next-Gen Portfolio',
     name: 'Solid-State Battery Research',
+    brief: 'Invest in next-generation solid-state battery technology research.',
     narrative: 'Invest in next-generation solid-state battery technology research. Could leapfrog current technology but commercialization timeline uncertain.',
-    cost: 280,
+    cost: 1000,
     impactMagnitude: 4,
     introducedYear: 3,
     type: 'organic',
@@ -286,6 +404,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.025,
     recurringBenefit: 120,
+    growMetrics: {
+      revenue1Year: 1500,
+      fiveYearGrowth: 3,
+      investmentsTotal: 1000,
+      investmentPeriod: 1,
+      ebitMargin: 5,
+    },
+
   },
   {
     id: 'grow-3-5',
@@ -293,8 +419,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Revenue Diversification',
     name: 'Expand Beyond OEMs into Non-Traditional Customers',
-    narrative: 'Pursue revenue opportunities with non-OEM customers (e.g., Amazon, fleet operators, mobility platforms) by adapting Magna\'s manufacturing and engineering capabilities to adjacent use cases.',
-    cost: 200,
+    brief: 'Pursue revenue opportunities with non-OEM customers (e.',
+    narrative: 'Pursue revenue opportunities with non-OEM customers (e.g., Amazon, fleet operators, mobility platforms) by adapting Magna’s manufacturing and engineering capabilities to adjacent use cases.',
+    cost: 400,
     impactMagnitude: 3,
     introducedYear: 3,
     type: 'organic',
@@ -305,6 +432,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.02,
     recurringBenefit: 90,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 5,
+      investmentsTotal: 400,
+      investmentPeriod: 1,
+      ebitMargin: 11,
+    },
+
   },
 
   // ===== ROUND 4 =====
@@ -314,8 +449,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Acquire a Business',
     name: 'Opportunistic Acquisition - Premium Supplier',
+    brief: 'Rare opportunity to acquire premium supplier at recession-driven valuation.',
     narrative: 'Rare opportunity to acquire premium supplier at recession-driven valuation. Strong customer relationships and margins. Requires significant capital during challenging times.',
-    cost: 700,
+    cost: 0,
     impactMagnitude: 5,
     introducedYear: 4,
     type: 'inorganic',
@@ -326,6 +462,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.07,
     recurringBenefit: 280,
+    growMetrics: {
+      revenue1Year: 8000,
+      fiveYearGrowth: 10,
+      investmentsTotal: 0,
+      investmentPeriod: 0,
+      ebitMargin: 11,
+    },
+
   },
   {
     id: 'grow-4-2',
@@ -333,8 +477,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Pricing Strategy',
     name: 'Aggressive pricing to win new business',
+    brief: 'Pursue new business using aggressive pricing mechanisms, accepting near-term dilution to drive volume growth and market entry.',
     narrative: 'Pursue new business using aggressive pricing mechanisms, accepting near-term dilution to drive volume growth and market entry.',
-    cost: 150,
+    cost: 800,
     impactMagnitude: 3,
     introducedYear: 4,
     type: 'organic',
@@ -346,6 +491,14 @@ const GROW_DECISIONS: Decision[] = [
     revenueImpact: 0.03,
     recurringBenefit: 60,
     cogsImpact: 0.01, // Slightly higher costs due to aggressive pricing
+    growMetrics: {
+      revenue1Year: 640,
+      fiveYearGrowth: 0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 10,
+    },
+
   },
   {
     id: 'grow-4-3',
@@ -353,8 +506,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Enter New Geography / Market',
     name: 'Middle East Manufacturing Partnership',
+    brief: 'Partnership with Gulf state sovereign wealth fund for new manufacturing hub.',
     narrative: 'Partnership with Gulf state sovereign wealth fund for new manufacturing hub. Diversifies geographic exposure and provides capital, but execution complexity.',
-    cost: 300,
+    cost: 800,
     impactMagnitude: 3,
     introducedYear: 4,
     type: 'organic',
@@ -365,6 +519,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.02,
     recurringBenefit: 90,
+    growMetrics: {
+      revenue1Year: 1200,
+      fiveYearGrowth: 3,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 5,
+    },
+
   },
   {
     id: 'grow-4-4',
@@ -372,8 +534,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'JV / Strategic Partnership',
     name: 'Hydrogen Fuel Cell Alliance',
+    brief: 'Join consortium developing hydrogen fuel cell technology for commercial vehicles.',
     narrative: 'Join consortium developing hydrogen fuel cell technology for commercial vehicles. Hedges powertrain technology bets but requires ongoing investment with uncertain payoff timeline.',
-    cost: 180,
+    cost: 600,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -384,6 +547,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.01,
     recurringBenefit: 50,
+    growMetrics: {
+      revenue1Year: 1200,
+      fiveYearGrowth: 0,
+      investmentsTotal: 600,
+      investmentPeriod: 2,
+      ebitMargin: 6,
+    },
+
   },
   {
     id: 'grow-4-5',
@@ -391,8 +562,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Underutilized Capacity Purchase',
+    brief: 'Purchase underutilized manufacturing facility from distressed competitor at significant discount.',
     narrative: 'Purchase underutilized manufacturing facility from distressed competitor at significant discount. Ready infrastructure but requires investment to modernize.',
-    cost: 250,
+    cost: 800,
     impactMagnitude: 3,
     introducedYear: 4,
     type: 'organic',
@@ -403,6 +575,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.025,
     recurringBenefit: 100,
+    growMetrics: {
+      revenue1Year: 1600,
+      fiveYearGrowth: 0,
+      investmentsTotal: 800,
+      investmentPeriod: 2,
+      ebitMargin: 6,
+    },
+
   },
 
   // ===== ROUND 5 =====
@@ -412,8 +592,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Commercial Prioritization',
     name: 'Prioritize Commercial Recoveries to win business',
+    brief: 'Leverage commercial recoveries as negotiation tools to win new business, using offset economics to secure contracts while remaining net-accretive.',
     narrative: 'Leverage commercial recoveries as negotiation tools to win new business, using offset economics to secure contracts while remaining net-accretive.',
-    cost: 100,
+    cost: 400,
     impactMagnitude: 2,
     introducedYear: 5,
     type: 'organic',
@@ -424,6 +605,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.015,
     recurringBenefit: 50,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0,
+      investmentsTotal: 400,
+      investmentPeriod: 2,
+      ebitMargin: 6,
+    },
+
   },
   {
     id: 'grow-5-2',
@@ -431,8 +620,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Expand Manufacturing Footprint',
     name: 'Global Capacity Expansion Program',
+    brief: 'Comprehensive capacity expansion across multiple regions to meet recovering demand.',
     narrative: 'Comprehensive capacity expansion across multiple regions to meet recovering demand. Significant investment but positions for sustainable growth trajectory.',
-    cost: 600,
+    cost: 1000,
     impactMagnitude: 5,
     introducedYear: 5,
     type: 'organic',
@@ -443,6 +633,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.06,
     recurringBenefit: 240,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 10,
+    },
+
   },
   {
     id: 'grow-5-3',
@@ -450,8 +648,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Acquire a Business',
     name: 'Strategic Technology Acquisition',
+    brief: 'Acquire emerging technology company with breakthrough thermal management system for advanced vehicles.',
     narrative: 'Acquire emerging technology company with breakthrough thermal management system for advanced vehicles. Positions for next-generation vehicle requirements. Premium valuation as market recovers.',
-    cost: 400,
+    cost: 0,
     impactMagnitude: 4,
     introducedYear: 5,
     type: 'inorganic',
@@ -462,6 +661,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.03,
     recurringBenefit: 130,
+    growMetrics: {
+      revenue1Year: 4000,
+      fiveYearGrowth: 10,
+      investmentsTotal: 0,
+      investmentPeriod: 0,
+      ebitMargin: 11,
+    },
+
   },
   {
     id: 'grow-5-4',
@@ -469,8 +676,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'JV / Strategic Partnership',
     name: 'OEM Strategic Alliance',
+    brief: 'Deep strategic partnership with major OEM for exclusive supply arrangements.',
     narrative: 'Deep strategic partnership with major OEM for exclusive supply arrangements. Secures significant volume but concentration risk. Attractive terms as OEM seeks reliable supplier.',
-    cost: 200,
+    cost: 1000,
     impactMagnitude: 4,
     introducedYear: 5,
     type: 'organic',
@@ -481,6 +689,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.05,
     recurringBenefit: 200,
+    growMetrics: {
+      revenue1Year: 800,
+      fiveYearGrowth: 0,
+      investmentsTotal: 1000,
+      investmentPeriod: 2,
+      ebitMargin: 10,
+    },
+
   },
   {
     id: 'grow-5-5',
@@ -488,8 +704,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Launch a New Business',
     name: 'Mobility Services Platform',
+    brief: 'Launch platform to support fleet operators and mobility-as-a-service providers.',
     narrative: 'Launch platform to support fleet operators and mobility-as-a-service providers. Diversifies revenue model and creates recurring revenue streams.',
-    cost: 250,
+    cost: 800,
     impactMagnitude: 3,
     introducedYear: 5,
     type: 'organic',
@@ -500,6 +717,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.02,
     recurringBenefit: 80,
+    growMetrics: {
+      revenue1Year: 1200,
+      fiveYearGrowth: 3,
+      investmentsTotal: 800,
+      investmentPeriod: 1,
+      ebitMargin: 5,
+    },
+
   },
   {
     id: 'grow-5-6',
@@ -507,8 +732,9 @@ const GROW_DECISIONS: Decision[] = [
     category: 'grow',
     subcategory: 'Scale R&D for Next-Gen Portfolio',
     name: 'Next-Gen ADAS Development',
+    brief: 'Accelerate development of Level 4 autonomous driving capabilities.',
     narrative: 'Accelerate development of Level 4 autonomous driving capabilities. Recovery enables increased R&D spending. Positions for 2030s autonomous vehicle requirements.',
-    cost: 350,
+    cost: 800,
     impactMagnitude: 4,
     introducedYear: 5,
     type: 'organic',
@@ -519,6 +745,14 @@ const GROW_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     revenueImpact: 0.04,
     recurringBenefit: 160,
+    growMetrics: {
+      revenue1Year: 1600,
+      fiveYearGrowth: 5,
+      investmentsTotal: 800,
+      investmentPeriod: 1,
+      ebitMargin: 11,
+    },
+
   },
 ];
 
@@ -534,8 +768,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Factory of the Future',
     name: 'Smart Factory Pilot Program',
+    brief: 'Implement Industry 4.',
     narrative: 'Implement Industry 4.0 technologies in flagship facility. IoT sensors, AI-driven quality control, and predictive maintenance. Proof of concept for broader rollout.',
-    cost: 150,
+    cost: 120,
     impactMagnitude: 3,
     introducedYear: 1,
     type: 'organic',
@@ -546,6 +781,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.01,
     recurringBenefit: 60,
+    optimizeMetrics: {
+      implementationCost: 0,
+      investment: 120,
+      investmentPeriod: 2,
+      inYearInvestment: 60,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-1-2',
@@ -553,8 +796,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'SG&A Optimization',
     name: 'Shared Services Consolidation',
+    brief: 'Consolidate back-office functions (finance, HR, IT) into regional shared services centers.',
     narrative: 'Consolidate back-office functions (finance, HR, IT) into regional shared services centers. Upfront investment yields ongoing cost savings.',
-    cost: 80,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -565,6 +809,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.02,
     recurringBenefit: 40,
+    optimizeMetrics: {
+      implementationCost: 2.5,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-1-3',
@@ -572,8 +824,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Supplier Dual-Sourcing Initiative',
+    brief: 'Establish secondary suppliers for critical components.',
     narrative: 'Establish secondary suppliers for critical components. Increases supply chain resilience and negotiating leverage. Small cost premium offset by risk reduction.',
-    cost: 100,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 1,
     type: 'organic',
@@ -585,6 +838,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: 0.005,
     riskPrevention: 'supply_chain_disruption',
     recurringBenefit: 30,
+    optimizeMetrics: {
+      implementationCost: 2,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-1-4',
@@ -592,6 +853,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Enterprise Digital Transformation',
     name: 'ERP System Upgrade',
+    brief: 'Launch enterprise-wide Data & ERP Transformation, migrating core ERP to a modern cloud platform while redesigning data architecture, analytics, and end-to-end processes.',
     narrative: 'Launch enterprise-wide Data & ERP Transformation, migrating core ERP to a modern cloud platform while redesigning data architecture, analytics, and end-to-end processes. Enables advanced analytics, AI-driven automation, and materially improved decision-making across the business.',
     cost: 120,
     impactMagnitude: 2,
@@ -605,6 +867,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     sgaImpact: -0.01,
     cogsImpact: -0.005,
     recurringBenefit: 50,
+    optimizeMetrics: {
+      implementationCost: 0,
+      investment: 120,
+      investmentPeriod: 2,
+      inYearInvestment: 60,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-1-5',
@@ -612,8 +882,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Organizational Restructure',
     name: 'Management Delayering',
+    brief: 'Execute a management reorganization to de-layer the organization, accelerating decision-making, clarifying accountability, and sustainably reducing overhead.',
     narrative: 'Execute a management reorganization to de-layer the organization, accelerating decision-making, clarifying accountability, and sustainably reducing overhead.',
-    cost: 60,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -624,6 +895,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.015,
     recurringBenefit: 35,
+    optimizeMetrics: {
+      implementationCost: 1,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 2 =====
@@ -633,8 +912,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Enterprise Digital Transformation',
     name: 'Advanced Analytics Platform',
+    brief: 'Deploy enterprise analytics platform to improve decision-making across operations.',
     narrative: 'Deploy enterprise analytics platform to improve decision-making across operations. Predictive insights for demand planning, quality, and maintenance.',
-    cost: 100,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -646,6 +926,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.008,
     sgaImpact: -0.005,
     recurringBenefit: 50,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-2-2',
@@ -653,8 +941,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Factory of the Future',
     name: 'Automation Expansion Program',
+    brief: 'Expand robotic automation across manufacturing facilities.',
     narrative: 'Expand robotic automation across manufacturing facilities. Higher upfront cost but significant labor cost reduction and quality improvement.',
-    cost: 250,
+    cost: 360,
     impactMagnitude: 4,
     introducedYear: 2,
     type: 'organic',
@@ -665,6 +954,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.02,
     recurringBenefit: 100,
+    optimizeMetrics: {
+      implementationCost: 0,
+      investment: 360,
+      investmentPeriod: 1,
+      inYearInvestment: 360,
+      annualCost: 120,
+    },
+
   },
   {
     id: 'optimize-2-3',
@@ -672,8 +969,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Select Group Transformation',
     name: 'Underperforming Division Turnaround',
+    brief: 'Comprehensive operational improvement program for underperforming business unit.',
     narrative: 'Comprehensive operational improvement program for underperforming business unit. New leadership, process redesign, and targeted investments.',
-    cost: 180,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 2,
     type: 'organic',
@@ -685,6 +983,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.015,
     sgaImpact: -0.01,
     recurringBenefit: 80,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-2-4',
@@ -692,8 +998,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Logistics Network Optimization',
+    brief: 'Redesign global logistics network to reduce transportation costs and improve delivery times.',
     narrative: 'Redesign global logistics network to reduce transportation costs and improve delivery times. Consolidate warehouses and optimize routes.',
-    cost: 140,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 2,
     type: 'organic',
@@ -704,6 +1011,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.01,
     recurringBenefit: 55,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-2-5',
@@ -711,8 +1026,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'SG&A Optimization',
     name: 'Procurement Excellence Program',
+    brief: 'Implement strategic sourcing and supplier management program.',
     narrative: 'Implement strategic sourcing and supplier management program. Leverage scale for better pricing and terms on indirect spend.',
-    cost: 70,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -724,6 +1040,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     sgaImpact: -0.01,
     cogsImpact: -0.005,
     recurringBenefit: 45,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 3 =====
@@ -733,8 +1057,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Divest Group',
     name: 'Non-Core Division Divestiture',
+    brief: 'Divest underperforming non-core business unit.',
     narrative: 'Divest underperforming non-core business unit. Generates cash and allows focus on strategic priorities. May face valuation pressure in current market.',
-    cost: 30,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 3,
     type: 'inorganic',
@@ -745,6 +1070,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: true,
     revenueImpact: -0.02,
     recurringBenefit: 350,
+    optimizeMetrics: {
+      implementationCost: 0,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'optimize-3-2',
@@ -752,8 +1085,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Program Governance',
     name: 'Bypass Standard Launch Gates to Meet SOP Deadline',
+    brief: 'Streamline or bypass select internal approval and validation steps to meet OEM SOP deadlines and avoid penalties, accepting higher rework risk in exchange for schedule adherence and cost savings.',
     narrative: 'Streamline or bypass select internal approval and validation steps to meet OEM SOP deadlines and avoid penalties, accepting higher rework risk in exchange for schedule adherence and cost savings.',
-    cost: 20,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 3,
     type: 'organic',
@@ -764,6 +1098,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.008,
     recurringBenefit: 30,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-3-3',
@@ -771,6 +1113,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Factory of the Future',
     name: 'Energy Efficiency Program',
+    brief: 'Comprehensive energy efficiency upgrades across facilities.',
     narrative: 'Comprehensive energy efficiency upgrades across facilities. LED lighting, smart HVAC, and energy recovery systems. Strong ROI with added ESG benefits.',
     cost: 120,
     impactMagnitude: 3,
@@ -783,6 +1126,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.012,
     recurringBenefit: 55,
+    optimizeMetrics: {
+      implementationCost: 0,
+      investment: 120,
+      investmentPeriod: 2,
+      inYearInvestment: 60,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-3-4',
@@ -790,8 +1141,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Organizational Restructure',
     name: 'Workforce Right-Sizing',
+    brief: 'Reduce headcount through voluntary separation and selective layoffs in response to cost pressures.',
     narrative: 'Reduce headcount through voluntary separation and selective layoffs in response to cost pressures. Immediate savings but risk of losing key talent.',
-    cost: 100,
+    cost: 0,
     impactMagnitude: 4,
     introducedYear: 3,
     type: 'organic',
@@ -803,6 +1155,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     sgaImpact: -0.025,
     cogsImpact: -0.01,
     recurringBenefit: 90,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 120,
+    },
+
   },
   {
     id: 'optimize-3-5',
@@ -810,8 +1170,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Select Group Transformation',
     name: 'Plant Footprint Rationalization',
+    brief: 'Close underutilized manufacturing facilities and consolidate production.',
     narrative: 'Close underutilized manufacturing facilities and consolidate production. Significant restructuring cost but lasting margin improvement.',
-    cost: 200,
+    cost: 0,
     impactMagnitude: 4,
     introducedYear: 3,
     type: 'organic',
@@ -822,6 +1183,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.025,
     recurringBenefit: 120,
+    optimizeMetrics: {
+      implementationCost: 1.5,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 120,
+    },
+
   },
 
   // ===== ROUND 4 =====
@@ -831,8 +1200,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Capital Timing',
     name: 'Material process flow automation',
+    brief: 'Execute material end-to-end process flow optimization, simplifying handoffs and eliminating waste to reduce cost, cycle time, and operational friction.',
     narrative: 'Execute material end-to-end process flow optimization, simplifying handoffs and eliminating waste to reduce cost, cycle time, and operational friction.',
-    cost: 80,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -843,6 +1213,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.01,
     recurringBenefit: 40,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-4-2',
@@ -850,8 +1228,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Divest Group',
     name: 'Strategic Asset Sale',
+    brief: 'Sell non-strategic real estate and equipment at recession-impacted valuations.',
     narrative: 'Sell non-strategic real estate and equipment at recession-impacted valuations. Generates needed liquidity but may sell below intrinsic value.',
-    cost: 20,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'inorganic',
@@ -861,6 +1240,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     rampUpYears: 1,
     isOneTimeBenefit: true,
     recurringBenefit: 200,
+    optimizeMetrics: {
+      implementationCost: 0,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'optimize-4-3',
@@ -868,8 +1255,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'SG&A Optimization',
     name: 'Working from Home Optimization',
+    brief: 'Make remote work permanent for applicable roles.',
     narrative: 'Make remote work permanent for applicable roles. Reduce office space and associated costs. Maintains productivity while cutting real estate expenses.',
-    cost: 40,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -880,6 +1268,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.015,
     recurringBenefit: 35,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-4-4',
@@ -887,8 +1283,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Supplier Renegotiation Program',
+    brief: 'Leverage recession conditions to renegotiate supplier contracts.',
     narrative: 'Leverage recession conditions to renegotiate supplier contracts. Risk of supplier relationship damage but significant cost reduction opportunity.',
-    cost: 30,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 4,
     type: 'organic',
@@ -899,6 +1296,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.015,
     recurringBenefit: 60,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-4-5',
@@ -906,8 +1311,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Enterprise Digital Transformation',
     name: 'Process Automation Acceleration',
+    brief: 'Accelerate robotic process automation for administrative tasks.',
     narrative: 'Accelerate robotic process automation for administrative tasks. Reduced headcount needs align with downturn-driven workforce reduction.',
-    cost: 80,
+    cost: 120,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -918,6 +1324,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.012,
     recurringBenefit: 45,
+    optimizeMetrics: {
+      implementationCost: 0,
+      investment: 120,
+      investmentPeriod: 1,
+      inYearInvestment: 120,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 5 =====
@@ -927,8 +1341,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Enterprise Digital Transformation',
     name: 'AI Operations Platform',
+    brief: 'Deploy AI-powered operations management platform.',
     narrative: 'Deploy AI-powered operations management platform. Advanced demand forecasting, production scheduling, and quality prediction. Next-level efficiency.',
-    cost: 180,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 5,
     type: 'organic',
@@ -940,6 +1355,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.015,
     sgaImpact: -0.008,
     recurringBenefit: 75,
+    optimizeMetrics: {
+      implementationCost: 2.5,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-5-2',
@@ -947,8 +1370,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Inventory Optimization',
+    brief: 'Implement advanced inventory management to reduce working capital requirements.',
     narrative: 'Implement advanced inventory management to reduce working capital requirements. Risk of stockouts during supply disruptions but significant cash release.',
-    cost: 60,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 5,
     type: 'organic',
@@ -959,6 +1383,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.005,
     recurringBenefit: 40,
+    optimizeMetrics: {
+      implementationCost: 2,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-5-3',
@@ -966,8 +1398,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'SG&A Optimization',
     name: 'Sales Force Effectiveness',
+    brief: 'Restructure the sales organization with targeted investment in CRM, analytics, and coverage model redesign, shifting from relationship-led to data-driven account management to improve customer coverage while reducing overall sales headcount.',
     narrative: 'Restructure the sales organization with targeted investment in CRM, analytics, and coverage model redesign, shifting from relationship-led to data-driven account management to improve customer coverage while reducing overall sales headcount.',
-    cost: 90,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 5,
     type: 'organic',
@@ -978,6 +1411,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.01,
     recurringBenefit: 40,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'optimize-5-4',
@@ -985,8 +1426,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Global Supply Chain Redesign',
     name: 'Near-Shoring Initiative',
+    brief: 'Shift supply chain closer to end markets.',
     narrative: 'Shift supply chain closer to end markets. Higher unit costs offset by reduced logistics, inventory, and disruption risk. Resilience investment.',
-    cost: 200,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 5,
     type: 'organic',
@@ -998,6 +1440,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: 0.005,
     riskPrevention: 'supply_chain_disruption',
     recurringBenefit: 50,
+    optimizeMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'optimize-5-5',
@@ -1005,8 +1455,9 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     category: 'optimize',
     subcategory: 'Factory of the Future',
     name: 'Full Smart Factory Rollout',
+    brief: 'Expand proven smart factory technologies across global manufacturing footprint.',
     narrative: 'Expand proven smart factory technologies across global manufacturing footprint. Recovery positions for investment. Strong ROI from scale.',
-    cost: 300,
+    cost: 360,
     impactMagnitude: 4,
     introducedYear: 5,
     type: 'organic',
@@ -1017,6 +1468,14 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: -0.025,
     recurringBenefit: 130,
+    optimizeMetrics: {
+      implementationCost: 0,
+      investment: 360,
+      investmentPeriod: 1,
+      inYearInvestment: 360,
+      annualCost: 120,
+    },
+
   },
 ];
 
@@ -1032,8 +1491,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Portfolio management (maintenance)',
     name: 'Customer Diversification Initiative',
+    brief: 'Allocate incremental investment to expand sales coverage and key-account capabilities beyond top customers, deliberately diversifying the revenue base and mitigating concentration risk.',
     narrative: 'Allocate incremental investment to expand sales coverage and key-account capabilities beyond top customers, deliberately diversifying the revenue base and mitigating concentration risk.',
-    cost: 50,
+    cost: 40,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -1044,6 +1504,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'key_customer_loss',
     recurringBenefit: 30,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 40,
+      investmentPeriod: 1,
+      inYearInvestment: 40,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-1-2',
@@ -1051,8 +1519,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Technical Talent Development',
+    brief: 'Investment in training and development for engineering workforce.',
     narrative: 'Investment in training and development for engineering workforce. Essential to maintain competitive capabilities. Retention and capability building.',
-    cost: 60,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -1062,6 +1531,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     rampUpYears: 2,
     isOneTimeBenefit: false,
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'sustain-1-3',
@@ -1069,6 +1546,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Cybersecurity Enhancement',
+    brief: 'Comprehensive cybersecurity upgrade across IT infrastructure.',
     narrative: 'Comprehensive cybersecurity upgrade across IT infrastructure. Essential protection against growing cyber threats. No direct return but prevents catastrophic risk.',
     cost: 80,
     impactMagnitude: 2,
@@ -1081,6 +1559,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'cyber_attack',
     recurringBenefit: 0,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 80,
+      investmentPeriod: 1,
+      inYearInvestment: 80,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-1-4',
@@ -1088,8 +1574,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Equipment Refresh Program',
+    brief: 'Scheduled replacement of aging manufacturing equipment.',
     narrative: 'Scheduled replacement of aging manufacturing equipment. Maintains reliability and quality. Deferred investment risks production disruptions.',
-    cost: 150,
+    cost: 80,
     impactMagnitude: 3,
     introducedYear: 1,
     type: 'organic',
@@ -1100,6 +1587,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'equipment_failure',
     recurringBenefit: 25,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 80,
+      investmentPeriod: 1,
+      inYearInvestment: 80,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-1-5',
@@ -1107,8 +1602,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Environmental Compliance Investment',
+    brief: 'Proactive investment to meet upcoming environmental regulations.',
     narrative: 'Proactive investment to meet upcoming environmental regulations. Mandatory compliance but early investment avoids rushed future spending.',
-    cost: 100,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -1119,6 +1615,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'regulatory_penalty',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 2 =====
@@ -1128,8 +1632,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Leadership Development Program',
+    brief: 'Comprehensive leadership development for high-potential managers.',
     narrative: 'Comprehensive leadership development for high-potential managers. Builds succession pipeline and organizational capability. Long-term investment in human capital.',
-    cost: 70,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -1139,6 +1644,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     rampUpYears: 2,
     isOneTimeBenefit: false,
     recurringBenefit: 25,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'sustain-2-2',
@@ -1146,8 +1659,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Quality Management System Upgrade',
+    brief: 'Upgrade quality management systems to meet evolving OEM requirements.',
     narrative: 'Upgrade quality management systems to meet evolving OEM requirements. Essential for maintaining key customer relationships. Prevents costly quality escapes.',
-    cost: 90,
+    cost: 80,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -1158,6 +1672,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'quality_failure',
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 80,
+      investmentPeriod: 1,
+      inYearInvestment: 80,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-2-3',
@@ -1165,8 +1687,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'IT Infrastructure Modernization',
+    brief: 'Update core IT systems and infrastructure.',
     narrative: 'Update core IT systems and infrastructure. Addresses technical debt and security vulnerabilities. Foundational investment enabling future digital initiatives.',
-    cost: 110,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -1177,6 +1700,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'system_failure',
     recurringBenefit: 30,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'sustain-2-4',
@@ -1184,8 +1715,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Health & Safety Investment',
+    brief: 'Enhanced workplace safety equipment and training programs.',
     narrative: 'Enhanced workplace safety equipment and training programs. Essential for employee welfare and regulatory compliance. Reduces accident-related costs.',
-    cost: 55,
+    cost: 40,
     impactMagnitude: 1,
     introducedYear: 2,
     type: 'organic',
@@ -1196,6 +1728,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'safety_incident',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 40,
+      investmentPeriod: 1,
+      inYearInvestment: 40,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-2-5',
@@ -1203,8 +1743,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Portfolio management (maintenance)',
     name: 'Supplier Relationship Investment',
+    brief: 'Strengthen relationships with strategic suppliers through joint development and long-term agreements.',
     narrative: 'Strengthen relationships with strategic suppliers through joint development and long-term agreements. Improves supply security and preferential allocation.',
-    cost: 40,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -1215,6 +1756,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'supply_chain_disruption',
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 3 =====
@@ -1224,8 +1773,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Portfolio management (maintenance)',
     name: 'Contract Renewal Defense',
+    brief: 'Invest in proactive retention programs—including dedicated renewal teams, pricing/offer analytics, and targeted customer incentives—to secure contract renewals in a more competitive environment and protect at-risk revenue.',
     narrative: 'Invest in proactive retention programs—including dedicated renewal teams, pricing/offer analytics, and targeted customer incentives—to secure contract renewals in a more competitive environment and protect at-risk revenue.',
-    cost: 45,
+    cost: 80,
     impactMagnitude: 2,
     introducedYear: 3,
     type: 'organic',
@@ -1236,6 +1786,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'key_customer_loss',
     recurringBenefit: 35,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 80,
+      investmentPeriod: 1,
+      inYearInvestment: 80,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-3-2',
@@ -1243,8 +1801,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Critical Equipment Maintenance',
+    brief: 'Essential maintenance program for production-critical equipment.',
     narrative: 'Essential maintenance program for production-critical equipment. Tempting to defer during cost pressure but failure would be catastrophic.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 3,
     type: 'organic',
@@ -1255,6 +1814,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'equipment_failure',
     recurringBenefit: 30,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 80,
+    },
+
   },
   {
     id: 'sustain-3-3',
@@ -1262,8 +1829,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Key Talent Retention Program',
+    brief: 'Targeted retention incentives for critical technical and leadership talent.',
     narrative: 'Targeted retention incentives for critical technical and leadership talent. Important to maintain during cost pressures when competitors may poach.',
-    cost: 80,
+    cost: 120,
     impactMagnitude: 3,
     introducedYear: 3,
     type: 'organic',
@@ -1274,6 +1842,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'talent_loss',
     recurringBenefit: 25,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 120,
+      investmentPeriod: 1,
+      inYearInvestment: 120,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-3-4',
@@ -1281,8 +1857,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Business Continuity Enhancement',
+    brief: 'Strengthen business continuity planning and backup capabilities.',
     narrative: 'Strengthen business continuity planning and backup capabilities. Particularly important as risks increase during economic uncertainty.',
-    cost: 65,
+    cost: 80,
     impactMagnitude: 2,
     introducedYear: 3,
     type: 'organic',
@@ -1293,6 +1870,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'business_disruption',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 80,
+      investmentPeriod: 1,
+      inYearInvestment: 80,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-3-5',
@@ -1300,8 +1885,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Insurance Coverage Upgrade',
+    brief: 'Enhance insurance coverage for key operational and financial risks.',
     narrative: 'Enhance insurance coverage for key operational and financial risks. Higher premiums but better protection against tail risks during uncertain times.',
-    cost: 35,
+    cost: 40,
     impactMagnitude: 1,
     introducedYear: 3,
     type: 'organic',
@@ -1312,6 +1898,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'catastrophic_loss',
     recurringBenefit: 10,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 40,
+      investmentPeriod: 1,
+      inYearInvestment: 40,
+      annualCost: 0,
+    },
+
   },
 
   // ===== ROUND 4 =====
@@ -1321,8 +1915,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Organizational Restructure',
     name: 'Deep Cost Restructuring',
+    brief: 'Aggressive cost reduction program across all functions.',
     narrative: 'Aggressive cost reduction program across all functions. Difficult decisions but necessary for survival in prolonged downturn. Risk of capability damage.',
-    cost: 150,
+    cost: 0,
     impactMagnitude: 5,
     introducedYear: 4,
     type: 'organic',
@@ -1334,6 +1929,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     sgaImpact: -0.04,
     cogsImpact: -0.02,
     recurringBenefit: 150,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 160,
+    },
+
   },
   {
     id: 'sustain-4-2',
@@ -1341,8 +1944,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Regulatory Compliance Baseline',
+    brief: 'Fund mandatory regulatory compliance at the minimum required level, deliberately limiting scope to avoid incremental spend while maintaining license to operate.',
     narrative: 'Fund mandatory regulatory compliance at the minimum required level, deliberately limiting scope to avoid incremental spend while maintaining license to operate.',
-    cost: 70,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -1353,6 +1957,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'regulatory_penalty',
     recurringBenefit: 10,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
   {
     id: 'sustain-4-3',
@@ -1360,6 +1972,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Minimum Viable Maintenance',
+    brief: 'Bare minimum maintenance investment to keep operations running.',
     narrative: 'Bare minimum maintenance investment to keep operations running. Risk of equipment failure but preserves cash during severe downturn.',
     cost: 80,
     impactMagnitude: 2,
@@ -1372,6 +1985,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'equipment_failure',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 80,
+      investmentPeriod: 1,
+      inYearInvestment: 80,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-4-4',
@@ -1379,8 +2000,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Core Team Preservation',
+    brief: 'Investment to retain absolutely critical talent through recession.',
     narrative: 'Investment to retain absolutely critical talent through recession. Skeletal but essential team for recovery. Others may be rehired post-downturn.',
-    cost: 60,
+    cost: 120,
     impactMagnitude: 3,
     introducedYear: 4,
     type: 'organic',
@@ -1391,6 +2013,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'talent_loss',
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 120,
+      investmentPeriod: 1,
+      inYearInvestment: 120,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-4-5',
@@ -1398,8 +2028,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Financial Risk Management',
+    brief: 'Enhanced treasury and financial risk management during volatile conditions.',
     narrative: 'Enhanced treasury and financial risk management during volatile conditions. Hedge exposures and manage liquidity carefully.',
-    cost: 25,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -1410,6 +2041,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'financial_risk',
     recurringBenefit: 15,
+    sustainMetrics: {
+      implementationCost: 3,
+      investment: 0,
+      investmentPeriod: 1,
+      inYearInvestment: 0,
+      annualCost: 40,
+    },
+
   },
 
   // ===== ROUND 5 =====
@@ -1419,8 +2058,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Deferred Maintenance Catch-Up',
+    brief: 'Address deferred maintenance from recession period.',
     narrative: 'Address deferred maintenance from recession period. Essential to restore equipment reliability for recovery. May require higher spend than normal.',
-    cost: 180,
+    cost: 120,
     impactMagnitude: 3,
     introducedYear: 5,
     type: 'organic',
@@ -1431,6 +2071,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'equipment_failure',
     recurringBenefit: 40,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 120,
+      investmentPeriod: 1,
+      inYearInvestment: 120,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-5-2',
@@ -1438,8 +2086,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Workforce Rebuilding Program',
+    brief: 'Rehire and retrain workforce for recovery volumes.',
     narrative: 'Rehire and retrain workforce for recovery volumes. Compete for talent returning to job market. Investment in recruiting and onboarding.',
-    cost: 100,
+    cost: 120,
     impactMagnitude: 3,
     introducedYear: 5,
     type: 'organic',
@@ -1449,6 +2098,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     rampUpYears: 2,
     isOneTimeBenefit: false,
     recurringBenefit: 35,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 120,
+      investmentPeriod: 1,
+      inYearInvestment: 120,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-5-3',
@@ -1456,8 +2113,9 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'ESG & Sustainability Investment',
+    brief: 'Comprehensive ESG program to meet growing stakeholder expectations.',
     narrative: 'Comprehensive ESG program to meet growing stakeholder expectations. Carbon reduction, sustainable materials, and governance enhancement.',
-    cost: 120,
+    cost: 40,
     impactMagnitude: 2,
     introducedYear: 5,
     type: 'organic',
@@ -1468,6 +2126,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'esg_risk',
     recurringBenefit: 30,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 40,
+      investmentPeriod: 1,
+      inYearInvestment: 40,
+      annualCost: 0,
+    },
+
   },
   {
     id: 'sustain-5-4',
@@ -1475,6 +2141,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     category: 'sustain',
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Post-Crisis Risk Assessment',
+    brief: 'Comprehensive review and update of risk management framework based on lessons learned.',
     narrative: 'Comprehensive review and update of risk management framework based on lessons learned. Prepare for next downturn while positioned for recovery.',
     cost: 40,
     impactMagnitude: 1,
@@ -1487,6 +2154,14 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     riskPrevention: 'business_disruption',
     recurringBenefit: 20,
+    sustainMetrics: {
+      implementationCost: 0,
+      investment: 40,
+      investmentPeriod: 1,
+      inYearInvestment: 40,
+      annualCost: 0,
+    },
+
   },
 ];
 

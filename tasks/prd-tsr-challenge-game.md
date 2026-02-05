@@ -436,8 +436,16 @@ Scenarios apply **category-specific multipliers** to decision outcomes:
 
 1. **Game state management:** Central server holds authoritative game state; clients subscribe to updates
 2. **Timer synchronization:** Server broadcasts remaining time; clients display but don't control
-3. **Calculation engine:** Backend calculates all financial outcomes (not in client)
+3. **Calculation engine:** Backend calculates all financial outcomes (not in client). The authoritative implementation is in [Value Creation Simulation](https://github.com/larissajeanphillips/Value-Creation-Simulation); do not use financial logic from any other repository
 4. **Decision card data:** 75 cards defined in JSON/TypeScript config based on Excel data
+
+### Decision data import and validation
+
+Decision inputs are validated by row count when updating from the source (Excel or feed). The pipeline expects approximately **1,199 rows** from the source; update this when the source structure changes.
+
+- **Run:** `npm run update-decisions` (or run `scripts/read-decisions-excel.mjs`, then `scripts/apply-decisions-from-excel.mjs`, then `scripts/verify-decisions.mjs`).
+- **Check:** The scripts report rows pulled from source (expected ~1,199), records in export JSON, updates applied to backend, and backend ALL_DECISIONS count (expected ≥ 75). Validation fails (non-zero exit) if large chunks are missing.
+- **Where to update expected count:** In `scripts/read-decisions-excel.mjs`, set `EXPECTED_SOURCE_ROWS` (default 1199) and `EXPECTED_SOURCE_ROWS_TOLERANCE_PCT` (default 10). In `scripts/apply-decisions-from-excel.mjs`, `EXPECTED_MIN_RECORDS` is 75.
 
 ### Data Model (Conceptual)
 
@@ -520,9 +528,11 @@ interface FinancialMetrics {
 
 ## Financial Model
 
+**Source of truth for implementation:** All fixed inputs and calculation formulas are defined in the [Value Creation Simulation](https://github.com/larissajeanphillips/Value-Creation-Simulation) backend. Use only that repository for financial constants, baseline data, and formulas. Do not use values or formulas from any other repository or document.
+
 ### Starting Position (2025 EOY Baseline)
 
-All teams start with Magna's simplified 2025 financials (USD Millions):
+All teams start with Magna's simplified 2025 financials (USD Millions), as defined in `backend/config/baseline-financials.ts` in Value Creation Simulation:
 
 **Simplified Income Statement:**
 | Metric | 2025 Baseline |
@@ -540,16 +550,16 @@ All teams start with Magna's simplified 2025 financials (USD Millions):
 |--------|---------------|
 | Cash Taxes | ($466) |
 | CapEx | ($1,713) |
-| **Operating FCF** | **$1,561** |
+| **Operating FCF** | **$1,559** |
 | Beginning Cash | $1,247 |
 
 **Valuation:**
 | Metric | 2025 Baseline |
 |--------|---------------|
 | NPV / Enterprise Value | $22,738 |
-| Equity Value | $14,164 |
-| Shares Outstanding | 287M |
-| **Share Price** | **$49.29** |
+| Equity Value | $14,555 |
+| Shares Outstanding | 287.34M |
+| **Share Price** | **$50.67** |
 
 ### Scoring Logic
 
@@ -563,6 +573,30 @@ TSR = (Ending Share Price - Starting Share Price + Dividends) / Starting Share P
 ```
 
 Share price derived from: `Equity Value / Shares Outstanding`
+
+### Fixed Inputs and Constants
+
+All financial calculation inputs are **fixed in the backend** and must not be overridden by clients or game configuration. Changes require backend code or config changes in [Value Creation Simulation](https://github.com/larissajeanphillips/Value-Creation-Simulation). Values below are the canonical inputs; WACC 8% and net debt $7,765M are set in `backend/config/baseline-financials.ts`, `backend/calculation-engine.ts`, `backend/consolidation-engine.ts`, and `backend/bau-engine.ts` (pull latest from that repo for current values).
+
+| Input | Value | Location (Value Creation Simulation repo) |
+|-------|--------|--------------------------------------------|
+| Tax rate | 22% | `TAX_RATE` in `backend/config/baseline-financials.ts`; same in `consolidation-engine.ts`, `bau-engine.ts` |
+| WACC | 8% | `WACC` in `backend/config/baseline-financials.ts`; same in `backend/consolidation-engine.ts`, `backend/bau-engine.ts` |
+| Terminal growth rate | 2% | `TERMINAL_GROWTH_RATE` in `backend/config/baseline-financials.ts` |
+| Dividend payout ratio | 25% of FCF | `DIVIDEND_PAYOUT_RATIO` in `backend/calculation-engine.ts` |
+| Net debt | $7,765M | `NET_DEBT` in `backend/calculation-engine.ts`; `BASELINE_FINANCIALS.netDebt` and `backend/consolidation-engine.ts`, `backend/bau-engine.ts` |
+| Minority interest | $418M | `backend/consolidation-engine.ts` (subtracted from equity value); `backend/bau-engine.ts` |
+| Capex maintenance (depreciation) | 4% of revenue | `CAPEX_REVENUE_RATIO` / `DEPRECIATION_RATE` in `backend/bau-engine.ts`, `backend/consolidation-engine.ts`; baseline capex comment in `baseline-financials.ts` |
+| Cost of equity (baseline) | 9% | `costOfEquity` in `BASELINE_FINANCIALS` in `backend/config/baseline-financials.ts` |
+| Cost of equity (forward price) | 9.3% | `COST_OF_EQUITY` in `backend/consolidation-engine.ts` (used only for Forward Price: share_price × (1 + COST_OF_EQUITY)) |
+| Invested capital (ROIC) | 40% of revenue | Hardcoded in `calculateROIC()` in `backend/calculation-engine.ts` |
+| DCF projection years | 10 | `DCF_PROJECTION_YEARS` in `backend/calculation-engine.ts` |
+| Ramp-up schedule (3-year) | Year 1: 30%, Year 2: 70%, Year 3: 100% | `RAMP_UP_SCHEDULE` in `backend/calculation-engine.ts` |
+| Investor expectations noise | ±5% on NPV | `INVESTOR_NOISE_FACTOR` in `backend/calculation-engine.ts` |
+| Stock price bounds | 0.5× to 2× starting price | `MIN_STOCK_PRICE_MULTIPLIER`, `MAX_STOCK_PRICE_MULTIPLIER` in `backend/calculation-engine.ts` |
+| Starting investment cash per round | $1,200M | `STARTING_INVESTMENT_CASH` in `backend/config/baseline-financials.ts` |
+
+Baseline financials (revenue, COGS, SG&A, depreciation, amortization, capex, shares outstanding, etc.) are fixed in `BASELINE_FINANCIALS` in `backend/config/baseline-financials.ts`.
 
 ### Decision Impact Model
 
@@ -578,6 +612,49 @@ Share price derived from: `Equity Value / Shares Outstanding`
   - Investment decisions made (CapEx commitments)
   - Scenario conditions (recession reduces cash generation)
 - Teams must manage cash carefully; overspending in early rounds may leave them vulnerable
+
+### Backend Calculation Formulas (Authoritative)
+
+The following formulas are implemented in [Value Creation Simulation](https://github.com/larissajeanphillips/Value-Creation-Simulation) in `backend/calculation-engine.ts` (Rounds 2–5) and `backend/consolidation-engine.ts` (Round 1). Use these as the single source of truth; do not derive formulas from any other repository or document.
+
+**Income statement and cash flow (per round/year):**
+- **EBITDA** = Revenue + COGS + SG&A (COGS and SG&A are negative).
+- **Depreciation / Amortization** = Baseline D&A × |capex / baseline capex| (proportional to capex).
+- **EBIT** = EBITDA + Depreciation + Amortization (D&A negative).
+- **Taxable income** = max(0, EBIT).
+- **Cash taxes** = −Taxable income × Tax rate (tax rate fixed at 22% in backend).
+- **Operating FCF** = EBITDA + Cash taxes + Capex + One-time benefits (e.g. divestitures).
+- **Ending cash** = Beginning cash + Operating FCF.
+
+**Valuation (calculation-engine):**
+- **NPV (enterprise value):** Sum over t = 1..10 of FCF_t / (1 + WACC)^t, where FCF_t = FCF_{t−1} × (1 + terminal growth). Plus terminal value: TV = FCF_10 × (1 + g) / (WACC − g), discounted by (1 + WACC)^10. (WACC 8%, g 2%.)
+- **Adjusted NPV** = NPV × (1 + investor noise), where investor noise is ±5%.
+- **Equity value** = Adjusted NPV − Net debt (net debt $7,765M).
+- **Share price** = Equity value / Shares outstanding, then clamped to [0.5 × starting price, 2 × starting price].
+
+**ROIC:**
+- **NOPAT** = EBIT × (1 − Tax rate).
+- **Invested capital** = Revenue × 40% (fixed assumption in backend).
+- **ROIC** = NOPAT / Invested capital.
+
+**TSR:**
+- **TSR** = (Ending share price − Starting share price + Dividends per share) / Starting share price.
+- **Round dividends** = max(0, Operating FCF × 25%); dividends per share = total dividends / shares outstanding.
+- **Cumulative TSR** uses the same TSR formula with cumulative dividends per share from game start.
+
+**Decision impacts (per decision, then summed):**
+- **Revenue change** = Base revenue × decision revenueImpact × scenario category multiplier × ramp-up factor. If risky and triggered: reverse and apply 0.5×.
+- **COGS change** = Base COGS × decision cogsImpact × category multiplier × ramp-up factor.
+- **SG&A change** = Base SG&A × decision sgaImpact × category multiplier × ramp-up factor.
+- **Capex change** = Decision cost / duration years (only in years where cost is still paid).
+- **One-time benefit** = From decision (e.g. divestiture) × category multiplier, only in year 1 when applicable.
+- **Ramp-up:** 1-year: 100% in year 1; 2-year: 50% then 100%; 3-year: 30% / 70% / 100%.
+
+**Ranking:** Teams are ranked by **stock price** (highest = rank 1). Round and final results use this.
+
+**Final simulation (2031–2035):** FCF grows at terminal growth rate (2%); dividends at 25% of FCF; share price grows with FCF and small random factor; same stock price bounds; final TSR = (final price − starting price + total dividends) / starting price.
+
+*WACC 8% and net debt $7,765M are used consistently in baseline-financials, calculation-engine, consolidation-engine, and bau-engine.*
 
 ---
 
@@ -648,3 +725,6 @@ Subcategories include:
 |---------|------|--------|---------|
 | 0.1 | 2026-01-16 | AI + Adam | Initial PRD draft |
 | 0.2 | 2026-01-17 | AI + Adam | Added learning framework: guiding principles, KPI scorecard, scenario dynamics, special events |
+| 0.3 | 2026-02-05 | — | Financial model aligned to [Value Creation Simulation](https://github.com/larissajeanphillips/Value-Creation-Simulation) only: added source-of-truth note, fixed inputs table, backend calculation formulas (tax, ROIC, NPV, FCF, TSR, decision impacts). Baseline valuation and operating FCF updated to match repo. No references to any other repository for financial implementation. |
+| 0.4 | 2026-02-05 | — | Fixed inputs corrected: WACC 8% (was 7.5%), net debt $7,765M (was $8,574M). Values pulled from where WACC is set to 8% in code: baseline-financials.ts, consolidation-engine.ts, bau-engine.ts. Backend in this repo updated so calculation-engine and baseline-financials use 8% and $7,765M consistently. |
+| 0.5 | 2026-02-05 | — | Added capex maintenance 4% of revenue and cost of equity (9% baseline, 9.3% for forward price) to Fixed Inputs table. |

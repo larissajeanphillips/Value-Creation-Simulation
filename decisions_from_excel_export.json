@@ -1,0 +1,1299 @@
+[
+  {
+    "excelRow": 2,
+    "decisionNumber": 1,
+    "name": "Mexico Capacity Expansion",
+    "brief": "Expand existing Mexican operations to increase capacity for North American OEMs.",
+    "detail": "Expand existing Mexican operations to increase capacity for North American OEMs. Nearshoring trend favors this investment with relatively predictable returns.",
+    "lever": "Grow",
+    "introducedYear": 1,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 2,
+      "inYearInvestment": 400,
+      "revenue1Year": 1600,
+      "fiveYearGrowth": 5,
+      "ebitMargin": 11
+    }
+  },
+  {
+    "excelRow": 3,
+    "decisionNumber": 2,
+    "name": "Advanced Powertrain R&D Expansion",
+    "brief": "Invest in expanding R&D capabilities for next-generation vehicle powertrains and propulsion systems.",
+    "detail": "Invest in expanding R&D capabilities for next-generation vehicle powertrains and propulsion systems. This positions Magna to capture growing market share in advanced mobility but requires significant upfront investment with returns materializing over 2-3 years.",
+    "lever": "Grow",
+    "introducedYear": 1,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 3,
+      "inYearInvestment": 266.67,
+      "revenue1Year": 1600,
+      "fiveYearGrowth": 5,
+      "ebitMargin": 11
+    }
+  },
+  {
+    "excelRow": 4,
+    "decisionNumber": 3,
+    "name": "Southeast Asia Market Entry",
+    "brief": "Establish manufacturing presence in Thailand/Vietnam to serve growing ASEAN automotive market.",
+    "detail": "Establish manufacturing presence in Thailand/Vietnam to serve growing ASEAN automotive market. Lower labor costs and proximity to emerging markets, but execution risk in new geography.",
+    "lever": "Grow",
+    "introducedYear": 1,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 2,
+      "inYearInvestment": 400,
+      "revenue1Year": 1200,
+      "fiveYearGrowth": 3,
+      "ebitMargin": 5
+    }
+  },
+  {
+    "excelRow": 5,
+    "decisionNumber": 4,
+    "name": "Battery Technology JV",
+    "brief": "Form joint venture with battery cell manufacturer to secure supply and develop integrated battery systems.",
+    "detail": "Form joint venture with battery cell manufacturer to secure supply and develop integrated battery systems. Strategic hedge against vertical integration by OEMs.",
+    "lever": "Grow",
+    "introducedYear": 1,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 2,
+      "inYearInvestment": 500,
+      "revenue1Year": 800,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 10
+    }
+  },
+  {
+    "excelRow": 6,
+    "decisionNumber": 5,
+    "name": "Concentrated OEM Capacity Investment",
+    "brief": "Major capacity investment for an OEM's flagship vehicle program.",
+    "detail": "Major capacity investment for an OEM's flagship vehicle program. The OEM has committed to unprecedented volumes and offered favorable terms for exclusive supply. Higher projected returns than diversified approach, with dedicated production lines and simpler logistics.",
+    "lever": "Grow",
+    "introducedYear": 1,
+    "cost": 600,
+    "grow": {
+      "investmentsTotal": 600,
+      "investmentPeriod": 2,
+      "inYearInvestment": 300,
+      "revenue1Year": 900,
+      "fiveYearGrowth": 3,
+      "ebitMargin": 5
+    }
+  },
+  {
+    "excelRow": 7,
+    "decisionNumber": 6,
+    "name": "Smart Factory Pilot Program",
+    "brief": "Implement Industry 4.",
+    "detail": "Implement Industry 4.0 technologies in flagship facility. IoT sensors, AI-driven quality control, and predictive maintenance. Proof of concept for broader rollout.",
+    "lever": "Optimize",
+    "introducedYear": 1,
+    "cost": 120,
+    "optimize": {
+      "implementationCost": 0,
+      "investment": 120,
+      "investmentPeriod": 2,
+      "inYearInvestment": 60,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 8,
+    "decisionNumber": 7,
+    "name": "Shared Services Consolidation",
+    "brief": "Consolidate back-office functions (finance, HR, IT) into regional shared services centers.",
+    "detail": "Consolidate back-office functions (finance, HR, IT) into regional shared services centers. Upfront investment yields ongoing cost savings.",
+    "lever": "Optimize",
+    "introducedYear": 1,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 2.5,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 9,
+    "decisionNumber": 8,
+    "name": "Supplier Dual-Sourcing Initiative",
+    "brief": "Establish secondary suppliers for critical components.",
+    "detail": "Establish secondary suppliers for critical components. Increases supply chain resilience and negotiating leverage. Small cost premium offset by risk reduction.",
+    "lever": "Optimize",
+    "introducedYear": 1,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 2,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 80
+    }
+  },
+  {
+    "excelRow": 10,
+    "decisionNumber": 9,
+    "name": "ERP System Upgrade",
+    "brief": "Launch enterprise-wide Data & ERP Transformation, migrating core ERP to a modern cloud platform while redesigning data architecture, analytics, and end-to-end processes.",
+    "detail": "Launch enterprise-wide Data & ERP Transformation, migrating core ERP to a modern cloud platform while redesigning data architecture, analytics, and end-to-end processes. Enables advanced analytics, AI-driven automation, and materially improved decision-making across the business.",
+    "lever": "Optimize",
+    "introducedYear": 1,
+    "cost": 120,
+    "optimize": {
+      "implementationCost": 0,
+      "investment": 120,
+      "investmentPeriod": 2,
+      "inYearInvestment": 60,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 11,
+    "decisionNumber": 10,
+    "name": "Management Delayering",
+    "brief": "Execute a management reorganization to de-layer the organization, accelerating decision-making, clarifying accountability, and sustainably reducing overhead.",
+    "detail": "Execute a management reorganization to de-layer the organization, accelerating decision-making, clarifying accountability, and sustainably reducing overhead.",
+    "lever": "Optimize",
+    "introducedYear": 1,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 1,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 12,
+    "decisionNumber": 11,
+    "name": "Customer Diversification Initiative",
+    "brief": "Allocate incremental investment to expand sales coverage and key-account capabilities beyond top customers, deliberately diversifying the revenue base and mitigating concentration risk.",
+    "detail": "Allocate incremental investment to expand sales coverage and key-account capabilities beyond top customers, deliberately diversifying the revenue base and mitigating concentration risk.",
+    "lever": "Sustain",
+    "introducedYear": 1,
+    "cost": 40,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 40,
+      "investmentPeriod": 1,
+      "inYearInvestment": 40,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 13,
+    "decisionNumber": 12,
+    "name": "Technical Talent Development",
+    "brief": "Investment in training and development for engineering workforce.",
+    "detail": "Investment in training and development for engineering workforce. Essential to maintain competitive capabilities. Retention and capability building.",
+    "lever": "Sustain",
+    "introducedYear": 1,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 14,
+    "decisionNumber": 13,
+    "name": "Cybersecurity Enhancement",
+    "brief": "Comprehensive cybersecurity upgrade across IT infrastructure.",
+    "detail": "Comprehensive cybersecurity upgrade across IT infrastructure. Essential protection against growing cyber threats. No direct return but prevents catastrophic risk.",
+    "lever": "Sustain",
+    "introducedYear": 1,
+    "cost": 80,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 80,
+      "investmentPeriod": 1,
+      "inYearInvestment": 80,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 15,
+    "decisionNumber": 14,
+    "name": "Equipment Refresh Program",
+    "brief": "Scheduled replacement of aging manufacturing equipment.",
+    "detail": "Scheduled replacement of aging manufacturing equipment. Maintains reliability and quality. Deferred investment risks production disruptions.",
+    "lever": "Sustain",
+    "introducedYear": 1,
+    "cost": 80,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 80,
+      "investmentPeriod": 1,
+      "inYearInvestment": 80,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 16,
+    "decisionNumber": 15,
+    "name": "Environmental Compliance Investment",
+    "brief": "Proactive investment to meet upcoming environmental regulations.",
+    "detail": "Proactive investment to meet upcoming environmental regulations. Mandatory compliance but early investment avoids rushed future spending.",
+    "lever": "Sustain",
+    "introducedYear": 1,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 17,
+    "decisionNumber": 16,
+    "name": "Autonomous Driving Systems Unit",
+    "brief": "Launch dedicated business unit for advanced driver assistance systems (ADAS) and autonomous driving technology.",
+    "detail": "Launch dedicated business unit for advanced driver assistance systems (ADAS) and autonomous driving technology. High potential but uncertain returns as technology evolves rapidly.",
+    "lever": "Grow",
+    "introducedYear": 2,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 2,
+      "inYearInvestment": 500,
+      "revenue1Year": 800,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 10
+    }
+  },
+  {
+    "excelRow": 18,
+    "decisionNumber": 17,
+    "name": "Diversified OEM Capacity Investment",
+    "brief": "Invest in flexible powertrain manufacturing capacity additions across existing facilities globally to serve multiple OEM customers.",
+    "detail": "Invest in flexible powertrain manufacturing capacity additions across existing facilities globally to serve multiple OEM customers. Spreads investment across GM, Ford, Honda, and BMW programs. Lower per-unit returns but diversified risk exposure. Requires more coordination but provides insurance against customer-specific disruptions.",
+    "lever": "Grow",
+    "introducedYear": 2,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 2,
+      "inYearInvestment": 400,
+      "revenue1Year": 1600,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 6
+    }
+  },
+  {
+    "excelRow": 19,
+    "decisionNumber": 18,
+    "name": "Bolt-on Sensor Acquisition",
+    "brief": "Acquire small sensor technology company to enhance ADAS capabilities.",
+    "detail": "Acquire small sensor technology company to enhance ADAS capabilities. Adds specialized engineering talent and IP. Integration risk exists but accelerates time-to-market.",
+    "lever": "Grow",
+    "introducedYear": 2,
+    "cost": 0,
+    "grow": {
+      "investmentsTotal": 0,
+      "investmentPeriod": 0,
+      "revenue1Year": 2000,
+      "fiveYearGrowth": 10,
+      "ebitMargin": 11
+    }
+  },
+  {
+    "excelRow": 20,
+    "decisionNumber": 19,
+    "name": "Software-Defined Vehicle Platform",
+    "brief": "Make a targeted technology bet on modular, software-defined vehicle architectures, reflecting OEM demand for faster feature deployment, lower lifecycle cost, and vendor-agnostic platforms.",
+    "detail": "Make a targeted technology bet on modular, software-defined vehicle architectures, reflecting OEM demand for faster feature deployment, lower lifecycle cost, and vendor-agnostic platforms",
+    "lever": "Grow",
+    "introducedYear": 2,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 2,
+      "inYearInvestment": 500,
+      "revenue1Year": 800,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 10
+    }
+  },
+  {
+    "excelRow": 21,
+    "decisionNumber": 20,
+    "name": "European Advanced Assembly Facility",
+    "brief": "Build dedicated advanced vehicle assembly plant in Eastern Europe.",
+    "detail": "Build dedicated advanced vehicle assembly plant in Northern Africa. Positions for next-gen vehicle platforms. Significant investment with long payback period.",
+    "lever": "Grow",
+    "introducedYear": 2,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 3,
+      "inYearInvestment": 333.33,
+      "revenue1Year": 1500,
+      "fiveYearGrowth": 3,
+      "ebitMargin": 5
+    }
+  },
+  {
+    "excelRow": 22,
+    "decisionNumber": 21,
+    "name": "Advanced Analytics Platform",
+    "brief": "Deploy enterprise analytics platform to improve decision-making across operations.",
+    "detail": "Deploy enterprise analytics platform to improve decision-making across operations. Predictive insights for demand planning, quality, and maintenance.",
+    "lever": "Optimize",
+    "introducedYear": 2,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 23,
+    "decisionNumber": 22,
+    "name": "Automation Expansion Program",
+    "brief": "Expand robotic automation across manufacturing facilities.",
+    "detail": "Expand robotic automation across manufacturing facilities. Higher upfront cost but significant labor cost reduction and quality improvement.",
+    "lever": "Optimize",
+    "introducedYear": 2,
+    "cost": 360,
+    "optimize": {
+      "implementationCost": 0,
+      "investment": 360,
+      "investmentPeriod": 1,
+      "inYearInvestment": 360,
+      "annualCost": 120
+    }
+  },
+  {
+    "excelRow": 24,
+    "decisionNumber": 23,
+    "name": "Underperforming Division Turnaround",
+    "brief": "Comprehensive operational improvement program for underperforming business unit.",
+    "detail": "Comprehensive operational improvement program for underperforming business unit. New leadership, process redesign, and targeted investments.",
+    "lever": "Optimize",
+    "introducedYear": 2,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 80
+    }
+  },
+  {
+    "excelRow": 25,
+    "decisionNumber": 24,
+    "name": "Logistics Network Optimization",
+    "brief": "Redesign global logistics network to reduce transportation costs and improve delivery times.",
+    "detail": "Redesign global logistics network to reduce transportation costs and improve delivery times. Consolidate warehouses and optimize routes.",
+    "lever": "Optimize",
+    "introducedYear": 2,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 80
+    }
+  },
+  {
+    "excelRow": 26,
+    "decisionNumber": 25,
+    "name": "Procurement Excellence Program",
+    "brief": "Implement strategic sourcing and supplier management program.",
+    "detail": "Implement strategic sourcing and supplier management program. Leverage scale for better pricing and terms on indirect spend.",
+    "lever": "Optimize",
+    "introducedYear": 2,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 27,
+    "decisionNumber": 26,
+    "name": "Leadership Development Program",
+    "brief": "Comprehensive leadership development for high-potential managers.",
+    "detail": "Comprehensive leadership development for high-potential managers. Builds succession pipeline and organizational capability. Long-term investment in human capital.",
+    "lever": "Sustain",
+    "introducedYear": 2,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 28,
+    "decisionNumber": 27,
+    "name": "Quality Management System Upgrade",
+    "brief": "Upgrade quality management systems to meet evolving OEM requirements.",
+    "detail": "Upgrade quality management systems to meet evolving OEM requirements. Essential for maintaining key customer relationships. Prevents costly quality escapes.",
+    "lever": "Sustain",
+    "introducedYear": 2,
+    "cost": 80,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 80,
+      "investmentPeriod": 1,
+      "inYearInvestment": 80,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 29,
+    "decisionNumber": 28,
+    "name": "IT Infrastructure Modernization",
+    "brief": "Update core IT systems and infrastructure.",
+    "detail": "Update core IT systems and infrastructure. Addresses technical debt and security vulnerabilities. Foundational investment enabling future digital initiatives.",
+    "lever": "Sustain",
+    "introducedYear": 2,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 30,
+    "decisionNumber": 29,
+    "name": "Health & Safety Investment",
+    "brief": "Enhanced workplace safety equipment and training programs.",
+    "detail": "Enhanced workplace safety equipment and training programs. Essential for employee welfare and regulatory compliance. Reduces accident-related costs.",
+    "lever": "Sustain",
+    "introducedYear": 2,
+    "cost": 40,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 40,
+      "investmentPeriod": 1,
+      "inYearInvestment": 40,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 31,
+    "decisionNumber": 30,
+    "name": "Supplier Relationship Investment",
+    "brief": "Strengthen relationships with strategic suppliers through joint development and long-term agreements.",
+    "detail": "Strengthen relationships with strategic suppliers through joint development and long-term agreements. Improves supply security and preferential allocation.",
+    "lever": "Sustain",
+    "introducedYear": 2,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 32,
+    "decisionNumber": 31,
+    "name": "North America Advanced Component Hub",
+    "brief": "Consolidate advanced component manufacturing across business units into a single, dedicated cross-group facility, capturing scale efficiencies and capability depth while requiring a significant fixed-asset commitment amid uncertain market demand.",
+    "detail": "Consolidate advanced component manufacturing across business units into a single, dedicated cross-group facility, capturing scale efficiencies and capability depth while requiring a significant fixed-asset commitment amid uncertain market demand.",
+    "lever": "Grow",
+    "introducedYear": 3,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 1,
+      "inYearInvestment": 1000,
+      "revenue1Year": 1500,
+      "fiveYearGrowth": 3,
+      "ebitMargin": 5
+    }
+  },
+  {
+    "excelRow": 33,
+    "decisionNumber": 32,
+    "name": "Chinese OEM Partnership",
+    "brief": "Strategic partnership with leading Chinese automotive manufacturer.",
+    "detail": "Strategic partnership with leading Chinese automotive manufacturer. Access to largest automotive growth market but geopolitical and IP concerns. High reward potential with elevated risk.",
+    "lever": "Grow",
+    "introducedYear": 3,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 1,
+      "inYearInvestment": 1000,
+      "revenue1Year": 2000,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 6
+    }
+  },
+  {
+    "excelRow": 34,
+    "decisionNumber": 33,
+    "name": "Distressed Competitor Acquisition",
+    "brief": "Opportunity to acquire struggling competitor at attractive valuation.",
+    "detail": "Opportunity to acquire struggling competitor at attractive valuation. Significant capacity and customer relationships, but integration complexity and some legacy issues.",
+    "lever": "Grow",
+    "introducedYear": 3,
+    "cost": 0,
+    "grow": {
+      "investmentsTotal": 0,
+      "investmentPeriod": 0,
+      "revenue1Year": 8000,
+      "fiveYearGrowth": 10,
+      "ebitMargin": 11
+    }
+  },
+  {
+    "excelRow": 35,
+    "decisionNumber": 34,
+    "name": "Solid-State Battery Research",
+    "brief": "Invest in next-generation solid-state battery technology research.",
+    "detail": "Invest in next-generation solid-state battery technology research. Could leapfrog current technology but commercialization timeline uncertain.",
+    "lever": "Grow",
+    "introducedYear": 3,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 1,
+      "inYearInvestment": 1000,
+      "revenue1Year": 1500,
+      "fiveYearGrowth": 3,
+      "ebitMargin": 5
+    }
+  },
+  {
+    "excelRow": 36,
+    "decisionNumber": 35,
+    "name": "Expand Beyond OEMs into Non-Traditional Customers",
+    "brief": "Pursue revenue opportunities with non-OEM customers (e.",
+    "detail": "Pursue revenue opportunities with non-OEM customers (e.g., Amazon, fleet operators, mobility platforms) by adapting Magna’s manufacturing and engineering capabilities to adjacent use cases.",
+    "lever": "Grow",
+    "introducedYear": 3,
+    "cost": 400,
+    "grow": {
+      "investmentsTotal": 400,
+      "investmentPeriod": 1,
+      "inYearInvestment": 400,
+      "revenue1Year": 800,
+      "fiveYearGrowth": 5,
+      "ebitMargin": 11
+    }
+  },
+  {
+    "excelRow": 37,
+    "decisionNumber": 36,
+    "name": "Non-Core Division Divestiture",
+    "brief": "Divest underperforming non-core business unit.",
+    "detail": "Divest underperforming non-core business unit. Generates cash and allows focus on strategic priorities. May face valuation pressure in current market.",
+    "lever": "Optimize",
+    "introducedYear": 3,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 0,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 38,
+    "decisionNumber": 37,
+    "name": "Bypass Standard Launch Gates to Meet SOP Deadline",
+    "brief": "Streamline or bypass select internal approval and validation steps to meet OEM SOP deadlines and avoid penalties, accepting higher rework risk in exchange for schedule adherence and cost savings.",
+    "detail": "Streamline or bypass select internal approval and validation steps to meet OEM SOP deadlines and avoid penalties, accepting higher rework risk in exchange for schedule adherence and cost savings.",
+    "lever": "Optimize",
+    "introducedYear": 3,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 80
+    }
+  },
+  {
+    "excelRow": 39,
+    "decisionNumber": 38,
+    "name": "Energy Efficiency Program",
+    "brief": "Comprehensive energy efficiency upgrades across facilities.",
+    "detail": "Comprehensive energy efficiency upgrades across facilities. LED lighting, smart HVAC, and energy recovery systems. Strong ROI with added ESG benefits.",
+    "lever": "Optimize",
+    "introducedYear": 3,
+    "cost": 120,
+    "optimize": {
+      "implementationCost": 0,
+      "investment": 120,
+      "investmentPeriod": 2,
+      "inYearInvestment": 60,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 40,
+    "decisionNumber": 39,
+    "name": "Workforce Right-Sizing",
+    "brief": "Reduce headcount through voluntary separation and selective layoffs in response to cost pressures.",
+    "detail": "Reduce headcount through voluntary separation and selective layoffs in response to cost pressures. Immediate savings but risk of losing key talent.",
+    "lever": "Optimize",
+    "introducedYear": 3,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 120
+    }
+  },
+  {
+    "excelRow": 41,
+    "decisionNumber": 40,
+    "name": "Plant Footprint Rationalization",
+    "brief": "Close underutilized manufacturing facilities and consolidate production.",
+    "detail": "Close underutilized manufacturing facilities and consolidate production. Significant restructuring cost but lasting margin improvement.",
+    "lever": "Optimize",
+    "introducedYear": 3,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 1.5,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 120
+    }
+  },
+  {
+    "excelRow": 42,
+    "decisionNumber": 41,
+    "name": "Contract Renewal Defense",
+    "brief": "Invest in proactive retention programs—including dedicated renewal teams, pricing/offer analytics, and targeted customer incentives—to secure contract renewals in a more competitive environment and protect at-risk revenue.",
+    "detail": "Invest in proactive retention programs—including dedicated renewal teams, pricing/offer analytics, and targeted customer incentives—to secure contract renewals in a more competitive environment and protect at-risk revenue.",
+    "lever": "Sustain",
+    "introducedYear": 3,
+    "cost": 80,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 80,
+      "investmentPeriod": 1,
+      "inYearInvestment": 80,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 43,
+    "decisionNumber": 42,
+    "name": "Critical Equipment Maintenance",
+    "brief": "Essential maintenance program for production-critical equipment.",
+    "detail": "Essential maintenance program for production-critical equipment. Tempting to defer during cost pressure but failure would be catastrophic.",
+    "lever": "Sustain",
+    "introducedYear": 3,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 80
+    }
+  },
+  {
+    "excelRow": 44,
+    "decisionNumber": 43,
+    "name": "Key Talent Retention Program",
+    "brief": "Targeted retention incentives for critical technical and leadership talent.",
+    "detail": "Targeted retention incentives for critical technical and leadership talent. Important to maintain during cost pressures when competitors may poach.",
+    "lever": "Sustain",
+    "introducedYear": 3,
+    "cost": 120,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 120,
+      "investmentPeriod": 1,
+      "inYearInvestment": 120,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 45,
+    "decisionNumber": 44,
+    "name": "Business Continuity Enhancement",
+    "brief": "Strengthen business continuity planning and backup capabilities.",
+    "detail": "Strengthen business continuity planning and backup capabilities. Particularly important as risks increase during economic uncertainty.",
+    "lever": "Sustain",
+    "introducedYear": 3,
+    "cost": 80,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 80,
+      "investmentPeriod": 1,
+      "inYearInvestment": 80,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 46,
+    "decisionNumber": 45,
+    "name": "Insurance Coverage Upgrade",
+    "brief": "Enhance insurance coverage for key operational and financial risks.",
+    "detail": "Enhance insurance coverage for key operational and financial risks. Higher premiums but better protection against tail risks during uncertain times.",
+    "lever": "Sustain",
+    "introducedYear": 3,
+    "cost": 40,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 40,
+      "investmentPeriod": 1,
+      "inYearInvestment": 40,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 47,
+    "decisionNumber": 46,
+    "name": "Opportunistic Acquisition - Premium Supplier",
+    "brief": "Rare opportunity to acquire premium supplier at recession-driven valuation.",
+    "detail": "Rare opportunity to acquire premium supplier at recession-driven valuation. Strong customer relationships and margins. Requires significant capital during challenging times.",
+    "lever": "Grow",
+    "introducedYear": 4,
+    "cost": 0,
+    "grow": {
+      "investmentsTotal": 0,
+      "investmentPeriod": 0,
+      "revenue1Year": 8000,
+      "fiveYearGrowth": 10,
+      "ebitMargin": 11
+    }
+  },
+  {
+    "excelRow": 48,
+    "decisionNumber": 47,
+    "name": "Aggressive pricing to win new business",
+    "brief": "Pursue new business using aggressive pricing mechanisms, accepting near-term dilution to drive volume growth and market entry.",
+    "detail": "Pursue new business using aggressive pricing mechanisms, accepting near-term dilution to drive volume growth and market entry.",
+    "lever": "Grow",
+    "introducedYear": 4,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 2,
+      "inYearInvestment": 400,
+      "revenue1Year": 640,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 10
+    }
+  },
+  {
+    "excelRow": 49,
+    "decisionNumber": 48,
+    "name": "Middle East Manufacturing Partnership",
+    "brief": "Partnership with Gulf state sovereign wealth fund for new manufacturing hub.",
+    "detail": "Partnership with Gulf state sovereign wealth fund for new manufacturing hub. Diversifies geographic exposure and provides capital, but execution complexity.",
+    "lever": "Grow",
+    "introducedYear": 4,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 2,
+      "inYearInvestment": 400,
+      "revenue1Year": 1200,
+      "fiveYearGrowth": 3,
+      "ebitMargin": 5
+    }
+  },
+  {
+    "excelRow": 50,
+    "decisionNumber": 49,
+    "name": "Hydrogen Fuel Cell Alliance",
+    "brief": "Join consortium developing hydrogen fuel cell technology for commercial vehicles.",
+    "detail": "Join consortium developing hydrogen fuel cell technology for commercial vehicles. Hedges powertrain technology bets but requires ongoing investment with uncertain payoff timeline.",
+    "lever": "Grow",
+    "introducedYear": 4,
+    "cost": 600,
+    "grow": {
+      "investmentsTotal": 600,
+      "investmentPeriod": 2,
+      "inYearInvestment": 300,
+      "revenue1Year": 1200,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 6
+    }
+  },
+  {
+    "excelRow": 51,
+    "decisionNumber": 50,
+    "name": "Underutilized Capacity Purchase",
+    "brief": "Purchase underutilized manufacturing facility from distressed competitor at significant discount.",
+    "detail": "Purchase underutilized manufacturing facility from distressed competitor at significant discount. Ready infrastructure but requires investment to modernize.",
+    "lever": "Grow",
+    "introducedYear": 4,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 2,
+      "inYearInvestment": 400,
+      "revenue1Year": 1600,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 6
+    }
+  },
+  {
+    "excelRow": 52,
+    "decisionNumber": 51,
+    "name": "Material process flow automation",
+    "brief": "Execute material end-to-end process flow optimization, simplifying handoffs and eliminating waste to reduce cost, cycle time, and operational friction.",
+    "detail": "Execute material end-to-end process flow optimization, simplifying handoffs and eliminating waste to reduce cost, cycle time, and operational friction.",
+    "lever": "Optimize",
+    "introducedYear": 4,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 53,
+    "decisionNumber": 52,
+    "name": "Strategic Asset Sale",
+    "brief": "Sell non-strategic real estate and equipment at recession-impacted valuations.",
+    "detail": "Sell non-strategic real estate and equipment at recession-impacted valuations. Generates needed liquidity but may sell below intrinsic value.",
+    "lever": "Optimize",
+    "introducedYear": 4,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 0,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 54,
+    "decisionNumber": 53,
+    "name": "Working from Home Optimization",
+    "brief": "Make remote work permanent for applicable roles.",
+    "detail": "Make remote work permanent for applicable roles. Reduce office space and associated costs. Maintains productivity while cutting real estate expenses.",
+    "lever": "Optimize",
+    "introducedYear": 4,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 55,
+    "decisionNumber": 54,
+    "name": "Supplier Renegotiation Program",
+    "brief": "Leverage recession conditions to renegotiate supplier contracts.",
+    "detail": "Leverage recession conditions to renegotiate supplier contracts. Risk of supplier relationship damage but significant cost reduction opportunity.",
+    "lever": "Optimize",
+    "introducedYear": 4,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 80
+    }
+  },
+  {
+    "excelRow": 56,
+    "decisionNumber": 55,
+    "name": "Process Automation Acceleration",
+    "brief": "Accelerate robotic process automation for administrative tasks.",
+    "detail": "Accelerate robotic process automation for administrative tasks. Reduced headcount needs align with downturn-driven workforce reduction.",
+    "lever": "Optimize",
+    "introducedYear": 4,
+    "cost": 120,
+    "optimize": {
+      "implementationCost": 0,
+      "investment": 120,
+      "investmentPeriod": 1,
+      "inYearInvestment": 120,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 57,
+    "decisionNumber": 56,
+    "name": "Deep Cost Restructuring",
+    "brief": "Aggressive cost reduction program across all functions.",
+    "detail": "Aggressive cost reduction program across all functions. Difficult decisions but necessary for survival in prolonged downturn. Risk of capability damage.",
+    "lever": "Sustain",
+    "introducedYear": 4,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 160
+    }
+  },
+  {
+    "excelRow": 58,
+    "decisionNumber": 57,
+    "name": "Regulatory Compliance Baseline",
+    "brief": "Fund mandatory regulatory compliance at the minimum required level, deliberately limiting scope to avoid incremental spend while maintaining license to operate.",
+    "detail": "Fund mandatory regulatory compliance at the minimum required level, deliberately limiting scope to avoid incremental spend while maintaining license to operate.",
+    "lever": "Sustain",
+    "introducedYear": 4,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 59,
+    "decisionNumber": 58,
+    "name": "Minimum Viable Maintenance",
+    "brief": "Bare minimum maintenance investment to keep operations running.",
+    "detail": "Bare minimum maintenance investment to keep operations running. Risk of equipment failure but preserves cash during severe downturn.",
+    "lever": "Sustain",
+    "introducedYear": 4,
+    "cost": 80,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 80,
+      "investmentPeriod": 1,
+      "inYearInvestment": 80,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 60,
+    "decisionNumber": 59,
+    "name": "Core Team Preservation",
+    "brief": "Investment to retain absolutely critical talent through recession.",
+    "detail": "Investment to retain absolutely critical talent through recession. Skeletal but essential team for recovery. Others may be rehired post-downturn.",
+    "lever": "Sustain",
+    "introducedYear": 4,
+    "cost": 120,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 120,
+      "investmentPeriod": 1,
+      "inYearInvestment": 120,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 61,
+    "decisionNumber": 60,
+    "name": "Financial Risk Management",
+    "brief": "Enhanced treasury and financial risk management during volatile conditions.",
+    "detail": "Enhanced treasury and financial risk management during volatile conditions. Hedge exposures and manage liquidity carefully.",
+    "lever": "Sustain",
+    "introducedYear": 4,
+    "cost": 0,
+    "sustain": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 62,
+    "decisionNumber": 61,
+    "name": "Prioritize Commercial Recoveries to win business",
+    "brief": "Leverage commercial recoveries as negotiation tools to win new business, using offset economics to secure contracts while remaining net-accretive.",
+    "detail": "Leverage commercial recoveries as negotiation tools to win new business, using offset economics to secure contracts while remaining net-accretive.",
+    "lever": "Grow",
+    "introducedYear": 5,
+    "cost": 400,
+    "grow": {
+      "investmentsTotal": 400,
+      "investmentPeriod": 2,
+      "inYearInvestment": 200,
+      "revenue1Year": 800,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 6
+    }
+  },
+  {
+    "excelRow": 63,
+    "decisionNumber": 62,
+    "name": "Global Capacity Expansion Program",
+    "brief": "Comprehensive capacity expansion across multiple regions to meet recovering demand.",
+    "detail": "Comprehensive capacity expansion across multiple regions to meet recovering demand. Significant investment but positions for sustainable growth trajectory.",
+    "lever": "Grow",
+    "introducedYear": 5,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 2,
+      "inYearInvestment": 500,
+      "revenue1Year": 800,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 10
+    }
+  },
+  {
+    "excelRow": 64,
+    "decisionNumber": 63,
+    "name": "Strategic Technology Acquisition",
+    "brief": "Acquire emerging technology company with breakthrough thermal management system for advanced vehicles.",
+    "detail": "Acquire emerging technology company with breakthrough thermal management system for advanced vehicles. Positions for next-generation vehicle requirements. Premium valuation as market recovers.",
+    "lever": "Grow",
+    "introducedYear": 5,
+    "cost": 0,
+    "grow": {
+      "investmentsTotal": 0,
+      "investmentPeriod": 0,
+      "revenue1Year": 4000,
+      "fiveYearGrowth": 10,
+      "ebitMargin": 11
+    }
+  },
+  {
+    "excelRow": 65,
+    "decisionNumber": 64,
+    "name": "OEM Strategic Alliance",
+    "brief": "Deep strategic partnership with major OEM for exclusive supply arrangements.",
+    "detail": "Deep strategic partnership with major OEM for exclusive supply arrangements. Secures significant volume but concentration risk. Attractive terms as OEM seeks reliable supplier.",
+    "lever": "Grow",
+    "introducedYear": 5,
+    "cost": 1000,
+    "grow": {
+      "investmentsTotal": 1000,
+      "investmentPeriod": 2,
+      "inYearInvestment": 500,
+      "revenue1Year": 800,
+      "fiveYearGrowth": 0,
+      "ebitMargin": 10
+    }
+  },
+  {
+    "excelRow": 66,
+    "decisionNumber": 65,
+    "name": "Mobility Services Platform",
+    "brief": "Launch platform to support fleet operators and mobility-as-a-service providers.",
+    "detail": "Launch platform to support fleet operators and mobility-as-a-service providers. Diversifies revenue model and creates recurring revenue streams.",
+    "lever": "Grow",
+    "introducedYear": 5,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 1,
+      "inYearInvestment": 800,
+      "revenue1Year": 1200,
+      "fiveYearGrowth": 3,
+      "ebitMargin": 5
+    }
+  },
+  {
+    "excelRow": 67,
+    "decisionNumber": 66,
+    "name": "Next-Gen ADAS Development",
+    "brief": "Accelerate development of Level 4 autonomous driving capabilities.",
+    "detail": "Accelerate development of Level 4 autonomous driving capabilities. Recovery enables increased R&D spending. Positions for 2030s autonomous vehicle requirements.",
+    "lever": "Grow",
+    "introducedYear": 5,
+    "cost": 800,
+    "grow": {
+      "investmentsTotal": 800,
+      "investmentPeriod": 1,
+      "inYearInvestment": 800,
+      "revenue1Year": 1600,
+      "fiveYearGrowth": 5,
+      "ebitMargin": 11
+    }
+  },
+  {
+    "excelRow": 68,
+    "decisionNumber": 67,
+    "name": "AI Operations Platform",
+    "brief": "Deploy AI-powered operations management platform.",
+    "detail": "Deploy AI-powered operations management platform. Advanced demand forecasting, production scheduling, and quality prediction. Next-level efficiency.",
+    "lever": "Optimize",
+    "introducedYear": 5,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 2.5,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 80
+    }
+  },
+  {
+    "excelRow": 69,
+    "decisionNumber": 68,
+    "name": "Inventory Optimization",
+    "brief": "Implement advanced inventory management to reduce working capital requirements.",
+    "detail": "Implement advanced inventory management to reduce working capital requirements. Risk of stockouts during supply disruptions but significant cash release.",
+    "lever": "Optimize",
+    "introducedYear": 5,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 2,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 70,
+    "decisionNumber": 69,
+    "name": "Sales Force Effectiveness",
+    "brief": "Restructure the sales organization with targeted investment in CRM, analytics, and coverage model redesign, shifting from relationship-led to data-driven account management to improve customer coverage while reducing overall sales headcount.",
+    "detail": "Restructure the sales organization with targeted investment in CRM, analytics, and coverage model redesign, shifting from relationship-led to data-driven account management to improve customer coverage while reducing overall sales headcount.",
+    "lever": "Optimize",
+    "introducedYear": 5,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 40
+    }
+  },
+  {
+    "excelRow": 71,
+    "decisionNumber": 70,
+    "name": "Near-Shoring Initiative",
+    "brief": "Shift supply chain closer to end markets.",
+    "detail": "Shift supply chain closer to end markets. Higher unit costs offset by reduced logistics, inventory, and disruption risk. Resilience investment.",
+    "lever": "Optimize",
+    "introducedYear": 5,
+    "cost": 0,
+    "optimize": {
+      "implementationCost": 3,
+      "investment": 0,
+      "investmentPeriod": 1,
+      "inYearInvestment": 0,
+      "annualCost": 80
+    }
+  },
+  {
+    "excelRow": 72,
+    "decisionNumber": 71,
+    "name": "Full Smart Factory Rollout",
+    "brief": "Expand proven smart factory technologies across global manufacturing footprint.",
+    "detail": "Expand proven smart factory technologies across global manufacturing footprint. Recovery positions for investment. Strong ROI from scale.",
+    "lever": "Optimize",
+    "introducedYear": 5,
+    "cost": 360,
+    "optimize": {
+      "implementationCost": 0,
+      "investment": 360,
+      "investmentPeriod": 1,
+      "inYearInvestment": 360,
+      "annualCost": 120
+    }
+  },
+  {
+    "excelRow": 73,
+    "decisionNumber": 72,
+    "name": "Deferred Maintenance Catch-Up",
+    "brief": "Address deferred maintenance from recession period.",
+    "detail": "Address deferred maintenance from recession period. Essential to restore equipment reliability for recovery. May require higher spend than normal.",
+    "lever": "Sustain",
+    "introducedYear": 5,
+    "cost": 120,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 120,
+      "investmentPeriod": 1,
+      "inYearInvestment": 120,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 74,
+    "decisionNumber": 73,
+    "name": "Workforce Rebuilding Program",
+    "brief": "Rehire and retrain workforce for recovery volumes.",
+    "detail": "Rehire and retrain workforce for recovery volumes. Compete for talent returning to job market. Investment in recruiting and onboarding.",
+    "lever": "Sustain",
+    "introducedYear": 5,
+    "cost": 120,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 120,
+      "investmentPeriod": 1,
+      "inYearInvestment": 120,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 75,
+    "decisionNumber": 74,
+    "name": "ESG & Sustainability Investment",
+    "brief": "Comprehensive ESG program to meet growing stakeholder expectations.",
+    "detail": "Comprehensive ESG program to meet growing stakeholder expectations. Carbon reduction, sustainable materials, and governance enhancement.",
+    "lever": "Sustain",
+    "introducedYear": 5,
+    "cost": 40,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 40,
+      "investmentPeriod": 1,
+      "inYearInvestment": 40,
+      "annualCost": 0
+    }
+  },
+  {
+    "excelRow": 76,
+    "decisionNumber": 75,
+    "name": "Post-Crisis Risk Assessment",
+    "brief": "Comprehensive review and update of risk management framework based on lessons learned.",
+    "detail": "Comprehensive review and update of risk management framework based on lessons learned. Prepare for next downturn while positioned for recovery.",
+    "lever": "Sustain",
+    "introducedYear": 5,
+    "cost": 40,
+    "sustain": {
+      "implementationCost": 0,
+      "investment": 40,
+      "investmentPeriod": 1,
+      "inYearInvestment": 40,
+      "annualCost": 0
+    }
+  }
+]
