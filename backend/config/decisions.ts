@@ -1,9 +1,8 @@
 /**
  * Value Creation Simulation - Decision Cards Configuration
- * 75 total decision cards: Based on Excel Decisions tab
- * Updated with narratives from column AA and rounds from column AB
- * 
- * NOTE: Impact values are placeholder estimates and will be tuned during Phase 7
+ * 75 total decision cards: Based on Excel Decisions tab (rows 2–76).
+ * Card content: A = decision #, F = name, G = detail (narrative).
+ * Grow back: AA, Y, Z, AB, AC. Optimize back: AF, AG, AE, AH. Sustain back: AK, AL, AJ, AM.
  */
 
 import type { Decision, RoundNumber, GrowMetrics, OptimizeMetrics, SustainMetrics } from '../types/game.js';
@@ -34,10 +33,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 80,
     growMetrics: {
       revenue1Year: 1600,
-      fiveYearGrowth: 5.0,
+      fiveYearGrowth: 5,
       investmentsTotal: 800,
       investmentPeriod: 2,
-      ebitMargin: 11.0,
+      ebitMargin: 11,
     },
 
   },
@@ -61,10 +60,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 150,
     growMetrics: {
       revenue1Year: 2000,
-      fiveYearGrowth: 5.0,
+      fiveYearGrowth: 5,
       investmentsTotal: 1000,
       investmentPeriod: 3,
-      ebitMargin: 11.0,
+      ebitMargin: 11,
     },
 
   },
@@ -88,10 +87,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 120,
     growMetrics: {
       revenue1Year: 1200,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 800,
       investmentPeriod: 2,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -115,10 +114,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 140,
     growMetrics: {
       revenue1Year: 800,
-      fiveYearGrowth: 0.0,
+      fiveYearGrowth: 0,
       investmentsTotal: 1000,
       investmentPeriod: 2,
-      ebitMargin: 10.0,
+      ebitMargin: 10,
     },
 
   },
@@ -144,10 +143,10 @@ const GROW_DECISIONS: Decision[] = [
     vulnerableTo: 'oem_program_cancellation',
     growMetrics: {
       revenue1Year: 1500,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 1000,
       investmentPeriod: 2,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -173,10 +172,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 180,
     growMetrics: {
       revenue1Year: 800,
-      fiveYearGrowth: 0.0,
+      fiveYearGrowth: 0,
       investmentsTotal: 1000,
       investmentPeriod: 2,
-      ebitMargin: 10.0,
+      ebitMargin: 10,
     },
 
   },
@@ -201,10 +200,10 @@ const GROW_DECISIONS: Decision[] = [
     riskPrevention: 'oem_program_cancellation',
     growMetrics: {
       revenue1Year: 1600,
-      fiveYearGrowth: 0.0,
+      fiveYearGrowth: 0,
       investmentsTotal: 800,
       investmentPeriod: 2,
-      ebitMargin: 6.0,
+      ebitMargin: 6,
     },
 
   },
@@ -215,7 +214,7 @@ const GROW_DECISIONS: Decision[] = [
     subcategory: 'Acquire a Business',
     name: 'Bolt-on Sensor Acquisition',
     narrative: 'Acquire small sensor technology company to enhance ADAS capabilities. Adds specialized engineering talent and IP. Integration risk exists but accelerates time-to-market.',
-    cost: 3942,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 2,
     type: 'inorganic',
@@ -228,10 +227,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 70,
     growMetrics: {
       revenue1Year: 2000,
-      fiveYearGrowth: 10.0,
-      investmentsTotal: 3941.579663324627,
-      investmentPeriod: 1,
-      ebitMargin: 11.0,
+      fiveYearGrowth: 10,
+      investmentsTotal: 0,
+      investmentPeriod: 0,
+      ebitMargin: 11,
     },
 
   },
@@ -255,10 +254,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 200,
     growMetrics: {
       revenue1Year: 800,
-      fiveYearGrowth: 0.0,
+      fiveYearGrowth: 0,
       investmentsTotal: 1000,
       investmentPeriod: 2,
-      ebitMargin: 10.0,
+      ebitMargin: 10,
     },
 
   },
@@ -282,10 +281,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 160,
     growMetrics: {
       revenue1Year: 1500,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 1000,
       investmentPeriod: 3,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -311,10 +310,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 140,
     growMetrics: {
       revenue1Year: 1500,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 1000,
       investmentPeriod: 1,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -338,10 +337,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 180,
     growMetrics: {
       revenue1Year: 1500,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 1000,
       investmentPeriod: 1,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -352,7 +351,7 @@ const GROW_DECISIONS: Decision[] = [
     subcategory: 'Acquire a Business',
     name: 'Distressed Competitor Acquisition',
     narrative: 'Opportunity to acquire struggling competitor at attractive valuation. Significant capacity and customer relationships, but integration complexity and some legacy issues.',
-    cost: 15795,
+    cost: 0,
     impactMagnitude: 5,
     introducedYear: 3,
     type: 'inorganic',
@@ -365,10 +364,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 250,
     growMetrics: {
       revenue1Year: 8000,
-      fiveYearGrowth: 10.0,
-      investmentsTotal: 15795.290340825411,
-      investmentPeriod: 1,
-      ebitMargin: 11.0,
+      fiveYearGrowth: 10,
+      investmentsTotal: 0,
+      investmentPeriod: 0,
+      ebitMargin: 11,
     },
 
   },
@@ -392,10 +391,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 120,
     growMetrics: {
       revenue1Year: 1500,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 1000,
       investmentPeriod: 1,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -419,10 +418,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 90,
     growMetrics: {
       revenue1Year: 900,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 600,
       investmentPeriod: 1,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -435,7 +434,7 @@ const GROW_DECISIONS: Decision[] = [
     subcategory: 'Acquire a Business',
     name: 'Opportunistic Acquisition - Premium Supplier',
     narrative: 'Rare opportunity to acquire premium supplier at recession-driven valuation. Strong customer relationships and margins. Requires significant capital during challenging times.',
-    cost: 15826,
+    cost: 0,
     impactMagnitude: 5,
     introducedYear: 4,
     type: 'inorganic',
@@ -448,10 +447,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 280,
     growMetrics: {
       revenue1Year: 8000,
-      fiveYearGrowth: 10.0,
-      investmentsTotal: 15826.579763354473,
-      investmentPeriod: 1,
-      ebitMargin: 11.0,
+      fiveYearGrowth: 10,
+      investmentsTotal: 0,
+      investmentPeriod: 0,
+      ebitMargin: 11,
     },
 
   },
@@ -476,10 +475,10 @@ const GROW_DECISIONS: Decision[] = [
     cogsImpact: 0.01, // Slightly higher costs due to aggressive pricing
     growMetrics: {
       revenue1Year: 640,
-      fiveYearGrowth: 0.0,
+      fiveYearGrowth: 0,
       investmentsTotal: 800,
       investmentPeriod: 2,
-      ebitMargin: 10.0,
+      ebitMargin: 10,
     },
 
   },
@@ -503,10 +502,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 90,
     growMetrics: {
       revenue1Year: 1200,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 800,
       investmentPeriod: 2,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -530,10 +529,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 50,
     growMetrics: {
       revenue1Year: 1200,
-      fiveYearGrowth: 0.0,
+      fiveYearGrowth: 0,
       investmentsTotal: 600,
       investmentPeriod: 2,
-      ebitMargin: 6.0,
+      ebitMargin: 6,
     },
 
   },
@@ -557,10 +556,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 100,
     growMetrics: {
       revenue1Year: 1200,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 800,
       investmentPeriod: 2,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -586,10 +585,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 50,
     growMetrics: {
       revenue1Year: 1600,
-      fiveYearGrowth: 5.0,
+      fiveYearGrowth: 5,
       investmentsTotal: 800,
       investmentPeriod: 2,
-      ebitMargin: 11.0,
+      ebitMargin: 11,
     },
 
   },
@@ -613,10 +612,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 240,
     growMetrics: {
       revenue1Year: 800,
-      fiveYearGrowth: 0.0,
+      fiveYearGrowth: 0,
       investmentsTotal: 1000,
       investmentPeriod: 2,
-      ebitMargin: 10.0,
+      ebitMargin: 10,
     },
 
   },
@@ -627,7 +626,7 @@ const GROW_DECISIONS: Decision[] = [
     subcategory: 'Acquire a Business',
     name: 'Strategic Technology Acquisition',
     narrative: 'Acquire emerging technology company with breakthrough thermal management system for advanced vehicles. Positions for next-generation vehicle requirements. Premium valuation as market recovers.',
-    cost: 7391,
+    cost: 0,
     impactMagnitude: 4,
     introducedYear: 5,
     type: 'inorganic',
@@ -640,10 +639,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 130,
     growMetrics: {
       revenue1Year: 4000,
-      fiveYearGrowth: 10.0,
-      investmentsTotal: 7391.040974737654,
-      investmentPeriod: 1,
-      ebitMargin: 11.0,
+      fiveYearGrowth: 10,
+      investmentsTotal: 0,
+      investmentPeriod: 0,
+      ebitMargin: 11,
     },
 
   },
@@ -667,10 +666,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 200,
     growMetrics: {
       revenue1Year: 2000,
-      fiveYearGrowth: 0.0,
+      fiveYearGrowth: 0,
       investmentsTotal: 1000,
       investmentPeriod: 2,
-      ebitMargin: 6.0,
+      ebitMargin: 6,
     },
 
   },
@@ -694,10 +693,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 80,
     growMetrics: {
       revenue1Year: 1200,
-      fiveYearGrowth: 3.0,
+      fiveYearGrowth: 3,
       investmentsTotal: 800,
       investmentPeriod: 1,
-      ebitMargin: 5.0,
+      ebitMargin: 5,
     },
 
   },
@@ -721,10 +720,10 @@ const GROW_DECISIONS: Decision[] = [
     recurringBenefit: 160,
     growMetrics: {
       revenue1Year: 2000,
-      fiveYearGrowth: 5.0,
+      fiveYearGrowth: 5,
       investmentsTotal: 1000,
       investmentPeriod: 1,
-      ebitMargin: 11.0,
+      ebitMargin: 11,
     },
 
   },
@@ -755,7 +754,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.01,
     recurringBenefit: 60,
     optimizeMetrics: {
-      implementationCost: 120,
+      implementationCost: 0,
       investment: 120,
       investmentPeriod: 2,
       annualCost: 40,
@@ -769,7 +768,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'SG&A Optimization',
     name: 'Shared Services Consolidation',
     narrative: 'Consolidate back-office functions (finance, HR, IT) into regional shared services centers. Upfront investment yields ongoing cost savings.',
-    cost: 100,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -782,7 +781,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 40,
     optimizeMetrics: {
       implementationCost: 2.5,
-      investment: 100,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -795,7 +794,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Global Supply Chain Redesign',
     name: 'Supplier Dual-Sourcing Initiative',
     narrative: 'Establish secondary suppliers for critical components. Increases supply chain resilience and negotiating leverage. Small cost premium offset by risk reduction.',
-    cost: 160,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 1,
     type: 'organic',
@@ -809,7 +808,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 30,
     optimizeMetrics: {
       implementationCost: 2,
-      investment: 160,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 80,
     },
@@ -835,7 +834,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.005,
     recurringBenefit: 50,
     optimizeMetrics: {
-      implementationCost: 120,
+      implementationCost: 0,
       investment: 120,
       investmentPeriod: 2,
       annualCost: 40,
@@ -849,7 +848,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Organizational Restructure',
     name: 'Management Delayering',
     narrative: 'Execute a management reorganization to de-layer the organization, accelerating decision-making, clarifying accountability, and sustainably reducing overhead.',
-    cost: 40,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -862,7 +861,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 35,
     optimizeMetrics: {
       implementationCost: 1,
-      investment: 40,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -877,7 +876,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Enterprise Digital Transformation',
     name: 'Advanced Analytics Platform',
     narrative: 'Deploy enterprise analytics platform to improve decision-making across operations. Predictive insights for demand planning, quality, and maintenance.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -891,7 +890,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 50,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -916,7 +915,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.02,
     recurringBenefit: 100,
     optimizeMetrics: {
-      implementationCost: 360,
+      implementationCost: 0,
       investment: 360,
       investmentPeriod: 1,
       annualCost: 120,
@@ -930,7 +929,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Select Group Transformation',
     name: 'Underperforming Division Turnaround',
     narrative: 'Comprehensive operational improvement program for underperforming business unit. New leadership, process redesign, and targeted investments.',
-    cost: 240,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 2,
     type: 'organic',
@@ -944,7 +943,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 80,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 240,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 80,
     },
@@ -957,7 +956,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Global Supply Chain Redesign',
     name: 'Logistics Network Optimization',
     narrative: 'Redesign global logistics network to reduce transportation costs and improve delivery times. Consolidate warehouses and optimize routes.',
-    cost: 240,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 2,
     type: 'organic',
@@ -970,7 +969,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 55,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 240,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 80,
     },
@@ -983,7 +982,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'SG&A Optimization',
     name: 'Procurement Excellence Program',
     narrative: 'Implement strategic sourcing and supplier management program. Leverage scale for better pricing and terms on indirect spend.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -997,7 +996,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 45,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1012,7 +1011,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Divest Group',
     name: 'Non-Core Division Divestiture',
     narrative: 'Divest underperforming non-core business unit. Generates cash and allows focus on strategic priorities. May face valuation pressure in current market.',
-    cost: 599,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 3,
     type: 'inorganic',
@@ -1024,8 +1023,8 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     revenueImpact: -0.02,
     recurringBenefit: 350,
     optimizeMetrics: {
-      implementationCost: 598.6536752491337,
-      investment: 598.6536752491337,
+      implementationCost: 0,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 0,
     },
@@ -1038,7 +1037,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Program Governance',
     name: 'Bypass Standard Launch Gates to Meet SOP Deadline',
     narrative: 'Streamline or bypass select internal approval and validation steps to meet OEM SOP deadlines and avoid penalties, accepting higher rework risk in exchange for schedule adherence and cost savings.',
-    cost: 240,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 3,
     type: 'organic',
@@ -1051,7 +1050,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 30,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 240,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 80,
     },
@@ -1076,7 +1075,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.012,
     recurringBenefit: 55,
     optimizeMetrics: {
-      implementationCost: 120,
+      implementationCost: 0,
       investment: 120,
       investmentPeriod: 2,
       annualCost: 40,
@@ -1090,7 +1089,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Organizational Restructure',
     name: 'Workforce Right-Sizing',
     narrative: 'Reduce headcount through voluntary separation and selective layoffs in response to cost pressures. Immediate savings but risk of losing key talent.',
-    cost: 360,
+    cost: 0,
     impactMagnitude: 4,
     introducedYear: 3,
     type: 'organic',
@@ -1104,7 +1103,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 90,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 360,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 120,
     },
@@ -1117,7 +1116,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Select Group Transformation',
     name: 'Plant Footprint Rationalization',
     narrative: 'Close underutilized manufacturing facilities and consolidate production. Significant restructuring cost but lasting margin improvement.',
-    cost: 180,
+    cost: 0,
     impactMagnitude: 4,
     introducedYear: 3,
     type: 'organic',
@@ -1130,7 +1129,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 120,
     optimizeMetrics: {
       implementationCost: 1.5,
-      investment: 180,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 120,
     },
@@ -1145,7 +1144,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Capital Timing',
     name: 'Material process flow automation',
     narrative: 'Execute material end-to-end process flow optimization, simplifying handoffs and eliminating waste to reduce cost, cycle time, and operational friction.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -1158,7 +1157,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 40,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1171,7 +1170,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Divest Group',
     name: 'Strategic Asset Sale',
     narrative: 'Sell non-strategic real estate and equipment at recession-impacted valuations. Generates needed liquidity but may sell below intrinsic value.',
-    cost: 600,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'inorganic',
@@ -1182,8 +1181,8 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: true,
     recurringBenefit: 200,
     optimizeMetrics: {
-      implementationCost: 599.7459692690644,
-      investment: 599.7459692690644,
+      implementationCost: 0,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 0,
     },
@@ -1196,7 +1195,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'SG&A Optimization',
     name: 'Working from Home Optimization',
     narrative: 'Make remote work permanent for applicable roles. Reduce office space and associated costs. Maintains productivity while cutting real estate expenses.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -1209,7 +1208,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 35,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1222,7 +1221,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Global Supply Chain Redesign',
     name: 'Supplier Renegotiation Program',
     narrative: 'Leverage recession conditions to renegotiate supplier contracts. Risk of supplier relationship damage but significant cost reduction opportunity.',
-    cost: 240,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 4,
     type: 'organic',
@@ -1235,7 +1234,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 60,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 240,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 80,
     },
@@ -1260,7 +1259,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     sgaImpact: -0.012,
     recurringBenefit: 45,
     optimizeMetrics: {
-      implementationCost: 120,
+      implementationCost: 0,
       investment: 120,
       investmentPeriod: 1,
       annualCost: 40,
@@ -1276,7 +1275,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Enterprise Digital Transformation',
     name: 'AI Operations Platform',
     narrative: 'Deploy AI-powered operations management platform. Advanced demand forecasting, production scheduling, and quality prediction. Next-level efficiency.',
-    cost: 200,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 5,
     type: 'organic',
@@ -1290,7 +1289,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 75,
     optimizeMetrics: {
       implementationCost: 2.5,
-      investment: 200,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 80,
     },
@@ -1303,7 +1302,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Global Supply Chain Redesign',
     name: 'Inventory Optimization',
     narrative: 'Implement advanced inventory management to reduce working capital requirements. Risk of stockouts during supply disruptions but significant cash release.',
-    cost: 80,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 5,
     type: 'organic',
@@ -1316,7 +1315,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 40,
     optimizeMetrics: {
       implementationCost: 2,
-      investment: 80,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1329,7 +1328,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'SG&A Optimization',
     name: 'Sales Force Effectiveness',
     narrative: 'Restructure the sales organization with targeted investment in CRM, analytics, and coverage model redesign, shifting from relationship-led to data-driven account management to improve customer coverage while reducing overall sales headcount.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 5,
     type: 'organic',
@@ -1342,7 +1341,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 40,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1355,7 +1354,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     subcategory: 'Global Supply Chain Redesign',
     name: 'Near-Shoring Initiative',
     narrative: 'Shift supply chain closer to end markets. Higher unit costs offset by reduced logistics, inventory, and disruption risk. Resilience investment.',
-    cost: 240,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 5,
     type: 'organic',
@@ -1369,7 +1368,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     recurringBenefit: 50,
     optimizeMetrics: {
       implementationCost: 3,
-      investment: 240,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 80,
     },
@@ -1394,7 +1393,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     cogsImpact: -0.025,
     recurringBenefit: 130,
     optimizeMetrics: {
-      implementationCost: 360,
+      implementationCost: 0,
       investment: 360,
       investmentPeriod: 1,
       annualCost: 120,
@@ -1428,7 +1427,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'key_customer_loss',
     recurringBenefit: 30,
     sustainMetrics: {
-      implementationCost: 40,
+      implementationCost: 0,
       investment: 40,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1442,7 +1441,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Technical Talent Development',
     narrative: 'Investment in training and development for engineering workforce. Essential to maintain competitive capabilities. Retention and capability building.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -1454,7 +1453,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 20,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1479,7 +1478,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'cyber_attack',
     recurringBenefit: 0,
     sustainMetrics: {
-      implementationCost: 80,
+      implementationCost: 0,
       investment: 80,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1505,7 +1504,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'equipment_failure',
     recurringBenefit: 25,
     sustainMetrics: {
-      implementationCost: 80,
+      implementationCost: 0,
       investment: 80,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1519,7 +1518,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Environmental Compliance Investment',
     narrative: 'Proactive investment to meet upcoming environmental regulations. Mandatory compliance but early investment avoids rushed future spending.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 1,
     type: 'organic',
@@ -1532,7 +1531,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 15,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1547,7 +1546,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Talent & Leadership Upskilling',
     name: 'Leadership Development Program',
     narrative: 'Comprehensive leadership development for high-potential managers. Builds succession pipeline and organizational capability. Long-term investment in human capital.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -1559,7 +1558,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 25,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1584,7 +1583,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'quality_failure',
     recurringBenefit: 20,
     sustainMetrics: {
-      implementationCost: 80,
+      implementationCost: 0,
       investment: 80,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1598,7 +1597,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'IT Infrastructure Modernization',
     narrative: 'Update core IT systems and infrastructure. Addresses technical debt and security vulnerabilities. Foundational investment enabling future digital initiatives.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -1611,7 +1610,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 30,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1636,7 +1635,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'safety_incident',
     recurringBenefit: 15,
     sustainMetrics: {
-      implementationCost: 40,
+      implementationCost: 0,
       investment: 40,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1650,7 +1649,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Portfolio management (maintenance)',
     name: 'Supplier Relationship Investment',
     narrative: 'Strengthen relationships with strategic suppliers through joint development and long-term agreements. Improves supply security and preferential allocation.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 2,
     type: 'organic',
@@ -1663,7 +1662,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 20,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1690,7 +1689,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'key_customer_loss',
     recurringBenefit: 35,
     sustainMetrics: {
-      implementationCost: 80,
+      implementationCost: 0,
       investment: 80,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1704,7 +1703,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Capital allocation strategy (maintenance)',
     name: 'Critical Equipment Maintenance',
     narrative: 'Essential maintenance program for production-critical equipment. Tempting to defer during cost pressure but failure would be catastrophic.',
-    cost: 240,
+    cost: 0,
     impactMagnitude: 3,
     introducedYear: 3,
     type: 'organic',
@@ -1717,7 +1716,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 30,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 240,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 80,
     },
@@ -1742,7 +1741,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'talent_loss',
     recurringBenefit: 25,
     sustainMetrics: {
-      implementationCost: 120,
+      implementationCost: 0,
       investment: 120,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1768,7 +1767,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'business_disruption',
     recurringBenefit: 15,
     sustainMetrics: {
-      implementationCost: 80,
+      implementationCost: 0,
       investment: 80,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1794,7 +1793,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'catastrophic_loss',
     recurringBenefit: 10,
     sustainMetrics: {
-      implementationCost: 40,
+      implementationCost: 0,
       investment: 40,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1810,7 +1809,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Organizational Restructure',
     name: 'Deep Cost Restructuring',
     narrative: 'Aggressive cost reduction program across all functions. Difficult decisions but necessary for survival in prolonged downturn. Risk of capability damage.',
-    cost: 480,
+    cost: 0,
     impactMagnitude: 5,
     introducedYear: 4,
     type: 'organic',
@@ -1824,7 +1823,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 150,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 480,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 160,
     },
@@ -1837,7 +1836,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Regulatory Compliance Baseline',
     narrative: 'Fund mandatory regulatory compliance at the minimum required level, deliberately limiting scope to avoid incremental spend while maintaining license to operate.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -1850,7 +1849,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 10,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1875,7 +1874,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'equipment_failure',
     recurringBenefit: 15,
     sustainMetrics: {
-      implementationCost: 80,
+      implementationCost: 0,
       investment: 80,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1901,7 +1900,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'talent_loss',
     recurringBenefit: 20,
     sustainMetrics: {
-      implementationCost: 120,
+      implementationCost: 0,
       investment: 120,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1915,7 +1914,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     subcategory: 'Risk & Compliance Upgrade',
     name: 'Financial Risk Management',
     narrative: 'Enhanced treasury and financial risk management during volatile conditions. Hedge exposures and manage liquidity carefully.',
-    cost: 120,
+    cost: 0,
     impactMagnitude: 2,
     introducedYear: 4,
     type: 'organic',
@@ -1928,7 +1927,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     recurringBenefit: 15,
     sustainMetrics: {
       implementationCost: 3,
-      investment: 120,
+      investment: 0,
       investmentPeriod: 1,
       annualCost: 40,
     },
@@ -1955,7 +1954,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'equipment_failure',
     recurringBenefit: 40,
     sustainMetrics: {
-      implementationCost: 120,
+      implementationCost: 0,
       investment: 120,
       investmentPeriod: 1,
       annualCost: 0,
@@ -1980,7 +1979,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     recurringBenefit: 35,
     sustainMetrics: {
-      implementationCost: 120,
+      implementationCost: 0,
       investment: 120,
       investmentPeriod: 1,
       annualCost: 0,
@@ -2006,7 +2005,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'esg_risk',
     recurringBenefit: 30,
     sustainMetrics: {
-      implementationCost: 40,
+      implementationCost: 0,
       investment: 40,
       investmentPeriod: 1,
       annualCost: 0,
@@ -2032,7 +2031,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
     riskPrevention: 'business_disruption',
     recurringBenefit: 20,
     sustainMetrics: {
-      implementationCost: 40,
+      implementationCost: 0,
       investment: 40,
       investmentPeriod: 1,
       annualCost: 0,
