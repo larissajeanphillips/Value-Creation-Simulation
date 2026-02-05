@@ -240,7 +240,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
             {/* Center: Cash Balance */}
             <div className="flex items-center gap-8">
               <div className="text-center">
-                <div className="text-sm text-slate-700 uppercase tracking-wide">Starting Cash</div>
+                <div className="text-sm text-slate-700 uppercase tracking-wide">Available to Invest</div>
                 <div className="text-2xl font-bold text-slate-800">${team.cashBalance.toLocaleString()}M</div>
               </div>
               <div className="w-px h-10 bg-slate-200" />

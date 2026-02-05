@@ -299,18 +299,24 @@ function selectBackwardStatements(ctx: PerformanceContext, count: number): strin
 }
 
 /**
- * Select forward-looking statements for the upcoming scenario
+ * Select forward-looking statements for the upcoming scenario.
+ * For the round before recession (end of Round 3), we use cost-pressure statements
+ * so the recap does not give away the recession—players see the recession only
+ * when it is revealed in-play (e.g. after ~2 minutes of Round 4).
  */
 function selectForwardStatements(currentRound: RoundNumber, count: number): string[] {
-  const template = FORWARD_TEMPLATES.find(t => t.applicableRounds.includes(currentRound));
-  
+  // End of Round 3: show cost-pressure outlook, not recession (no spoilers)
+  const effectiveRound: RoundNumber =
+    currentRound === 3 ? (2 as RoundNumber) : currentRound;
+  const template = FORWARD_TEMPLATES.find(t => t.applicableRounds.includes(effectiveRound));
+
   if (!template) {
     return [
       'Market conditions continue to evolve.',
       'Strategic capital allocation remains critical for long-term success.',
     ];
   }
-  
+
   // Randomly select statements from the pool
   const shuffled = [...template.statements].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);

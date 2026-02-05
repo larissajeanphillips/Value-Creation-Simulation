@@ -1,178 +1,150 @@
 /**
- * Read decision card data from Excel.
- * Columns: A=decision#, F=name, G=detail.
- * Grow back: AA, Y, Z, AB, AC. Optimize: AF, AG, AE, AH. Sustain: AK, AL, AJ, AM.
- * Excel row 1 = headers, rows 2-76 = 75 cards.
+ * Read decision card data from Excel "Decision card comparison.xlsx" (Desktop) Decisions tab.
+ * Columns: A = decision #, B = lever, F = decision name, G = brief (front), H = detail (back), K = round.
+ * Metrics: V–AK (indices 21–36) — Grow V–AA, Optimize AB–AF, Sustain AG–AK (In-Year columns are derived, not read).
  */
 import XLSX from 'xlsx';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
-// Prefer Desktop Decisions.xlsx if present (user's latest), else project Excel
-const desktopExcel = join(process.env.USERPROFILE || '', 'OneDrive - McKinsey & Company', 'Desktop', 'Decisions.xlsx');
-const projectExcel = join(projectRoot, '260127 TSR decisions_v2.8_LP.xlsx');
-const excelPath = existsSync(desktopExcel) ? desktopExcel : projectExcel;
+
+// Prefer "Decision card comparison.xlsx" on Desktop, then fallbacks
+const desktopComparison = join(
+  process.env.USERPROFILE || '',
+  'OneDrive - McKinsey & Company',
+  'Desktop',
+  'Decision card comparison.xlsx'
+);
+const desktopDecisions = join(
+  process.env.USERPROFILE || '',
+  'OneDrive - McKinsey & Company',
+  'Desktop',
+  'Decisions.xlsx'
+);
+const projectExcel = join(projectRoot, 'Cards-In-Game.xlsx');
+
+const excelPath = existsSync(desktopComparison)
+  ? desktopComparison
+  : existsSync(desktopDecisions)
+    ? desktopDecisions
+    : projectExcel;
 console.log('Reading:', excelPath);
 
 const wb = XLSX.read(readFileSync(excelPath), { type: 'buffer' });
-console.log('Sheet names:', wb.SheetNames);
-
-// Use sheet named "Decisions" (exact) for the 75 cards
-let sheetName = wb.SheetNames.find(s => s === 'Decisions') || wb.SheetNames.find(s => /^Decisions$/i.test(s)) || wb.SheetNames[0];
-let ws = wb.Sheets[sheetName];
-let rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+const sheetName =
+  wb.SheetNames.find((s) => s === 'Decisions') ||
+  wb.SheetNames.find((s) => /^Decisions$/i.test(s)) ||
+  wb.SheetNames[0];
+const ws = wb.Sheets[sheetName];
+const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
 console.log('Using sheet:', sheetName, 'rows:', rows.length);
 
 const headers = rows[0];
-console.log('Column indices 0-40 labels:');
-for (let c = 0; c <= 40; c++) {
-  console.log(c, String(headers[c] ?? '').slice(0, 50));
-}
 
-// Column indices: A=0, F=5, G=6, Y=24, Z=25, AA=26, AB=27, AC=28, AE=30, AF=31, AG=32, AH=33, AJ=35, AK=36, AL=37, AM=38
+// Decision card comparison.xlsx: A=0, B=1, F=5, G=6, H=7, K=10; V–AK = 21–36 (metrics)
+// Excel headers: V=[Grow] Total Investment, W=Investment period, X=In-Year, Y=Revenue 1 year, Z=5-year growth %, AA=EBIT margin %
+//                AB=[Optimize] Total, AC=period, AD=In-Year, AE=Implementation cost, AF=Annual cost savings
+//                AG=[Sustain] Total, AH=period, AI=In-Year, AJ=Implementation cost, AK=Annual cost savings
 const col = {
   decisionNumber: 0,   // A
-  name: 5,             // F
-  detail: 6,           // G
-  revenue1Year: 24,    // Y
-  fiveYearGrowth: 25,  // Z
-  investmentGrow: 26,  // AA
-  investmentPeriodGrow: 27,  // AB
-  ebitMargin: 28,      // AC
-  implCostOpt: 30,     // AE
-  investmentOpt: 31,   // AF
-  investmentPeriodOpt: 32,  // AG
-  annualCostOpt: 33,   // AH
-  implCostSust: 35,    // AJ
-  investmentSust: 36,  // AK
-  investmentPeriodSust: 37,  // AL
-  annualCostSust: 38,  // AM
+  lever: 1,            // B
+  name: 5,             // F - Decision Name
+  brief: 6,             // G - Decision Brief (front of card)
+  detail: 7,           // H - Decision Detail (back of card)
+  round: 10,           // K - Round shown
+  // Grow: V–AA (indices 21–26); 23 = In-Year Investment
+  investmentsTotal: 21,
+  investmentPeriodGrow: 22,
+  inYearGrow: 23,
+  revenue1Year: 24,
+  fiveYearGrowth: 25,
+  ebitMargin: 26,
+  // Optimize: AB–AF (indices 27–31); 29 = In-Year Investment
+  investmentOpt: 27,
+  investmentPeriodOpt: 28,
+  inYearOpt: 29,
+  implCostOpt: 30,
+  annualCostOpt: 31,
+  // Sustain: AG–AK (indices 32–36); 34 = In-Year Investment
+  investmentSust: 32,
+  investmentPeriodSust: 33,
+  inYearSust: 34,
+  implCostSust: 35,
+  annualCostSust: 36,
 };
-
-// Find Lever column for category (Grow/Optimize/Sustain)
-let leverCol = -1;
-for (let c = 0; c < headers.length; c++) {
-  const h = String(headers[c] || '').toLowerCase();
-  if (h.includes('lever') || h === 'category' || h === 'pillar') {
-    leverCol = c;
-    break;
-  }
-}
-console.log('\nLever column index:', leverCol);
-if (leverCol >= 0) console.log('Lever header:', headers[leverCol]);
-
-console.log('\n--- First 3 data rows (raw) ---');
-for (let r = 1; r <= Math.min(3, rows.length - 1); r++) {
-  const row = rows[r];
-  const num = row[col.decisionNumber];
-  const name = row[col.name];
-  const lever = leverCol >= 0 ? row[leverCol] : '';
-  console.log({ row: r + 1, num, name: String(name).slice(0, 40), lever });
-  if (num >= 1 && num <= 5) {
-    console.log('  Grow metrics:', { investment: row[col.investmentGrow], revenue1Year: row[col.revenue1Year], fiveYearGrowth: row[col.fiveYearGrowth], period: row[col.investmentPeriodGrow], ebit: row[col.ebitMargin] });
-  } else if (num >= 6 && num <= 10) {
-    console.log('  Optimize metrics:', { investment: row[col.investmentOpt], period: row[col.investmentPeriodOpt], impl: row[col.implCostOpt], annual: row[col.annualCostOpt] });
-  } else if (num >= 11 && num <= 15) {
-    console.log('  Sustain metrics:', { investment: row[col.investmentSust], period: row[col.investmentPeriodSust], impl: row[col.implCostSust], annual: row[col.annualCostSust] });
-  }
-}
-
-// Output full 75 rows as JSON for verification
-const data = [];
-for (let r = 1; r <= 75 && r < rows.length; r++) {
-  const row = rows[r];
-  const num = toNum(row[col.decisionNumber]);
-  const lever = leverCol >= 0 ? String(row[leverCol] || '').trim().toLowerCase() : inferLever(num);
-  data.push({
-    excelRow: r + 1,
-    decisionNumber: num,
-    name: cleanStr(row[col.name]),
-    detail: cleanStr(row[col.detail]),
-    lever,
-    grow: num >= 1 && num <= 25 ? {
-      investment: toNum(row[col.investmentGrow]),
-      revenue1Year: toNum(row[col.revenue1Year]),
-      fiveYearGrowth: toNum(row[col.fiveYearGrowth]),
-      investmentPeriod: toNum(row[col.investmentPeriodGrow]),
-      ebitMargin: toNum(row[col.ebitMargin]),
-    } : undefined,
-    optimize: num >= 26 && num <= 50 ? {
-      investment: toNum(row[col.investmentOpt]),
-      investmentPeriod: toNum(row[col.investmentPeriodOpt]),
-      implementationCost: toNum(row[col.implCostOpt]),
-      annualCost: toNum(row[col.annualCostOpt]),
-    } : undefined,
-    sustain: num >= 51 && num <= 75 ? {
-      investment: toNum(row[col.investmentSust]),
-      investmentPeriod: toNum(row[col.investmentPeriodSust]),
-      implementationCost: toNum(row[col.implCostSust]),
-      annualCost: toNum(row[col.annualCostSust]),
-    } : undefined,
-  });
-}
 
 function toNum(v) {
   if (v === undefined || v === null || v === '') return undefined;
   const n = Number(v);
   return Number.isNaN(n) ? undefined : n;
 }
+/** If value is in 0–1 range (e.g. 0.05 for 5%), return as percentage 5; else treat as already percentage. */
+function toPercent(v) {
+  const n = toNum(v);
+  if (n === undefined) return undefined;
+  if (n > 0 && n <= 1) return Math.round(n * 1000) / 10; // 0.05 -> 5, 0.11 -> 11
+  return Math.round(n * 10) / 10; // already percent: 5 -> 5, 11 -> 11
+}
 function cleanStr(v) {
   if (v === undefined || v === null) return '';
   return String(v).trim();
 }
-function inferLever(num) {
-  if (num >= 1 && num <= 25) return 'grow';
-  if (num >= 26 && num <= 50) return 'optimize';
-  if (num >= 51 && num <= 75) return 'sustain';
-  return '';
-}
 
-// Current code uses: Grow 1-5,16-20,..., Optimize 6-10,21-25,..., Sustain 11-15,26-30,...
-// So decision numbers in Excel might be 1-75 in order and Lever column tells category. Re-output with category from Lever.
+// Build export: one row per decision (rows 2–76 = up to 75 cards)
 const dataWithLever = [];
-for (let r = 1; r <= 75 && r < rows.length; r++) {
+for (let r = 1; r < rows.length; r++) {
   const row = rows[r];
   const num = toNum(row[col.decisionNumber]);
-  let lever = leverCol >= 0 ? String(row[leverCol] || '').trim() : '';
+  if (num === undefined || num === '') continue;
+
+  let lever = cleanStr(row[col.lever] ?? '');
   if (!lever && num) {
     if (num <= 25) lever = 'Grow';
     else if (num <= 50) lever = 'Optimize';
     else lever = 'Sustain';
   }
+
   const rec = {
     excelRow: r + 1,
     decisionNumber: num,
     name: cleanStr(row[col.name]),
+    brief: cleanStr(row[col.brief]),
     detail: cleanStr(row[col.detail]),
     lever,
+    introducedYear: toNum(row[col.round]) ?? (num <= 15 ? 1 : num <= 30 ? 2 : num <= 45 ? 3 : num <= 60 ? 4 : 5),
   };
+
   if (lever && lever.toLowerCase().includes('grow')) {
-    const inv = toNum(row[col.investmentGrow]);
+    const inv = toNum(row[col.investmentsTotal]);
     const rev1 = toNum(row[col.revenue1Year]);
     const fiveYr = toNum(row[col.fiveYearGrowth]);
     const period = toNum(row[col.investmentPeriodGrow]);
     const ebit = toNum(row[col.ebitMargin]);
+    const inYear = toNum(row[col.inYearGrow]);
     rec.cost = inv !== undefined ? Math.round(Math.abs(inv)) : undefined;
     rec.grow = {
       investmentsTotal: inv !== undefined ? Math.round(Math.abs(inv)) : undefined,
-      revenue1Year: rev1,
-      fiveYearGrowth: fiveYr !== undefined ? Math.round(fiveYr * 1000) / 10 : undefined,
       investmentPeriod: period,
-      ebitMargin: ebit !== undefined ? Math.round(ebit * 1000) / 10 : undefined,
+      inYearInvestment: inYear !== undefined ? Math.round(Math.abs(inYear) * 100) / 100 : undefined,
+      revenue1Year: rev1 !== undefined ? Math.round(rev1) : undefined,
+      fiveYearGrowth: toPercent(row[col.fiveYearGrowth]),
+      ebitMargin: toPercent(row[col.ebitMargin]),
     };
   } else if (lever && lever.toLowerCase().includes('optim')) {
     const inv = toNum(row[col.investmentOpt]);
     const period = toNum(row[col.investmentPeriodOpt]);
     const impl = toNum(row[col.implCostOpt]);
     const annual = toNum(row[col.annualCostOpt]);
-    rec.cost = inv !== undefined ? Math.round(Math.abs(inv)) : (impl !== undefined ? Math.round(impl) : undefined);
+    const inYear = toNum(row[col.inYearOpt]);
+    rec.cost = inv !== undefined ? Math.round(Math.abs(inv)) : (impl !== undefined ? Math.round(Math.abs(impl)) : undefined);
     rec.optimize = {
-      investment: inv !== undefined ? Math.round(Math.abs(inv)) : impl,
-      investmentPeriod: period,
       implementationCost: impl !== undefined ? Math.round(impl * 100) / 100 : undefined,
+      investment: inv !== undefined ? Math.round(Math.abs(inv)) : undefined,
+      investmentPeriod: period,
+      inYearInvestment: inYear !== undefined ? Math.round(Math.abs(inYear) * 100) / 100 : undefined,
       annualCost: annual !== undefined ? Math.round(annual * 100) / 100 : undefined,
     };
   } else if (lever && lever.toLowerCase().includes('sustain')) {
@@ -180,17 +152,22 @@ for (let r = 1; r <= 75 && r < rows.length; r++) {
     const period = toNum(row[col.investmentPeriodSust]);
     const impl = toNum(row[col.implCostSust]);
     const annual = toNum(row[col.annualCostSust]);
-    rec.cost = inv !== undefined ? Math.round(Math.abs(inv)) : (impl !== undefined ? Math.round(impl) : undefined);
+    const inYear = toNum(row[col.inYearSust]);
+    rec.cost = inv !== undefined ? Math.round(Math.abs(inv)) : (impl !== undefined ? Math.round(Math.abs(impl)) : undefined);
     rec.sustain = {
-      investment: inv !== undefined ? Math.round(Math.abs(inv)) : impl,
-      investmentPeriod: period,
       implementationCost: impl !== undefined ? Math.round(impl * 100) / 100 : undefined,
+      investment: inv !== undefined ? Math.round(Math.abs(inv)) : undefined,
+      investmentPeriod: period,
+      inYearInvestment: inYear !== undefined ? Math.round(Math.abs(inYear) * 100) / 100 : undefined,
       annualCost: annual !== undefined ? Math.round(annual * 100) / 100 : undefined,
     };
   }
+
   dataWithLever.push(rec);
 }
 
-import { writeFileSync } from 'fs';
-writeFileSync(join(projectRoot, 'decisions_from_excel_export.json'), JSON.stringify(dataWithLever, null, 2));
-console.log('\nWrote decisions_from_excel_export.json with', dataWithLever.length, 'rows');
+writeFileSync(
+  join(projectRoot, 'decisions_from_excel_export.json'),
+  JSON.stringify(dataWithLever, null, 2)
+);
+console.log('Wrote decisions_from_excel_export.json with', dataWithLever.length, 'rows');

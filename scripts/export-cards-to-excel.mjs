@@ -19,7 +19,17 @@ if (!existsSync(jsonPath)) {
 
 const data = JSON.parse(readFileSync(jsonPath, 'utf8'));
 
-// Build rows matching what is shown on the cards (front + back)
+/** In-year investment: use stored value when present, else total / period. */
+function inYearVal(total, period, stored) {
+  if (stored != null && stored !== '') return stored;
+  if (total == null || total === '' || period == null || period === '' || Number(period) <= 0) return '';
+  return Math.round((Number(total) / Number(period)) * 100) / 100;
+}
+
+// Build rows: card fields first, then metrics in exact order from spec:
+// Grow: Total Investment ($M), Investment period (yrs), In-Year Investment, Revenue 1 year ($M), 5-year growth (%), EBIT margin (%)
+// Optimize: Total Investment ($M), Investment period (yrs), In-Year Investment, Implementation cost ($M), Annual cost savings ($M)
+// Sustain: Total Investment ($M), Investment period (yrs), In-Year Investment, Implementation cost ($M), Annual cost savings ($M)
 const rows = data.map((row) => {
   const brief = row.detail ? row.detail.split('.')[0] + '.' : '';
   const r = {
@@ -30,38 +40,53 @@ const rows = data.map((row) => {
     'Detail (back, full)': row.detail,
     'Investment ($M)': row.cost ?? '',
   };
+  // [Grow] — order per spec
   if (row.grow) {
+    const total = row.grow.investmentsTotal ?? '';
+    const period = row.grow.investmentPeriod ?? '';
+    r['[Grow] Total Investment ($M)'] = total;
+    r['[Grow] Investment period (yrs)'] = period;
+    r['[Grow] In-Year Investment'] = inYearVal(total, period, row.grow.inYearInvestment);
     r['[Grow] Revenue 1 year ($M)'] = row.grow.revenue1Year ?? '';
     r['[Grow] 5-year growth (%)'] = row.grow.fiveYearGrowth ?? '';
-    r['[Grow] Investment period (yrs)'] = row.grow.investmentPeriod ?? '';
     r['[Grow] EBIT margin (%)'] = row.grow.ebitMargin ?? '';
-    r['[Grow] Investments total ($M)'] = row.grow.investmentsTotal ?? '';
   } else {
+    r['[Grow] Total Investment ($M)'] = '';
+    r['[Grow] Investment period (yrs)'] = '';
+    r['[Grow] In-Year Investment'] = '';
     r['[Grow] Revenue 1 year ($M)'] = '';
     r['[Grow] 5-year growth (%)'] = '';
-    r['[Grow] Investment period (yrs)'] = '';
     r['[Grow] EBIT margin (%)'] = '';
-    r['[Grow] Investments total ($M)'] = '';
   }
+  // [Optimize] — order per spec
   if (row.optimize) {
-    r['[Optimize] Investment ($M)'] = row.optimize.investment ?? '';
-    r['[Optimize] Investment period (yrs)'] = row.optimize.investmentPeriod ?? '';
+    const total = row.optimize.investment ?? '';
+    const period = row.optimize.investmentPeriod ?? '';
+    r['[Optimize] Total Investment ($M)'] = total;
+    r['[Optimize] Investment period (yrs)'] = period;
+    r['[Optimize] In-Year Investment'] = inYearVal(total, period, row.optimize.inYearInvestment);
     r['[Optimize] Implementation cost ($M)'] = row.optimize.implementationCost ?? '';
     r['[Optimize] Annual cost savings ($M)'] = row.optimize.annualCost ?? '';
   } else {
-    r['[Optimize] Investment ($M)'] = '';
+    r['[Optimize] Total Investment ($M)'] = '';
     r['[Optimize] Investment period (yrs)'] = '';
+    r['[Optimize] In-Year Investment'] = '';
     r['[Optimize] Implementation cost ($M)'] = '';
     r['[Optimize] Annual cost savings ($M)'] = '';
   }
+  // [Sustain] — order per spec
   if (row.sustain) {
-    r['[Sustain] Investment ($M)'] = row.sustain.investment ?? '';
-    r['[Sustain] Investment period (yrs)'] = row.sustain.investmentPeriod ?? '';
+    const total = row.sustain.investment ?? '';
+    const period = row.sustain.investmentPeriod ?? '';
+    r['[Sustain] Total Investment ($M)'] = total;
+    r['[Sustain] Investment period (yrs)'] = period;
+    r['[Sustain] In-Year Investment'] = inYearVal(total, period, row.sustain.inYearInvestment);
     r['[Sustain] Implementation cost ($M)'] = row.sustain.implementationCost ?? '';
     r['[Sustain] Annual cost savings ($M)'] = row.sustain.annualCost ?? '';
   } else {
-    r['[Sustain] Investment ($M)'] = '';
+    r['[Sustain] Total Investment ($M)'] = '';
     r['[Sustain] Investment period (yrs)'] = '';
+    r['[Sustain] In-Year Investment'] = '';
     r['[Sustain] Implementation cost ($M)'] = '';
     r['[Sustain] Annual cost savings ($M)'] = '';
   }
@@ -77,17 +102,18 @@ ws['!cols'] = [
   { wch: 45 },  // Name
   { wch: 55 },  // Brief
   { wch: 85 },  // Detail
-  { wch: 14 },  // Investment
-  { wch: 18 }, { wch: 16 }, { wch: 20 }, { wch: 14 }, { wch: 22 },  // Grow
-  { wch: 18 }, { wch: 22 }, { wch: 24 }, { wch: 26 },                 // Optimize
-  { wch: 18 }, { wch: 22 }, { wch: 24 }, { wch: 26 },                 // Sustain
+  { wch: 14 },  // Investment ($M)
+  { wch: 22 }, { wch: 20 }, { wch: 22 }, { wch: 18 }, { wch: 16 }, { wch: 14 },  // Grow
+  { wch: 26 }, { wch: 22 }, { wch: 22 }, { wch: 24 }, { wch: 26 },                 // Optimize
+  { wch: 26 }, { wch: 22 }, { wch: 22 }, { wch: 24 }, { wch: 26 },                 // Sustain
 ];
 
 const wb = XLSX.utils.book_new();
 XLSX.utils.book_append_sheet(wb, ws, 'Cards in game');
 
 const desktop = join(process.env.USERPROFILE || '', 'OneDrive - McKinsey & Company', 'Desktop');
-const outPath = join(desktop, 'Cards-In-Game.xlsx');
+// Write to Cards-In-Game-Export.xlsx so the file is not locked if Cards-In-Game.xlsx is open
+const outPath = join(desktop, 'Cards-In-Game-Export.xlsx');
 XLSX.writeFile(wb, outPath);
 
 console.log('Wrote:', outPath);

@@ -535,12 +535,26 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
                 </div>
               </div>
               <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Growth over Market</div>
+                <div className={cn("text-lg font-bold", derivedMetrics.growthOverMarket >= 0.02 && derivedMetrics.growthOverMarket <= 0.04 ? "text-emerald-600" : derivedMetrics.growthOverMarket < 0.02 ? "text-amber-600" : "text-red-600")}>
+                  {formatPercent(derivedMetrics.growthOverMarket)}
+                </div>
+              </div>
+              <div>
                 <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EBIT Margin</div>
                 <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.ebitMargin, false)}</div>
               </div>
               <div>
                 <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">ROIC</div>
                 <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.roic, false)}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">CapEx to Sales</div>
+                <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(derivedMetrics.capexToSales, false)}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">FCF Conversion</div>
+                <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(derivedMetrics.fcfConversion, false)}</div>
               </div>
               <div>
                 <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Share Price</div>
@@ -553,10 +567,6 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
               <div>
                 <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Operating FCF</div>
                 <div className="text-lg font-bold text-magna-carbon-black">{formatCurrency(team.metrics.operatingFCF)}</div>
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Debt/EBITDA</div>
-                <div className="text-lg font-bold text-magna-carbon-black">{derivedMetrics.debtToEbitda.toFixed(1)}x</div>
               </div>
             </div>
           </div>

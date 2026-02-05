@@ -80,14 +80,24 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
     setIsExpanded(true);
   };
   
-  // Impact summary for the card
-  const impactSummary = getImpactSummary(decision);
-  // Single investment amount for front/back: category-specific total when available, else decision.cost
+  // Total investment: category-specific total when available, else decision.cost
   const displayInvestment =
     decision.growMetrics?.investmentsTotal ??
     decision.optimizeMetrics?.investment ??
     decision.sustainMetrics?.investment ??
     decision.cost;
+  // Investment period = backend durationYears (same as calculation engine: cost / durationYears per year)
+  const investmentPeriodYears = decision.durationYears;
+  // In-year investment: from Excel metrics when present, else total / period
+  const inYearFromMetrics =
+    decision.growMetrics?.inYearInvestment ??
+    decision.optimizeMetrics?.inYearInvestment ??
+    decision.sustainMetrics?.inYearInvestment;
+  const perYearInvestment =
+    inYearFromMetrics ??
+    (investmentPeriodYears > 0 ? Math.round(displayInvestment / investmentPeriodYears) : displayInvestment);
+  // Impact summary for the card (shows per-year when multi-year)
+  const impactSummary = getImpactSummary(decision, displayInvestment, investmentPeriodYears);
 
   return (
     <>
@@ -156,16 +166,29 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           {decision.name}
         </h3>
         
-        {/* Investment (primary number for comparison) */}
-        <div className="flex items-center gap-1.5 mb-3">
-          <DollarSign className="w-5 h-5 text-slate-700" />
-          <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Investment</span>
-          <span className="text-xl font-bold text-slate-800">${displayInvestment}M</span>
+        {/* Investment: total, period, in-year (front of card) */}
+        <div className="mb-3">
+          <div className="flex items-center gap-1.5 mb-1">
+            <DollarSign className="w-5 h-5 text-slate-700" />
+            <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
+            <span className="text-xl font-bold text-slate-800">${displayInvestment}M</span>
+          </div>
+          <div className="text-sm text-slate-600 pl-6 space-y-0.5">
+            <p>
+              <span className="text-slate-500">Period: </span>
+              <span className="font-medium text-slate-700">{investmentPeriodYears} year{investmentPeriodYears !== 1 ? 's' : ''}</span>
+            </p>
+            <p>
+              <span className="text-slate-500">In-year investment: </span>
+              <span className="font-medium text-slate-700">${typeof perYearInvestment === 'number' ? perYearInvestment : displayInvestment}M{investmentPeriodYears > 1 ? ' per year' : ''}</span>
+            </p>
+          </div>
         </div>
         
-        {/* Brief Description */}
+        {/* Business case summary (front of card: Excel column G brief, else first sentence of narrative) */}
+        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">Business case</p>
         <p className="text-base text-slate-600 line-clamp-3 mb-4">
-          {decision.narrative.split('.')[0]}.
+          {decision.brief?.trim() || (decision.narrative.split('.')[0]?.trim() ? `${decision.narrative.split('.')[0].trim()}.` : decision.narrative)}
         </p>
         
         {/* Impact Badges */}
@@ -191,7 +214,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
             onClick={handleExpandClick}
             className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-800 transition-colors"
           >
-            Details
+            View business case
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -239,11 +262,14 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
     decision.optimizeMetrics?.investment ??
     decision.sustainMetrics?.investment ??
     decision.cost;
-  const displayPeriod =
-    decision.growMetrics?.investmentPeriod ??
-    decision.optimizeMetrics?.investmentPeriod ??
-    decision.sustainMetrics?.investmentPeriod ??
-    decision.durationYears;
+  const investmentPeriodYears = decision.durationYears;
+  const inYearFromMetrics =
+    decision.growMetrics?.inYearInvestment ??
+    decision.optimizeMetrics?.inYearInvestment ??
+    decision.sustainMetrics?.inYearInvestment;
+  const perYearInvestment =
+    inYearFromMetrics ??
+    (investmentPeriodYears > 0 ? Math.round(displayInvestment / investmentPeriodYears) : displayInvestment);
 
   return (
     <div 
@@ -281,11 +307,17 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           <h2 className="text-3xl font-bold text-slate-800 mb-3">
             {decision.name}
           </h2>
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-baseline gap-2">
-              <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Investment</span>
-              <span className="text-3xl font-bold text-slate-800">${displayInvestment}M</span>
-              <span className="text-slate-500 font-medium">· {displayPeriod} year{displayPeriod > 1 ? 's' : ''}</span>
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
+                <span className="text-3xl font-bold text-slate-800">${displayInvestment}M</span>
+                <span className="text-slate-500 font-medium">over {investmentPeriodYears} year{investmentPeriodYears > 1 ? 's' : ''}</span>
+              </div>
+              <p className="text-base text-slate-600">
+                <span className="text-slate-500">In-year investment: </span>
+                <span className="font-semibold text-slate-700">${perYearInvestment}M{investmentPeriodYears > 1 ? ' per year' : ' this year'}</span>
+              </p>
             </div>
             {decision.isRisky && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 rounded-full">
@@ -298,21 +330,27 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
         
         {/* Content */}
         <div className="p-6 space-y-6">
-          {/* Decision detail (verbatim from Excel) – top of back so it’s read first */}
+          {/* Business case (verbatim from Excel) – top of back so it’s read first */}
           <div>
-            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-2">
-              Decision detail
+            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-1">
+              Business case
             </h4>
+            <p className="text-sm text-slate-500 mb-2">
+              Modeled assumptions; actual outcomes may differ.
+            </p>
             <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-line">
-              {decision.narrative}
+              {decision.narrative?.trim() || 'No business case detail available for this card.'}
             </p>
           </div>
           
-          {/* Key Metrics Grid - Category Specific */}
+          {/* Expected outcomes (from business case model) */}
           <div>
-            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-3">
-              Key Metrics
+            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-1">
+              Expected outcomes
             </h4>
+            <p className="text-sm text-slate-500 mb-3">
+              Values from the business case model; real-world results will vary.
+            </p>
             {decision.category === 'grow' && decision.growMetrics && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
@@ -486,12 +524,19 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }
 // Helper Functions
 // =============================================================================
 
-function getImpactSummary(decision: Decision): string[] {
+function getImpactSummary(
+  decision: Decision,
+  totalInvestment?: number,
+  periodYears?: number
+): string[] {
   const impacts: string[] = [];
-  
+  const total = totalInvestment ?? decision.cost;
+  const period = periodYears ?? decision.durationYears;
+  const perYear = period > 1 && period > 0 ? Math.round(total / period) : total;
+  const investLabel = period > 1 ? `$${perYear}M/yr` : `$${total}M invest`;
+
   if (decision.category === 'grow') {
-    // Growth-specific metrics
-    impacts.push(`$${decision.cost}M invest`);
+    impacts.push(investLabel);
     if (decision.revenueImpact) {
       impacts.push(`${(decision.revenueImpact * 100).toFixed(1)}% growth`);
     }
@@ -499,7 +544,6 @@ function getImpactSummary(decision: Decision): string[] {
       impacts.push(`$${decision.recurringBenefit}M rev`);
     }
   } else if (decision.category === 'optimize') {
-    // Optimize-specific metrics
     if (decision.cogsImpact) {
       impacts.push(`COGS -${Math.abs(decision.cogsImpact * 100).toFixed(0)}%`);
     }
@@ -507,14 +551,13 @@ function getImpactSummary(decision: Decision): string[] {
       impacts.push(`$${decision.recurringBenefit}M savings`);
     }
   } else if (decision.category === 'sustain') {
-    // Sustain-specific metrics
-    impacts.push(`$${decision.cost}M invest`);
+    impacts.push(investLabel);
     impacts.push('Protects revenue');
     if (decision.riskPrevention) {
       impacts.push('Risk Shield');
     }
   }
-  
+
   return impacts.slice(0, 3);
 }
 
