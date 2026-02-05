@@ -8,8 +8,7 @@
  * 4. Run DCF to get share price
  */
 
-import { BAUState, runBAUProjection, calculateSharePrice as bauCalculateSharePrice } from './bau-engine.js';
-import { ROUND1_DECISIONS, calculateBAUGrowthAdjustment, getDecision } from './decision-data.js';
+import { calculateBAUGrowthAdjustment, getDecision } from './decision-data.js';
 
 export interface ConsolidatedYear {
   year: number;
@@ -82,7 +81,7 @@ export interface ConsolidatedProjection {
 export function calculateConsolidatedProjection(
   round: number,
   selectedDecisions: number[],
-  cumulativeGrowthDecline: number = 0, // Accumulated decline from previous rounds
+  declinesByRound: number[] = [], // Array of declines from each previous round [R1, R2, R3, ...]
   startingSharePrice: number = 52.27   // Share price from Round 0
 ): ConsolidatedProjection {
   
@@ -104,35 +103,21 @@ export function calculateConsolidatedProjection(
   
   // Calculate current round's BAU growth decline
   const currentRoundDecline = calculateBAUGrowthAdjustment(selectedDecisions, round);
-  const totalGrowthDecline = cumulativeGrowthDecline + currentRoundDecline;
   
-  // Base BAU growth rate (2.0%) adjusted for cumulative decline
+  // Add current round's decline to the array
+  const allDeclines = [...declinesByRound, currentRoundDecline];
+  
+  // Base BAU growth rate (2.0%)
   const base_growth_rate = 0.02;
-  const adjusted_growth_rate = base_growth_rate - totalGrowthDecline;
   
   console.log(`\n=== Round ${round} Consolidation ===`);
   console.log(`Selected Decisions: ${selectedDecisions.join(', ')}`);
-  console.log(`Cumulative Growth Decline: ${(totalGrowthDecline * 100).toFixed(2)}%`);
-  console.log(`Adjusted BAU Growth: ${(adjusted_growth_rate * 100).toFixed(2)}%\n`);
+  console.log(`Declines by Round: ${allDeclines.map((d, i) => `R${i+1}=${(d*100).toFixed(2)}%`).join(', ')}`);
+  console.log(`Current Round Decline: ${(currentRoundDecline * 100).toFixed(2)}%\n`);
   
   // =================================================================
   // RUN BAU ENGINE WITH ADJUSTED GROWTH
   // =================================================================
-  
-  // Create adjusted BAU state (Round 0 assumptions)
-  // Only revenue_growth_rate changes based on Sustain decisions
-  const adjustedBAUState: BAUState = {
-    revenue: revenue_2025,
-    cogs_revenue_ratio: cogs_revenue_ratio, // 86.46%
-    sga: sga_2025, // Positive in state (2061)
-    sga_growth_rate: sga_growth_rate, // 2.0%
-    revenue_growth_rate: adjusted_growth_rate, // Adjusted for Sustain decisions
-    invested_capital: invested_capital_2025,
-    ebitda_margin: 0.08726304977122047, // From BAU engine
-  };
-  
-  // Run BAU projection with ORIGINAL growth for 2026, then ADJUSTED for 2027+
-  // We need to handle this specially because 2026 always uses 2.0%
   
   const years: ConsolidatedYear[] = [];
   
@@ -148,14 +133,28 @@ export function calculateConsolidatedProjection(
     // BAU CALCULATIONS (Using BAU Engine Logic)
     // =================================================================
     
-    // Revenue (BAU) - Apply adjusted growth starting from 2027 (yearIndex >= 1)
+    // Calculate applicable decline for this year
+    // Rule: Round N decline kicks in starting year (2026 + N)
+    // Example: Round 1 decline starts 2027, Round 2 decline starts 2028, etc.
+    let applicable_decline = 0;
+    for (let r = 1; r <= allDeclines.length; r++) {
+      const decline_start_year = 2026 + r;
+      if (year >= decline_start_year) {
+        applicable_decline += allDeclines[r - 1];
+      }
+    }
+    
+    // Calculate growth rate for this specific year
+    const year_growth_rate = base_growth_rate - applicable_decline;
+    
+    // Revenue (BAU) - Apply year-specific growth
     let revenue_bau: number;
     if (yearIndex === 0) {
-      // 2026: Use original 2.0% growth
+      // 2026: Always use base 2.0% growth (no declines apply yet)
       revenue_bau = revenue_2025 * (1 + base_growth_rate);
     } else {
-      // 2027+: Use adjusted growth (accounts for cumulative decline)
-      revenue_bau = priorYear!.revenue_bau * (1 + adjusted_growth_rate);
+      // 2027+: Use year-specific growth rate
+      revenue_bau = priorYear!.revenue_bau * (1 + year_growth_rate);
     }
     
     // COGS (BAU) - Using BAU engine formula: -Revenue × COGS/Revenue ratio (86.46%)
@@ -179,15 +178,27 @@ export function calculateConsolidatedProjection(
       ic_ending_bau = invested_capital_2025;
     } else {
       // Years 5-9: IC grows based on capital turnover
-      // Calculate Revenue_2030 accounting for different growth rates:
-      // - 2026: uses 2.0% (not affected by Sustain decline)
-      // - 2027-2030: uses adjusted_growth_rate (e.g., 1.7% if 3 Sustain decisions skipped)
+      // Calculate Revenue_2030 accounting for year-specific growth rates
+      // Each year's decline kicks in at year (2026 + roundNumber)
       
-      // Revenue_2026 = Revenue_2025 × 1.02
-      const revenue_2026 = revenue_2025 * 1.02;
+      let revenue_at_year = revenue_2025;
       
-      // Revenue_2030 = Revenue_2026 × (1 + adjusted_growth_rate)^4
-      const revenue_2030 = revenue_2026 * Math.pow(1 + adjusted_growth_rate, 4);
+      // Calculate revenue for each year from 2026 to 2030
+      for (let y = 2026; y <= 2030; y++) {
+        // Calculate applicable decline for year y
+        let year_decline = 0;
+        for (let r = 1; r <= allDeclines.length; r++) {
+          const decline_start_year = 2026 + r;
+          if (y >= decline_start_year) {
+            year_decline += allDeclines[r - 1];
+          }
+        }
+        
+        const year_specific_growth = base_growth_rate - year_decline;
+        revenue_at_year *= (1 + year_specific_growth);
+      }
+      
+      const revenue_2030 = revenue_at_year;
       
       // Capital Turnover 2030 = Revenue_2030 / IC_2030
       const capital_turnover_2030 = revenue_2030 / invested_capital_2025;
@@ -266,8 +277,9 @@ export function calculateConsolidatedProjection(
     const maintenance_capex = -revenue_total * DEPRECIATION_RATE; // Negative (4%)
     const depreciation = maintenance_capex; // D&A = Maintenance Capex
     
-    // Total New Investments = Investment Decisions + Acquisition Decisions + BAU New Investment
+    // Total New Investments = Investment Decisions + Acquisition + BAU New Investment
     // Note: Implementation Cost does NOT affect IC
+    // Acquisition IS included in IC (increases invested capital base)
     const new_investments_total = investment_decisions + acquisition + investment_bau;
     
     // EBIT = EBITDA + Depreciation (depreciation is negative, so this subtracts)
@@ -295,10 +307,13 @@ export function calculateConsolidatedProjection(
     // FREE CASH FLOW
     // =================================================================
     
-    // FCF = EBITDA + Implementation Cost + Taxes + Maintenance Capex + New Investments + Acquisitions
+    // FCF = EBITDA + Implementation Cost + Taxes + Maintenance Capex + New Investments + Premium
     // All items are signed (positive/negative), so we just SUM them
     // Following BAU engine formula exactly
-    const fcf = ebitda + implementation_cost + taxes + maintenance_capex + new_investments + acquisition;
+    // Note: Acquisition is already included in new_investments (via IC change), so don't add it again
+    // Premium is NOT part of IC, so it's added separately
+    // Synergies ARE included in EBITDA and flow through to FCF
+    const fcf = ebitda + implementation_cost + taxes + maintenance_capex + new_investments + premium;
     
     // Discount to present value (t=0, end of 2025)
     const discount_factor = Math.pow(1 + WACC, yearIndex + 1);
@@ -359,6 +374,7 @@ export function calculateConsolidatedProjection(
   
   // 2. Calculate ROIC for Year 10 (2035) - BAU ENGINE FORMULA
   // ROIC = (EBITDA_margin - Capex_ratio) * (1 - Tax_rate) * Revenue / IC
+  // Use ACTUAL 2035 ebitda_margin for continuing value calculation
   const ebitda_margin_2035 = year_2035.ebitda / year_2035.revenue_total;
   const roic_2035 = (ebitda_margin_2035 - DEPRECIATION_RATE) 
                     * (1 - TAX_RATE) 

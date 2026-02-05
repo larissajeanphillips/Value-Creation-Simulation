@@ -7,21 +7,21 @@
  * 3. Calculate consolidated P&L, IC, FCF
  * 4. Run DCF to get share price
  */
-import { calculateBAUGrowthAdjustment, getDecision } from './decision-data';
+import { calculateBAUGrowthAdjustment, getDecision } from './decision-data.js';
 /**
  * Calculate consolidated projection for a round
  */
-export function calculateConsolidatedProjection(round, selectedDecisions, cumulativeGrowthDecline = 0, // Accumulated decline from previous rounds
+export function calculateConsolidatedProjection(round, selectedDecisions, declinesByRound = [], // Array of declines from each previous round [R1, R2, R3, ...]
 startingSharePrice = 52.27 // Share price from Round 0
 ) {
     // Constants (from BAU engine)
-    const WACC = 0.093;
-    const TAX_RATE = 0.22; // 22% - CORRECTED
+    const WACC = 0.08; // 8.0% - CORRECTED (was incorrectly 9.3%)
+    const TAX_RATE = 0.22; // 22%
     const DEPRECIATION_RATE = 0.04; // Maintenance Capex = 4% of Revenue = Depreciation
     const COST_OF_EQUITY = 0.093;
-    const NET_DEBT = 4900;
-    const MINORITY_INTEREST = -2700;
-    const SHARES_OUTSTANDING = 287.34; // CORRECTED from BAU engine
+    const NET_DEBT = 7765; // From Excel model
+    const MINORITY_INTEREST = 418; // From Excel model (positive value, will be subtracted)
+    const SHARES_OUTSTANDING = 287.34; // From BAU engine
     // Baseline 2025 values (from BAU engine - Round 0)
     const revenue_2025 = 42836;
     const cogs_revenue_ratio = 0.8646232141189654; // 86.46% - CORRECTED
@@ -30,30 +30,21 @@ startingSharePrice = 52.27 // Share price from Round 0
     const invested_capital_2025 = 15827.72; // CORRECTED from BAU engine
     // Calculate current round's BAU growth decline
     const currentRoundDecline = calculateBAUGrowthAdjustment(selectedDecisions, round);
-    const totalGrowthDecline = cumulativeGrowthDecline + currentRoundDecline;
-    // Base BAU growth rate (2.0%) adjusted for cumulative decline
+    
+    // Add current round's decline to the array
+    const allDeclines = [...declinesByRound, currentRoundDecline];
+    
+    // Base BAU growth rate (2.0%)
     const base_growth_rate = 0.02;
-    const adjusted_growth_rate = base_growth_rate - totalGrowthDecline;
+    
     console.log(`\n=== Round ${round} Consolidation ===`);
     console.log(`Selected Decisions: ${selectedDecisions.join(', ')}`);
-    console.log(`Cumulative Growth Decline: ${(totalGrowthDecline * 100).toFixed(2)}%`);
-    console.log(`Adjusted BAU Growth: ${(adjusted_growth_rate * 100).toFixed(2)}%\n`);
+    console.log(`Declines by Round: ${allDeclines.map((d, i) => `R${i+1}=${(d*100).toFixed(2)}%`).join(', ')}`);
+    console.log(`Current Round Decline: ${(currentRoundDecline * 100).toFixed(2)}%\n`);
+    
     // =================================================================
-    // RUN BAU ENGINE WITH ADJUSTED GROWTH
+    // RUN BAU ENGINE WITH YEAR-SPECIFIC GROWTH
     // =================================================================
-    // Create adjusted BAU state (Round 0 assumptions)
-    // Only revenue_growth_rate changes based on Sustain decisions
-    const adjustedBAUState = {
-        revenue: revenue_2025,
-        cogs_revenue_ratio: cogs_revenue_ratio, // 86.46%
-        sga: sga_2025, // Positive in state (2061)
-        sga_growth_rate: sga_growth_rate, // 2.0%
-        revenue_growth_rate: adjusted_growth_rate, // Adjusted for Sustain decisions
-        invested_capital: invested_capital_2025,
-        ebitda_margin: 0.08726304977122047, // From BAU engine
-    };
-    // Run BAU projection with ORIGINAL growth for 2026, then ADJUSTED for 2027+
-    // We need to handle this specially because 2026 always uses 2.0%
     const years = [];
     // Track BAU IC separately for calculating investment_bau
     let ic_bau_current = invested_capital_2025;
@@ -64,15 +55,29 @@ startingSharePrice = 52.27 // Share price from Round 0
         // =================================================================
         // BAU CALCULATIONS (Using BAU Engine Logic)
         // =================================================================
-        // Revenue (BAU) - Apply adjusted growth starting from 2027 (yearIndex >= 1)
+        // Calculate applicable decline for this year
+        // Rule: Round N decline kicks in starting year (2026 + N)
+        // Example: Round 1 decline starts 2027, Round 2 decline starts 2028, etc.
+        let applicable_decline = 0;
+        for (let r = 1; r <= allDeclines.length; r++) {
+            const decline_start_year = 2026 + r;
+            if (year >= decline_start_year) {
+                applicable_decline += allDeclines[r - 1];
+            }
+        }
+        
+        // Calculate growth rate for this specific year
+        const year_growth_rate = base_growth_rate - applicable_decline;
+        
+        // Revenue (BAU) - Apply year-specific growth
         let revenue_bau;
         if (yearIndex === 0) {
-            // 2026: Use original 2.0% growth
+            // 2026: Always use base 2.0% growth (no declines apply yet)
             revenue_bau = revenue_2025 * (1 + base_growth_rate);
         }
         else {
-            // 2027+: Use adjusted growth (accounts for cumulative decline)
-            revenue_bau = priorYear.revenue_bau * (1 + adjusted_growth_rate);
+            // 2027+: Use year-specific growth rate
+            revenue_bau = priorYear.revenue_bau * (1 + year_growth_rate);
         }
         // COGS (BAU) - Using BAU engine formula: -Revenue × COGS/Revenue ratio (86.46%)
         const cogs_bau = -revenue_bau * cogs_revenue_ratio;
@@ -92,15 +97,31 @@ startingSharePrice = 52.27 // Share price from Round 0
         }
         else {
             // Years 5-9: IC grows based on capital turnover
-            // Calculate Revenue_2030 accounting for different growth rates:
-            // - 2026: uses 2.0% (not affected by Sustain decline)
-            // - 2027-2030: uses adjusted_growth_rate (e.g., 1.7% if 3 Sustain decisions skipped)
-            // Revenue_2026 = Revenue_2025 × 1.02
-            const revenue_2026 = revenue_2025 * 1.02;
-            // Revenue_2030 = Revenue_2026 × (1 + adjusted_growth_rate)^4
-            const revenue_2030 = revenue_2026 * Math.pow(1 + adjusted_growth_rate, 4);
+            // Calculate Revenue_2030 accounting for year-specific growth rates
+            // Each year's decline kicks in at year (2026 + roundNumber)
+            
+            let revenue_at_year = revenue_2025;
+            
+            // Calculate revenue for each year from 2026 to 2030
+            for (let y = 2026; y <= 2030; y++) {
+                // Calculate applicable decline for year y
+                let year_decline = 0;
+                for (let r = 1; r <= allDeclines.length; r++) {
+                    const decline_start_year = 2026 + r;
+                    if (y >= decline_start_year) {
+                        year_decline += allDeclines[r - 1];
+                    }
+                }
+                
+                const year_specific_growth = base_growth_rate - year_decline;
+                revenue_at_year *= (1 + year_specific_growth);
+            }
+            
+            const revenue_2030 = revenue_at_year;
+            
             // Capital Turnover 2030 = Revenue_2030 / IC_2030
             const capital_turnover_2030 = revenue_2030 / invested_capital_2025;
+            
             // IC_Ending = Revenue_BAU / Capital_Turnover_2030
             ic_ending_bau = revenue_bau / capital_turnover_2030;
         }
@@ -163,8 +184,9 @@ startingSharePrice = 52.27 // Share price from Round 0
         // Maintenance Capex = 4% of Revenue Total = Depreciation
         const maintenance_capex = -revenue_total * DEPRECIATION_RATE; // Negative (4%)
         const depreciation = maintenance_capex; // D&A = Maintenance Capex
-        // Total New Investments = Investment Decisions + Acquisition Decisions + BAU New Investment
+        // Total New Investments = Investment Decisions + Acquisition + BAU New Investment
         // Note: Implementation Cost does NOT affect IC
+        // Acquisition IS included in IC (increases invested capital base)
         const new_investments_total = investment_decisions + acquisition + investment_bau;
         // EBIT = EBITDA + Depreciation (depreciation is negative, so this subtracts)
         const ebit = ebitda + depreciation;
@@ -185,10 +207,13 @@ startingSharePrice = 52.27 // Share price from Round 0
         // =================================================================
         // FREE CASH FLOW
         // =================================================================
-        // FCF = EBITDA + Implementation Cost + Taxes + Maintenance Capex + New Investments + Acquisitions
+        // FCF = EBITDA + Implementation Cost + Taxes + Maintenance Capex + New Investments + Premium
         // All items are signed (positive/negative), so we just SUM them
         // Following BAU engine formula exactly
-        const fcf = ebitda + implementation_cost + taxes + maintenance_capex + new_investments + acquisition;
+        // Note: Acquisition is already included in new_investments (via IC change), so don't add it again
+        // Premium is NOT part of IC, so it's added separately
+        // Synergies ARE included in EBITDA and flow through to FCF
+        const fcf = ebitda + implementation_cost + taxes + maintenance_capex + new_investments + premium;
         // Discount to present value (t=0, end of 2025)
         const discount_factor = Math.pow(1 + WACC, yearIndex + 1);
         const pv_fcf = fcf / discount_factor;
@@ -233,24 +258,52 @@ startingSharePrice = 52.27 // Share price from Round 0
     // TERMINAL VALUE & VALUATION
     // =================================================================
     const year_2035 = years[9];
-    // Terminal growth rate: 2.5%
-    const terminal_growth_rate = 0.025;
-    // Terminal FCF = 2035 FCF × (1 + terminal growth)
-    const terminal_fcf = year_2035.fcf * (1 + terminal_growth_rate);
-    // Terminal Value = Terminal FCF / (WACC - terminal growth)
-    const terminal_value_at_2035 = terminal_fcf / (WACC - terminal_growth_rate);
+    
+    // Terminal growth rate: 2.0% (matches BAU engine)
+    const terminal_growth_rate = 0.02;
+    
+    // Continuing Value formula (EXACTLY from BAU engine):
+    // 1. Calculate NOPAT for Year 11 (first year beyond projection)
+    const ebit_year11 = year_2035.ebit * (1 + terminal_growth_rate);
+    const taxes_year11 = -ebit_year11 * TAX_RATE;
+    const nopat_year11 = ebit_year11 + taxes_year11;
+    
+    // 2. Calculate ROIC for Year 10 (2035) - BAU ENGINE FORMULA
+    // ROIC = (EBITDA_margin - Capex_ratio) * (1 - Tax_rate) * Revenue / IC
+    // Use ACTUAL 2035 ebitda_margin for continuing value calculation
+    // IMPORTANT: Exclude synergies from EBITDA for terminal value (synergies are one-time M&A benefits)
+    const ebitda_margin_2035 = year_2035.ebitda / year_2035.revenue_total;
+    const roic_2035 = (ebitda_margin_2035 - DEPRECIATION_RATE)
+        * (1 - TAX_RATE)
+        * year_2035.revenue_total / year_2035.ic_ending;
+    
+    // 3. Calculate reinvestment rate
+    const reinvestment_rate = terminal_growth_rate / roic_2035;
+    
+    // 4. Calculate FCF perpetuity
+    const fcf_perpetuity = nopat_year11 * (1 - reinvestment_rate);
+    
+    // 5. Continuing value at end of 2035
+    const terminal_value_at_2035 = fcf_perpetuity / (WACC - terminal_growth_rate);
+    
     // Discount terminal value to present (end of 2025)
     const terminal_value = terminal_value_at_2035 / Math.pow(1 + WACC, 10);
+    
     // NPV of 10-year cash flows
     const npv_10year = years.reduce((sum, y) => sum + y.pv_fcf, 0);
+    
     // Enterprise Value
     const enterprise_value = npv_10year + terminal_value;
-    // Equity Value = EV - Net Debt + Minority Interest
-    const equity_value = enterprise_value - NET_DEBT + MINORITY_INTEREST;
+    
+    // Equity Value = EV - Net Debt - Minority Interest (matching BAU engine formula)
+    const equity_value = enterprise_value - NET_DEBT - MINORITY_INTEREST;
+    
     // Share Price (Spot Price)
     const share_price = equity_value / SHARES_OUTSTANDING;
+    
     // Forward Price = Spot Price × (1 + Cost of Equity)
     const forward_price = share_price * (1 + COST_OF_EQUITY);
+    
     // TSR = (Forward Price / Starting Price) - 1
     const tsr = (forward_price / startingSharePrice) - 1;
     return {
