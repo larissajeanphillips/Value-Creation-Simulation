@@ -1723,7 +1723,7 @@ const SUSTAIN_DECISIONS: Decision[] = [
       investment: 0,
       investmentPeriod: 1,
       inYearInvestment: 0,
-      annualCost: 80,
+      annualCost: 40,
     },
 
   },
