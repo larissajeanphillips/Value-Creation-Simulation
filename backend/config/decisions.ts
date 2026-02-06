@@ -9,11 +9,12 @@
 import type { Decision, RoundNumber, GrowMetrics, OptimizeMetrics, SustainMetrics } from '../types/game.js';
 
 // =============================================================================
-// GROW DECISIONS (Based on Excel - Lever = "Grow")
+// GROW DECISIONS (Based on Excel/CSV - Lever = "Grow")
+// Total investment = CSV/Excel column G. Round 1 Grow 1–5 must be: 800, 800, 800, 1000, 600.
 // =============================================================================
 
 const GROW_DECISIONS: Decision[] = [
-  // ===== ROUND 1 =====
+  // ===== ROUND 1 (column G: 800, 800, 800, 1000, 600) =====
   {
     id: 'grow-1-1',
     decisionNumber: 1,

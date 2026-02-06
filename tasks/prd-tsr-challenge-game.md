@@ -178,6 +178,8 @@ Each decision card has attributes:
 
 All metrics shown on decision cards are **fixed inputs** per card (sourced from Excel/CSV and applied via the decision pipeline). The tables below define the exact fields displayed and used for calculation by category. Values are to be supplied per decision (see pipeline and backend config).
 
+**Source of truth: Decisions Excel.** The "Decisions" sheet (or equivalent) has **row 1 = header** (column names/metrics, e.g. Round, #, Lever, Name, Brief, Detail, [Grow] Total Investment, [Grow] Investment period, [Grow] In-year investment, etc.). **Each subsequent row = one decision.** All descriptions (name, brief, narrative) and metrics (total investment, period, in-year investment, revenue, growth %, EBIT margin, etc.) on a card must come from **that single row only**—no mixing data from other rows. Triple-check all numbers against the Excel to avoid mismatches (e.g. total investment 800 vs 1000).
+
 **Grow cards** — fixed inputs per card:
 
 | Metric | Field / source | Description |
@@ -478,11 +480,11 @@ Scenarios apply **category-specific multipliers** to decision outcomes:
 1. **Game state management:** Central server holds authoritative game state; clients subscribe to updates
 2. **Timer synchronization:** Server broadcasts remaining time; clients display but don't control
 3. **Calculation engine:** Backend calculates all financial outcomes (not in client). The authoritative implementation is in [Value Creation Simulation](https://github.com/larissajeanphillips/Value-Creation-Simulation); do not use financial logic from any other repository
-4. **Decision card data:** 75 cards defined in JSON/TypeScript config based on Excel data
+4. **Decision card data:** 75 cards defined in JSON/TypeScript config based on Excel data. The Excel "Decisions" sheet has **row 1 = header** and **one row per decision**; backend config and export must align row-for-row so each card uses only data from its corresponding row.
 
 ### Decision data import and validation
 
-Decision inputs are validated by row count when updating from the source (Excel or feed). The pipeline expects approximately **1,199 rows** from the source; update this when the source structure changes.
+Decision inputs are validated by row count when updating from the source (Excel or feed). The **Decisions** sheet layout: **row 1 = header** (column names/metrics); **each subsequent row = one decision**. Each card's name, brief, narrative, and all metrics must be taken from that row only. The pipeline expects approximately **1,199 rows** from the source; update this when the source structure changes.
 
 - **Run:** `npm run update-decisions` (or run `scripts/read-decisions-excel.mjs`, then `scripts/apply-decisions-from-excel.mjs`, then `scripts/verify-decisions.mjs`).
 - **Check:** The scripts report rows pulled from source (expected ~1,199), records in export JSON, updates applied to backend, and backend ALL_DECISIONS count (expected ≥ 75). Validation fails (non-zero exit) if large chunks are missing.
@@ -771,3 +773,4 @@ Subcategories include:
 | 0.6 | 2026-02-06 | — | Added Production URLs (Vercel) section: base https://value-creation-simulation.vercel.app with live admin, live player, live display, and demo links as single source of truth. |
 | 0.7 | 2026-02-06 | — | Decision card logic: added Decision Card Metrics (by category) and Decision Card Design (UI) sections; Grow/Optimize/Sustain metrics (investments total, period, in-year, category-specific). Multi-year investments: investment period can be 1, 2, 3 or more years (no longer limited to 2); updated Investment Duration Model, Data Model, user stories, and Resolved Questions Log. |
 | 0.8 | 2026-02-06 | — | Removed risk/risky flag entirely from PRD and decision logic. Consolidated decision logic: ranking by stock price (FR-12); ramp-up by rampUpYears (1/2/3) with all three schedules documented; decision limits = cash only; starting cash $1,200M clarified as round 1 only (FCF varies thereafter). Added Decision Card Metrics (Fixed Inputs) section with placeholder for product-owner-supplied values per card. Removed Risky Decision Outcomes, Risk/Chance Mechanic, FR-18/19/20/21, isRisky from Data Model, risky from backend formulas and Resolved Questions. |
+| 0.9 | 2026-02-06 | — | Decisions Excel alignment: source of truth is "Decisions" sheet with row 1 = header, one row per decision; each card must use data from its single row only (no mixing rows). Documented in Decision Card Metrics, Key Technical Decisions, and Decision data import. Example: Decision 2 (Advanced Powertrain R&D Expansion) — total investment $800M, period 3 years, in-year $267M (aligned with Excel). |

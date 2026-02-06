@@ -2,12 +2,15 @@
  * Read decision cards from CSV and write decisions_from_excel_export.json.
  * Use this as the source of truth so metrics on cards match the CSV exactly.
  *
+ * Total investment by category: column G (Grow), column M (Optimize), column R (Sustain).
+ *
  * CSV column layout (0-based index):
  *   A=0 Round, B=1 Decision#, C=2 Lever, D=3 Name, E=4 Brief, F=5 Detail (back)
  *   G–L Grow:     G=6 Total inv, H=7 Period, I=8 In-year, J=9 Revenue 1yr, K=10 5yr growth %, L=11 EBIT margin %
  *   M–Q Optimize: M=12 Total, N=13 Period, O=14 In-year, P=15 Impl cost, Q=16 Annual cost
  *   R–V Sustain:  R=17 Total, S=18 Period, T=19 In-year, U=20 Impl cost, V=21 Annual cost
  *
+ * Set DECISIONS_CSV_PATH to your CSV (row 1 = header, one row per decision). Default: decision_cards_export.csv.
  * Run from project root: node scripts/read-decisions-csv.mjs
  * Then: node scripts/apply-decisions-from-excel.mjs
  */

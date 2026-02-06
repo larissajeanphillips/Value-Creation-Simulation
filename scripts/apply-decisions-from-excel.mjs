@@ -81,7 +81,7 @@ while ((match = decisionBlockRegex.exec(content)) !== null) {
   const cost = data.cost ?? 0;
   const introducedYear = data.introducedYear ?? 1;
   const durationYears = data.grow?.investmentPeriod ?? data.optimize?.investmentPeriod ?? data.sustain?.investmentPeriod;
-  const durationYearsVal = durationYears !== undefined && durationYears !== null ? Math.max(1, Math.min(2, Math.round(durationYears))) : undefined;
+  const durationYearsVal = durationYears !== undefined && durationYears !== null ? Math.max(1, Math.min(10, Math.round(durationYears))) : undefined;
   let newMetrics = '';
   if (data.grow) newMetrics = formatGrowMetrics(data.grow);
   else if (data.optimize) newMetrics = formatOptimizeMetrics(data.optimize);
@@ -94,7 +94,7 @@ while ((match = decisionBlockRegex.exec(content)) !== null) {
     : `name: ${name},\n    narrative: ${narrative},\n    cost: ${cost},`;
   const metricsRegex = /(growMetrics|optimizeMetrics|sustainMetrics):\s*\{[^}]*(?:\{[^}]*\}[^}])*\},/;
   const introducedYearRegex = /introducedYear:\s*\d+,/;
-  const durationYearsRegex = /durationYears:\s*[12],/;
+  const durationYearsRegex = /durationYears:\s*\d+,/;
   let newBlock = fullBlock.replace(nameNarrCostRegex, nameNarrCostRepl);
   newBlock = newBlock.replace(metricsRegex, newMetrics + ',');
   newBlock = newBlock.replace(introducedYearRegex, `introducedYear: ${introducedYear},`);
