@@ -22,10 +22,15 @@ import {
 import { cn } from '@/lib/utils';
 import type { Decision } from '@/types/game';
 
+/** When disabled due to affordability, show "Exceeds available funds" so users know why they can't purchase. */
+export type DisabledReason = 'affordability' | 'submitted';
+
 interface DecisionCardProps {
   decision: Decision;
   isSelected: boolean;
   isDisabled: boolean;
+  /** Optional reason for disabled state; when 'affordability', card shows "Exceeds available funds". */
+  disabledReason?: DisabledReason;
   onToggle: () => void;
   className?: string;
 }
@@ -61,6 +66,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
   decision,
   isSelected,
   isDisabled,
+  disabledReason,
   onToggle,
   className,
 }) => {
@@ -109,10 +115,11 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           "border-2 group",
           // Base styles
           "bg-white shadow-sm",
-          // Disabled state
+          // Disabled state: muted look but investment amount stays visible so users know why they can't purchase
           isDisabled && !isSelected && [
-            "opacity-50 cursor-not-allowed",
-            "border-slate-200",
+            "cursor-not-allowed",
+            "border-slate-200 bg-slate-50",
+            "opacity-90",
           ],
           // Available state
           !isDisabled && !isSelected && [
@@ -166,8 +173,11 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           {decision.name}
         </h3>
         
-        {/* Investment: total, period, in-year (front of card) */}
-        <div className="mb-3">
+        {/* Investment: total, period, in-year (front of card). Always visible so users know cost and why they can't purchase when greyed out. */}
+        <div className={cn(
+          "mb-3",
+          isDisabled && !isSelected && "rounded-xl bg-white/80 p-3 border border-slate-200"
+        )}>
           <div className="flex items-center gap-1.5 mb-1">
             <DollarSign className="w-5 h-5 text-slate-700" />
             <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
@@ -183,6 +193,11 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
               <span className="font-medium text-slate-700">${typeof perYearInvestment === 'number' ? perYearInvestment : displayInvestment}M{investmentPeriodYears > 1 ? ' per year' : ''}</span>
             </p>
           </div>
+          {isDisabled && !isSelected && disabledReason === 'affordability' && (
+            <p className="mt-2 pt-2 border-t border-slate-200 text-sm font-medium text-amber-700">
+              Exceeds available funds — cannot select
+            </p>
+          )}
         </div>
         
         {/* Business case summary (front of card: Excel column G brief, else first sentence of narrative) */}

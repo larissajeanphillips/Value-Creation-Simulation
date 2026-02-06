@@ -16,6 +16,20 @@ Magna's leadership needs to internalize complex capital allocation trade-offs an
 - **Participants:** ~150 leaders across 15 teams of 10
 - **Setting:** Conference room with one laptop per team table
 
+### Production URLs (Vercel)
+
+The frontend is deployed on Vercel. **Base URL:** `https://value-creation-simulation.vercel.app`
+
+| Purpose | Link |
+|--------|------|
+| **Facilitator demo** (displays, scoreboard, rounds, debrief, admin; start here for Phil) | https://value-creation-simulation.vercel.app/demo |
+| **Player demo** (team interface entry for participants) | https://value-creation-simulation.vercel.app/demo/player |
+| **Live admin** (facilitator control panel) | https://value-creation-simulation.vercel.app/admin |
+| **Live player** (team interface) | https://value-creation-simulation.vercel.app/ |
+| **Live display** (Display Hub — big-screen menu) | https://value-creation-simulation.vercel.app/display |
+
+Use these links as the single source of truth when sharing or referencing the live simulation. Full list for Verso: **docs/demo-links-for-phil.md**.
+
 ---
 
 ## Goals
@@ -727,3 +741,4 @@ Subcategories include:
 | 0.3 | 2026-02-05 | — | Financial model aligned to [Value Creation Simulation](https://github.com/larissajeanphillips/Value-Creation-Simulation) only: added source-of-truth note, fixed inputs table, backend calculation formulas (tax, ROIC, NPV, FCF, TSR, decision impacts). Baseline valuation and operating FCF updated to match repo. No references to any other repository for financial implementation. |
 | 0.4 | 2026-02-05 | — | Fixed inputs corrected: WACC 8% (was 7.5%), net debt $7,765M (was $8,574M). Values pulled from where WACC is set to 8% in code: baseline-financials.ts, consolidation-engine.ts, bau-engine.ts. Backend in this repo updated so calculation-engine and baseline-financials use 8% and $7,765M consistently. |
 | 0.5 | 2026-02-05 | — | Added capex maintenance 4% of revenue and cost of equity (9% baseline, 9.3% for forward price) to Fixed Inputs table. |
+| 0.6 | 2026-02-06 | — | Added Production URLs (Vercel) section: base https://value-creation-simulation.vercel.app with live admin, live player, live display, and demo links as single source of truth. |

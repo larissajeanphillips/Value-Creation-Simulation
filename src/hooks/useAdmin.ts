@@ -11,6 +11,7 @@
 import { useCallback } from 'react';
 import { useAdminStore } from '@/stores/adminStore';
 import { useGameStore } from '@/stores/gameStore';
+import { useDemo } from '@/components/demo/DemoContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -63,12 +64,45 @@ export interface ScoreboardData {
   teams: ScoreboardTeam[];
 }
 
+const noOpApi = async () => ({ success: true });
+const MOCK_ADMIN_STATUS: AdminStatus = {
+  success: true,
+  status: 'lobby',
+  currentRound: 1,
+  roundTimeRemaining: 600,
+  scenario: { type: 'business_as_usual', narrative: 'Business as usual' },
+  teams: Array.from({ length: 8 }, (_, i) => ({
+    teamId: i + 1,
+    teamName: `Team ${i + 1}`,
+    isClaimed: i < 5,
+    hasSubmitted: false,
+    decisionsCount: 0,
+  })),
+  teamsSubmitted: 0,
+  teamsClaimed: 5,
+  teamsTotal: 8,
+};
+const MOCK_SCOREBOARD: ScoreboardData = {
+  success: true,
+  currentRound: 1,
+  status: 'lobby',
+  scenario: { type: 'business_as_usual', narrative: 'Business as usual', eventTriggered: false },
+  teams: Array.from({ length: 8 }, (_, i) => ({
+    teamId: i + 1,
+    teamName: `Team ${i + 1}`,
+    currentStockPrice: 100,
+    cumulativeTSR: 0,
+    stockPricesByRound: { 1: 100 },
+  })),
+};
+
 export function useAdmin() {
+  const { isDemo } = useDemo();
   const setAuthenticated = useAdminStore((s) => s.setAuthenticated);
   const setAuthenticating = useAdminStore((s) => s.setAuthenticating);
   const setAuthError = useAdminStore((s) => s.setAuthError);
   const isAuthenticated = useAdminStore((s) => s.isAuthenticated);
-  
+
   // Store the PIN in memory for subsequent requests
   let storedPin = '';
   
@@ -242,7 +276,26 @@ export function useAdmin() {
     }
     return false;
   }, [authenticate]);
-  
+
+  if (isDemo) {
+    return {
+      isAuthenticated: true,
+      authenticate: async () => true,
+      checkStoredAuth: async () => true,
+      getStatus: async () => MOCK_ADMIN_STATUS,
+      getScoreboard: async () => MOCK_SCOREBOARD,
+      configureTeamCount: noOpApi,
+      configureRoundDuration: noOpApi,
+      startGame: noOpApi,
+      pauseRound: noOpApi,
+      resumeRound: noOpApi,
+      endRound: noOpApi,
+      nextRound: noOpApi,
+      triggerEvent: noOpApi,
+      resetGame: noOpApi,
+    };
+  }
+
   return {
     isAuthenticated,
     authenticate,

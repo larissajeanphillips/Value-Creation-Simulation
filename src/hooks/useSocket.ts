@@ -11,6 +11,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useGameStore } from '@/stores/gameStore';
+import { useDemo } from '@/components/demo/DemoContext';
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -50,9 +51,22 @@ const API_BASE = SOCKET_URL;
 // Hook
 // =============================================================================
 
+const MOCK_SOCKET: UseSocketReturn = {
+  isConnected: true,
+  isConnecting: false,
+  error: null,
+  joinGame: async () => ({ success: true, teamId: 1 }),
+  submitDecisions: async () => ({ success: true }),
+  unsubmitDecisions: async () => ({ success: true }),
+  toggleDecision: () => {},
+  syncDraftSelections: () => {},
+  disconnect: () => {},
+};
+
 export function useSocket(): UseSocketReturn {
+  const { isDemo } = useDemo();
   const socketRef = useRef<GameSocket | null>(null);
-  
+
   // Store actions
   const setConnected = useGameStore((s) => s.setConnected);
   const setConnecting = useGameStore((s) => s.setConnecting);
@@ -68,10 +82,11 @@ export function useSocket(): UseSocketReturn {
   const isConnecting = useGameStore((s) => s.isConnecting);
   const connectionError = useGameStore((s) => s.connectionError);
   
-  // Initialize socket connection
+  // Initialize socket connection (skip in demo mode)
   useEffect(() => {
+    if (isDemo) return;
     if (socketRef.current) return;
-    
+
     setConnecting(true);
     
     const socket: GameSocket = io(SOCKET_URL, {
@@ -184,6 +199,7 @@ export function useSocket(): UseSocketReturn {
       socketRef.current = null;
     };
   }, [
+    isDemo,
     setConnected,
     setConnecting,
     setConnectionError,
@@ -284,6 +300,10 @@ export function useSocket(): UseSocketReturn {
     useGameStore.getState().reset();
   }, []);
   
+  if (isDemo) {
+    return MOCK_SOCKET;
+  }
+
   return {
     isConnected,
     isConnecting,

@@ -358,6 +358,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                 Display Hub
                 <ExternalLink className="w-3 h-3" />
               </a>
+              {/* Debrief (after game ends) */}
+              <a
+                href="/display/debrief"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors font-medium"
+              >
+                <BookOpen className="w-4 h-4" />
+                Open Debrief
+                <ExternalLink className="w-3 h-3" />
+              </a>
               
               {/* Logout */}
               <button

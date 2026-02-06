@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { Monitor, BarChart3, Calendar, ExternalLink, Maximize2 } from 'lucide-react';
+import { Monitor, BarChart3, Calendar, ExternalLink, Maximize2, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MagnaLogo } from './MagnaLogo';
 
@@ -194,6 +194,53 @@ export const DisplayHub: React.FC = () => {
           </div>
         </div>
 
+        {/* Debrief - After Game Ends */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">
+            Game Debrief (After Game Ends)
+          </h3>
+          <div className={cn(
+            "bg-gradient-to-br from-amber-600 to-amber-800",
+            "rounded-xl p-8 border border-amber-500/30",
+            "shadow-lg"
+          )}>
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
+                  <BookOpen className="w-8 h-8 text-amber-200" />
+                </div>
+                <div>
+                  <h4 className="text-2xl font-bold text-white mb-1">Game Debrief</h4>
+                  <p className="text-amber-200">
+                    Main lessons and round-by-round best/worst decisions with teams that selected them
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3 mb-4">
+              <button
+                onClick={() => openFullscreenPopup('/display/debrief', 'debrief')}
+                className="flex items-center gap-2 px-6 py-3 bg-white text-amber-700 rounded-xl font-bold hover:bg-amber-50 transition-colors shadow-lg"
+              >
+                <Maximize2 className="w-5 h-5" />
+                Open Fullscreen (No URL Bar)
+              </button>
+              <a
+                href="/display/debrief"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-colors border border-white/20"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Open in New Tab
+              </a>
+            </div>
+            <p className="text-sm text-amber-200">
+              Available after the game ends. Shows Main Lessons and Round Deep Dive (best/worst decisions per round).
+            </p>
+          </div>
+        </div>
+
         {/* Round Displays */}
         <div>
           <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">
@@ -254,6 +301,10 @@ export const DisplayHub: React.FC = () => {
             <div className="bg-slate-700/50 rounded-lg p-4">
               <div className="text-sm text-slate-400 mb-1">Scoreboard</div>
               <code className="text-emerald-400 font-mono text-sm">/display/scoreboard</code>
+            </div>
+            <div className="bg-slate-700/50 rounded-lg p-4">
+              <div className="text-sm text-slate-400 mb-1">Debrief (after game ends)</div>
+              <code className="text-emerald-400 font-mono text-sm">/display/debrief</code>
             </div>
             <div className="bg-slate-700/50 rounded-lg p-4">
               <div className="text-sm text-slate-400 mb-1">Round 1 (FY26)</div>

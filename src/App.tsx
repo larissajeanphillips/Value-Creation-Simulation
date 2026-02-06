@@ -7,6 +7,7 @@
  * Routes (requires backend server):
  * - / - Team interface (default)
  * - /admin - Facilitator control panel
+ * - /demo - Player demo (no backend). /demo/admin - Facilitator demo links.
  * 
  * Display Routes (for big screen presentation):
  * - /display - Display Hub - landing page for AV teams
@@ -36,14 +37,18 @@ import { MagnaLogo } from '@/components/MagnaLogo';
 import { MacroEnvironmentDisplay } from '@/components/MacroEnvironmentDisplay';
 import { DisplayHub } from '@/components/DisplayHub';
 import { ScoreboardDisplay } from '@/components/ScoreboardDisplay';
+import { DebriefDisplay } from '@/components/debrief/DebriefDisplay';
 import { GamePrimer } from '@/components/GamePrimer';
+import { DemoLinksPage } from '@/components/DemoLinksPage';
+import { DemoPlayerPage } from '@/components/DemoPlayerPage';
+import { DemoAdminPage } from '@/components/DemoAdminPage';
 
 // =============================================================================
 // ACCESS CODE - Change this to control who can access the app
 // =============================================================================
 const ACCESS_CODE = 'magna2026';
 
-type Route = 'team' | 'admin' | 'display-hub' | 'display-round' | 'display-scoreboard';
+type Route = 'team' | 'admin' | 'demo' | 'demo-player' | 'demo-admin' | 'display-hub' | 'display-round' | 'display-scoreboard' | 'display-debrief';
 
 /**
  * Determines the route based on current URL
@@ -59,7 +64,10 @@ function getRouteFromURL(): { route: Route; displayRound: number } {
     if (path === '/display/scoreboard' || path === '/display/scoreboard/') {
       return { route: 'display-scoreboard', displayRound: 1 };
     }
-    
+    // /display/debrief
+    if (path === '/display/debrief' || path === '/display/debrief/') {
+      return { route: 'display-debrief', displayRound: 1 };
+    }
     // /display/1-5 - Round displays
     const roundMatch = path.match(/^\/display\/(\d)\/?$/);
     if (roundMatch) {
@@ -97,7 +105,22 @@ function getRouteFromURL(): { route: Route; displayRound: number } {
       path === '/live-admin' || path === '/live-admin/' || hash === '#live-admin') {
     return { route: 'admin', displayRound: 1 };
   }
-  
+
+  // /demo/admin/walkthrough - Admin click-through demo (no PIN, no backend)
+  if (path === '/demo/admin/walkthrough' || path === '/demo/admin/walkthrough/') {
+    return { route: 'demo-admin', displayRound: 1 };
+  }
+
+  // /demo/admin - Facilitator demo links (no game start required)
+  if (path === '/demo/admin' || path === '/demo/admin/') {
+    return { route: 'demo', displayRound: 1 };
+  }
+
+  // /demo or /demo/player (legacy) - Player click-through demo
+  if (path === '/demo' || path === '/demo/' || path === '/demo/player' || path === '/demo/player/') {
+    return { route: 'demo-player', displayRound: 1 };
+  }
+
   // Everything else defaults to team interface
   return { route: 'team', displayRound: 1 };
 }
@@ -133,6 +156,17 @@ function App() {
     };
   }, []);
   
+  // Demo pages - no password
+  if (route === 'demo') {
+    return <DemoLinksPage />;
+  }
+  if (route === 'demo-admin') {
+    return <DemoAdminPage />;
+  }
+  if (route === 'demo-player') {
+    return <DemoPlayerPage />;
+  }
+
   // Scoreboard display - no password required for easy AV team access
   if (route === 'display-scoreboard') {
     return <ScoreboardDisplay />;
@@ -141,6 +175,11 @@ function App() {
   // Display hub - no password required (it's just a navigation page)
   if (route === 'display-hub') {
     return <DisplayHub />;
+  }
+
+  // Debrief display - no password required; shows after game ends
+  if (route === 'display-debrief') {
+    return <DebriefDisplay />;
   }
   
   // Round environment displays - protected by access code

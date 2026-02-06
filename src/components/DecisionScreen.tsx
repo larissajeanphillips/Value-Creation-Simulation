@@ -663,13 +663,20 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                   {decisions.map((decision) => {
                     const isSelected = selectedDecisionIds.has(decision.id);
                     const canAfford = remainingBudget >= decision.cost || isSelected;
-                    
+                    const isDisabled = !canAfford || hasSubmitted;
+                    const disabledReason = isDisabled
+                      ? !canAfford
+                        ? 'affordability'
+                        : 'submitted'
+                      : undefined;
+
                     return (
                       <DecisionCard
                         key={decision.id}
                         decision={decision}
                         isSelected={isSelected}
-                        isDisabled={!canAfford || hasSubmitted}
+                        isDisabled={isDisabled}
+                        disabledReason={disabledReason}
                         onToggle={() => handleToggleDecision(decision.id)}
                       />
                     );

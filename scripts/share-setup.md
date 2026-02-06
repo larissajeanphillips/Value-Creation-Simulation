@@ -58,9 +58,12 @@ You'll get another URL like: `https://xyz789.ngrok-free.app`
 
 ### 7. Share with testers!
 
+- **Demo page (for Phil / facilitators – start here):** `https://xyz789.ngrok-free.app/demo`
 - **Team Interface**: `https://xyz789.ngrok-free.app`
-- **Admin Panel**: `https://xyz789.ngrok-free.app/#admin`
+- **Admin Panel**: `https://xyz789.ngrok-free.app/admin` or `https://xyz789.ngrok-free.app/#admin`
 - **Admin PIN**: `1234`
+
+Full list of demo links: see **docs/demo-links-for-phil.md** (copy to Verso as needed).
 
 ## Important Notes
 
