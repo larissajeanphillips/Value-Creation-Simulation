@@ -141,18 +141,22 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
     }
   }, [timeRemaining]);
   
-  // Group decisions by category
+  // Group decisions by category, sorted by decisionNumber so card position matches "Decision #N"
   const decisionsByCategory = useMemo(() => {
     const grouped: Record<DecisionCategory, Decision[]> = {
       grow: [],
       optimize: [],
       sustain: [],
     };
-    
+
     for (const decision of availableDecisions) {
       grouped[decision.category].push(decision);
     }
-    
+
+    for (const cat of ['grow', 'optimize', 'sustain'] as DecisionCategory[]) {
+      grouped[cat].sort((a, b) => a.decisionNumber - b.decisionNumber);
+    }
+
     return grouped;
   }, [availableDecisions]);
   

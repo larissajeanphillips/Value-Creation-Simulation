@@ -45,3 +45,4 @@ Open http://localhost:5173 in your browser.
 - [Style Guide](./ui/STYLE_GUIDE.md)
 - [Design Tokens](./ui/DESIGN_TOKENS.md)
 - [Deployment Guide](./deployment/README.md)
+- [Decision Cards CSV](./docs/DECISION_CARDS_CSV.md) — To update decision cards, replace `decision_cards_export.csv` and run `node scripts/import-decisions-from-csv.mjs`.

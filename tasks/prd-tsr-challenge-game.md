@@ -190,42 +190,74 @@ Each decision card has attributes:
 - **Calculation data** (e.g. what Julia Gavril is saving in the backend) remains separate. The backend may keep its own fields (cost, recurringBenefit, impacts, etc.) for simulation; those are updated/maintained independently from the CSV/screenshot display data.
 - Card UI must use **display data** (growMetrics, optimizeMetrics, sustainMetrics, brief, narrative) for all visible metrics and descriptions; the calculation engine uses its own inputs and must not override or replace what is shown on the cards.
 
+### Decision card CSV — column specification
+
+Decision metrics shown on the cards are **hard-coded values taken only from the CSV**. They are saved (e.g. in a generated JSON or embedded data file) and **updated only when the product owner says "update the CSV"** and provides a new file. No prior assumptions about investment amounts or formulas; the only source of truth for what appears on the cards is the current CSV (or the data file generated from it).
+
+**Column layout (one row per decision; row 1 = header):**
+
+| Column | Content | Where shown |
+|--------|--------|-------------|
+| A | Round (1–5) — round in which the decision is shown | Used to filter cards by round |
+| B | Decision number — unique across all cards | Top-right on front of card (light gray) |
+| C | Lever — Grow, Optimize, or Sustain | Organize and badge cards |
+| D | Name | Main title on front of card |
+| E | Brief | Short line on front (e.g. one sentence) |
+| F | Detail | Full description on **back** of card |
+
+**Metrics by lever:**
+
+- **Grow (columns G–L)**  
+  - **Front of card:** G = Total investment ($M), H = Investment period (years), I = In-year investment ($M).  
+  - **Back of card:** J = Revenue 1 year ($M), K = 5-year growth (%), L = EBIT margin (%).  
+  - In-year investment is **provided in the CSV** (no calculation: total ÷ period).
+
+- **Optimize (columns M–Q)**  
+  - **Front:** M = Total investment ($M), N = Investment period (years), O = In-year investment ($M).  
+  - **Back:** P = Implementation cost ($M), Q = Annual cost savings ($M).
+
+- **Sustain (columns R–V)**  
+  - **Front:** R = Total investment ($M), S = Investment period (years), T = In-year investment ($M).  
+  - **Back:** U = Implementation cost ($M), V = Annual cost savings ($M).
+
+No mixing rows; no derived fields for **display**. Update display data only when the product owner requests a CSV update and provides a new file.
+
 ### Decision Card Metrics (Fixed Inputs) — Display Data
 
 All **metrics and descriptions** shown on decision cards are **hardcoded inputs** per card. The **user will feed a screenshot or CSV** to update these values; they are not calculated by the system. The tables below define the exact fields displayed on the card by category. These values are what users see; they are **separate from** the backend calculation inputs (see Display Data vs. Calculation Data above).
 
-**Source of display data: user-supplied CSV or screenshots.** The user supplies a Decisions sheet (CSV/Excel) or screenshots. **Row 1 = header** (e.g. Round, #, Lever, Name, Brief, Detail, [Grow] Total Investment, [Optimize] Total Investm, [Optimize] Annual cost savings, etc.). **Each subsequent row = one decision.** All **descriptions** (name, brief, narrative) and **metrics** shown on the card (total investment, period, in-year investment, implementation cost, annual cost savings, etc.) are **hardcoded** from that row—no mixing, no derivation. Store this data and render it on the front end so the cards match the CSV/screenshots exactly.
+**Source of display data: user-supplied CSV or screenshots.** The user supplies a Decisions sheet (CSV/Excel) or screenshots. **Row 1 = header**; **each subsequent row = one decision.** All **descriptions** (name, brief, narrative) and **metrics** shown on the card are **hardcoded** from that row—no mixing, no derivation. **In-year investment** comes from the CSV column (e.g. column I, O, or T); it is not calculated as total ÷ period for display. Store this data and render it on the front end so the cards match the CSV/screenshots exactly. Update only when the product owner says "update the CSV" and provides a new file.
 
-**Grow cards** — fixed inputs per card:
-
-| Metric | Field / source | Description |
-|--------|----------------|-------------|
-| Investments (total) | `growMetrics.investmentsTotal` or `cost` | Total investment in $M |
-| Investment period | `growMetrics.investmentPeriod` or `durationYears` | Years over which investment is spent |
-| In-year investment | `growMetrics.inYearInvestment` or total ÷ period | $M per year |
-| Revenue 1 year | `growMetrics.revenue1Year` | Revenue impact in year 1 ($M) |
-| 5-year growth | `growMetrics.fiveYearGrowth` | 5-year revenue growth rate (%) |
-| EBIT margin | `growMetrics.ebitMargin` | Expected EBIT margin (%) |
-
-**Optimize cards** — fixed inputs per card:
+**Grow cards** — fixed inputs per card (from CSV columns G–L):
 
 | Metric | Field / source | Description |
 |--------|----------------|-------------|
-| Investments (total) | `optimizeMetrics.investment` or `cost` | Total investment in $M |
-| Investment period | `optimizeMetrics.investmentPeriod` or `durationYears` | Years |
-| In-year investment | `optimizeMetrics.inYearInvestment` or total ÷ period | $M per year |
-| Implementation cost | `optimizeMetrics.implementationCost` | One-time implementation cost ($M) |
-| Annual cost savings | `optimizeMetrics.annualCost` | Recurring savings ($M) — from CSV/screenshots (display only) |
+| Investments (total) | `growMetrics.investmentsTotal` | Total investment in $M (column G) |
+| Investment period | `growMetrics.investmentPeriod` | Years (column H) |
+| In-year investment | `growMetrics.inYearInvestment` | $M per year (column I — from CSV, not derived) |
+| Revenue 1 year | `growMetrics.revenue1Year` | Revenue impact in year 1 ($M) (column J) |
+| 5-year growth | `growMetrics.fiveYearGrowth` | 5-year revenue growth rate (%) (column K) |
+| EBIT margin | `growMetrics.ebitMargin` | Expected EBIT margin (%) (column L) |
 
-**Sustain cards** — fixed inputs per card:
+**Optimize cards** — fixed inputs per card (from CSV columns M–Q):
 
 | Metric | Field / source | Description |
 |--------|----------------|-------------|
-| Investments (total) | `sustainMetrics.investment` or `cost` | Total investment in $M |
-| Investment period | `sustainMetrics.investmentPeriod` or `durationYears` | Years |
-| In-year investment | `sustainMetrics.inYearInvestment` or total ÷ period | $M per year |
-| Implementation cost | `sustainMetrics.implementationCost` | One-time implementation cost ($M) |
-| Annual cost | `sustainMetrics.annualCost` | Recurring cost/savings ($M) |
+| Investments (total) | `optimizeMetrics.investment` | Total investment in $M (column M) |
+| Investment period | `optimizeMetrics.investmentPeriod` | Years (column N) |
+| In-year investment | `optimizeMetrics.inYearInvestment` | $M per year (column O — from CSV, not derived) |
+| Implementation cost | `optimizeMetrics.implementationCost` | One-time implementation cost ($M) (column P) |
+| Annual cost savings | `optimizeMetrics.annualCost` | Recurring savings ($M) (column Q) |
+
+**Sustain cards** — fixed inputs per card (from CSV columns R–V):
+
+| Metric | Field / source | Description |
+|--------|----------------|-------------|
+| Investments (total) | `sustainMetrics.investment` | Total investment in $M (column R) |
+| Investment period | `sustainMetrics.investmentPeriod` | Years (column S) |
+| In-year investment | `sustainMetrics.inYearInvestment` | $M per year (column T — from CSV, not derived) |
+| Implementation cost | `sustainMetrics.implementationCost` | One-time implementation cost ($M) (column U) |
+| Annual cost | `sustainMetrics.annualCost` | Recurring cost/savings ($M) (column V) |
 | Revenue protection | Narrative | Protects against losing business-as-usual revenue; no incremental cash flow when no category metrics |
 
 *The user will feed a screenshot or CSV to update the **metrics and descriptions** shown on decision cards. Those values are **hardcoded inputs**: stored and shown on the front end exactly as supplied. Backend calculation inputs are maintained separately (see Display Data vs. Calculation Data).*
@@ -749,6 +781,7 @@ All key questions have been answered. See relevant sections throughout the PRD.
 8. ✅ **Facilitator access** — Password/PIN protected admin mode
 9. ✅ **Team count** — Configurable 10-20 teams
 10. ✅ **Ranking** — By stock price (highest = rank 1)
+11. ✅ **Decision card display data** — Single CSV source; columns A–V; front/back placement as specified; metrics hard-coded and updated only when PO requests CSV update.
 
 ---
 
@@ -798,3 +831,4 @@ Subcategories include:
 | 0.9 | 2026-02-06 | — | Decisions Excel alignment: source of truth is "Decisions" sheet with row 1 = header, one row per decision; each card must use data from its single row only (no mixing rows). Documented in Decision Card Metrics, Key Technical Decisions, and Decision data import. Example: Decision 2 (Advanced Powertrain R&D Expansion) — total investment $800M, period 3 years, in-year $267M (aligned with Excel). |
 | 0.10 | 2026-02-06 | — | Display data vs. calculation data: Product owner will always feed CSV or screenshots for the front end of decisions; that data is stored and shown on the front end only. Backend calculations (e.g. Julia Gavril's model) are separate—cost, recurringBenefit, impacts maintained independently. New PRD section "Display Data vs. Calculation Data"; Decision Card Metrics reframed as display data; Decision data import and Data Model updated to reflect separation. |
 | 0.11 | 2026-02-06 | — | Clarified that the user will feed a screenshot or CSV to update the metrics and descriptions shown on decision cards; these are hardcoded inputs (not calculated). Updated Display Data vs. Calculation Data, Decision Card Metrics, Key Technical Decisions, Decision data import, and Card front (summary) to state hardcoded inputs and user-supplied CSV/screenshots. |
+| 0.12 | 2026-02-06 | — | Decision card CSV — column specification: added canonical subsection (columns A–V, front/back placement). Display data: in-year from CSV only (no "total ÷ period" for display); update only when PO requests. Resolved Questions Log entry for decision card display data. |

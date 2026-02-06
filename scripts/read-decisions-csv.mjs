@@ -1,18 +1,12 @@
 /**
- * Read decision cards from CSV and write decisions_from_excel_export.json.
- * Use this as the source of truth so metrics on cards match the CSV exactly.
+ * DEPRECATED: Use scripts/import-decisions-from-csv.mjs instead.
+ * That script writes public/decisions.json used by both demo and backend.
  *
- * Total investment by category: column G (Grow), column M (Optimize), column R (Sustain).
+ * This script reads CSV and writes decisions_from_excel_export.json (legacy).
+ * Kept for backward compatibility; new workflow: node scripts/import-decisions-from-csv.mjs
  *
- * CSV column layout (0-based index):
- *   A=0 Round, B=1 Decision#, C=2 Lever, D=3 Name, E=4 Brief, F=5 Detail (back)
- *   G–L Grow:     G=6 Total inv, H=7 Period, I=8 In-year, J=9 Revenue 1yr, K=10 5yr growth %, L=11 EBIT margin %
- *   M–Q Optimize: M=12 Total, N=13 Period, O=14 In-year, P=15 Impl cost, Q=16 Annual cost
- *   R–V Sustain:  R=17 Total, S=18 Period, T=19 In-year, U=20 Impl cost, V=21 Annual cost
- *
- * Set DECISIONS_CSV_PATH to your CSV (row 1 = header, one row per decision). Default: decision_cards_export.csv.
- * Run from project root: node scripts/read-decisions-csv.mjs
- * Then: node scripts/apply-decisions-from-excel.mjs
+ * CSV column layout (0-based): A=0 Round, B=1 Decision#, C=2 Lever, D=3 Name, E=4 Brief, F=5 Detail,
+ *   G–L Grow, M–Q Optimize, R–V Sustain. Set DECISIONS_CSV_PATH to override default.
  */
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -198,4 +192,4 @@ for (let r = 0; r < dataRows.length; r++) {
 
 writeFileSync(outPath, JSON.stringify(records, null, 2));
 console.log('Read', dataRows.length, 'CSV rows, wrote', records.length, 'records to', outPath);
-console.log('Next: node scripts/apply-decisions-from-excel.mjs');
+console.log('Deprecated: prefer node scripts/import-decisions-from-csv.mjs (writes public/decisions.json).');

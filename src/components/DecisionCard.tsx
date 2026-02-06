@@ -85,12 +85,15 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
     setIsExpanded(true);
   };
   
-  // Total investment: from CSV/metrics when available, else decision.cost (Grow/Optimize/Sustain)
+  // Total investment: use category-specific metrics first so each card shows its own data (fixes wrong value when order/merge issues occur)
   const displayInvestment =
-    decision.growMetrics?.investmentsTotal ??
-    decision.optimizeMetrics?.investment ??
-    decision.sustainMetrics?.investment ??
-    decision.cost;
+    decision.category === 'grow' && decision.growMetrics?.investmentsTotal != null
+      ? decision.growMetrics.investmentsTotal
+      : decision.category === 'optimize' && decision.optimizeMetrics?.investment != null
+        ? decision.optimizeMetrics.investment
+        : decision.category === 'sustain' && decision.sustainMetrics?.investment != null
+          ? decision.sustainMetrics.investment
+          : decision.cost;
   // Show "—" for total and in-year whenever total investment is 0 or missing (per CSV/screenshots; all categories)
   const showTotalInvestmentAsDash =
     displayInvestment === 0 || displayInvestment == null;
@@ -143,9 +146,9 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           className
         )}
       >
-        {/* Round (A) and Decision # (B) - Top right, formatted nicely */}
+        {/* Decision # - Top right */}
         <span className="absolute top-2 right-3 text-xs text-slate-400 font-normal">
-          Round {decision.introducedYear} · Decision #{decision.decisionNumber}
+          Decision #{decision.decisionNumber}
         </span>
         
         {/* Selection Indicator */}
@@ -181,11 +184,9 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           <div className="flex items-center gap-1.5 mb-1">
             <DollarSign className="w-5 h-5 text-slate-700" />
             <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
-            {showTotalInvestmentAsDash ? (
-              <span className="text-xl font-bold text-slate-500">—</span>
-            ) : (
-              <span className="text-xl font-bold text-slate-800">${displayInvestment}M</span>
-            )}
+            <span className={cn(showTotalInvestmentAsDash ? 'text-xl font-bold text-slate-500' : 'text-xl font-bold text-slate-800')}>
+              {showTotalInvestmentAsDash ? '—' : `$${formatCurrencyM(displayInvestment)}M`}
+            </span>
           </div>
           <div className="text-sm text-slate-600 pl-6 space-y-0.5">
             <p>
@@ -195,22 +196,18 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
             <p>
               <span className="text-slate-500">In-year investment: </span>
               <span className="font-medium text-slate-700">
-                {showTotalInvestmentAsDash ? '—' : `$${typeof perYearInvestment === 'number' ? perYearInvestment : displayInvestment}M${investmentPeriodYears > 1 ? ' per year' : ''}`}
+                {showTotalInvestmentAsDash ? '—' : `$${formatCurrencyM(perYearInvestment ?? displayInvestment)}M${investmentPeriodYears > 1 ? ' per year' : ''}`}
               </span>
             </p>
-            {hasSustainMetrics && (decision.sustainMetrics!.implementationCost > 0 || decision.sustainMetrics!.annualCost > 0) && (
+            {hasSustainMetrics && (decision.sustainMetrics!.implementationCost != null && decision.sustainMetrics!.implementationCost > 0 || decision.sustainMetrics!.annualCost != null && decision.sustainMetrics!.annualCost > 0) && (
               <>
                 <p>
                   <span className="text-slate-500">Implementation cost: </span>
-                  <span className="font-medium text-slate-700">
-                    {decision.sustainMetrics!.implementationCost > 0 ? `$${decision.sustainMetrics!.implementationCost}M` : '—'}
-                  </span>
+                  <span className="font-medium text-slate-700">${formatCurrencyM(decision.sustainMetrics!.implementationCost)}M</span>
                 </p>
                 <p>
                   <span className="text-slate-500">Annual savings: </span>
-                  <span className="font-medium text-slate-700">
-                    {decision.sustainMetrics!.annualCost > 0 ? `$${decision.sustainMetrics!.annualCost}M` : '—'}
-                  </span>
+                  <span className="font-medium text-slate-700">${formatCurrencyM(decision.sustainMetrics!.annualCost)}M</span>
                 </p>
               </>
             )}
@@ -218,15 +215,11 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
               <>
                 <p>
                   <span className="text-slate-500">Implementation cost: </span>
-                  <span className="font-medium text-slate-700">
-                    {decision.optimizeMetrics!.implementationCost > 0 ? `$${decision.optimizeMetrics!.implementationCost}M` : '—'}
-                  </span>
+                  <span className="font-medium text-slate-700">${formatCurrencyM(decision.optimizeMetrics!.implementationCost)}M</span>
                 </p>
                 <p>
                   <span className="text-slate-500">Annual cost savings: </span>
-                  <span className="font-medium text-slate-700">
-                    {decision.optimizeMetrics!.annualCost > 0 ? `$${decision.optimizeMetrics!.annualCost}M` : '—'}
-                  </span>
+                  <span className="font-medium text-slate-700">${formatCurrencyM(decision.optimizeMetrics!.annualCost)}M</span>
                 </p>
               </>
             )}
@@ -311,10 +304,13 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
 }) => {
   const CategoryIcon = config.icon;
   const displayInvestment =
-    decision.growMetrics?.investmentsTotal ??
-    decision.optimizeMetrics?.investment ??
-    decision.sustainMetrics?.investment ??
-    decision.cost;
+    decision.category === 'grow' && decision.growMetrics?.investmentsTotal != null
+      ? decision.growMetrics.investmentsTotal
+      : decision.category === 'optimize' && decision.optimizeMetrics?.investment != null
+        ? decision.optimizeMetrics.investment
+        : decision.category === 'sustain' && decision.sustainMetrics?.investment != null
+          ? decision.sustainMetrics.investment
+          : decision.cost;
   const investmentPeriodYears =
     decision.growMetrics?.investmentPeriod ??
     decision.optimizeMetrics?.investmentPeriod ??
@@ -360,7 +356,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                 <CategoryIcon className="w-5 h-5" />
                 {config.label}
               </div>
-              <span className="text-sm text-slate-400">Round {decision.introducedYear} · Decision #{decision.decisionNumber}</span>
+              <span className="text-sm text-slate-400">Decision #{decision.decisionNumber}</span>
             </div>
             <button
               onClick={onClose}
@@ -376,17 +372,15 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             <div className="flex flex-col gap-1">
               <div className="flex items-baseline gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
-                {showDashInModal ? (
-                  <span className="text-3xl font-bold text-slate-500">—</span>
-                ) : (
-                  <span className="text-3xl font-bold text-slate-800">${displayInvestment}M</span>
-                )}
+                <span className={cn(showDashInModal ? 'text-slate-500' : 'text-slate-800', 'text-3xl font-bold')}>
+                  {showDashInModal ? '—' : `$${formatCurrencyM(displayInvestment)}M`}
+                </span>
                 <span className="text-slate-500 font-medium">over {investmentPeriodYears} year{investmentPeriodYears > 1 ? 's' : ''}</span>
               </div>
               <p className="text-base text-slate-600">
                 <span className="text-slate-500">In-year investment: </span>
                 <span className="font-semibold text-slate-700">
-                  {showDashInModal ? '—' : `$${perYearInvestment}M${investmentPeriodYears > 1 ? ' per year' : ' this year'}`}
+                  {showDashInModal ? '—' : `$${formatCurrencyM(perYearInvestment)}M${investmentPeriodYears > 1 ? ' per year' : ' this year'}`}
                 </span>
               </p>
             </div>
@@ -420,27 +414,27 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
                   label="Total investment ($M)" 
-                  value={decision.growMetrics.investmentsTotal != null ? `$${decision.growMetrics.investmentsTotal}M` : '—'} 
+                  value={`$${formatCurrencyM(decision.growMetrics.investmentsTotal)}M`} 
                 />
                 <DetailItem 
                   label="Investment period (yrs)" 
-                  value={`${decision.growMetrics.investmentPeriod} year${decision.growMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                  value={decision.growMetrics.investmentPeriod != null ? `${decision.growMetrics.investmentPeriod} year${decision.growMetrics.investmentPeriod > 1 ? 's' : ''}` : '—'} 
                 />
                 <DetailItem 
                   label="In-year investment" 
-                  value={`$${decision.growMetrics.inYearInvestment ?? Math.round(decision.growMetrics.investmentsTotal / decision.growMetrics.investmentPeriod)}M${decision.growMetrics.investmentPeriod > 1 ? ' per year' : ''}`} 
+                  value={`$${formatCurrencyM(decision.growMetrics.inYearInvestment)}M${decision.growMetrics.investmentPeriod && decision.growMetrics.investmentPeriod > 1 ? ' per year' : ''}`} 
                 />
                 <DetailItem 
                   label="Revenue year ($M)" 
-                  value={`$${decision.growMetrics.revenue1Year}M`} 
+                  value={`$${formatCurrencyM(decision.growMetrics.revenue1Year)}M`} 
                 />
                 <DetailItem 
                   label="5-year growth (%)" 
-                  value={`${decision.growMetrics.fiveYearGrowth}% y-o-y`} 
+                  value={formatPercent(decision.growMetrics.fiveYearGrowth) + ' y-o-y'} 
                 />
                 <DetailItem 
                   label="EBIT margin" 
-                  value={`${decision.growMetrics.ebitMargin}%`} 
+                  value={formatPercent(decision.growMetrics.ebitMargin)} 
                 />
               </div>
             )}
@@ -448,7 +442,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
                   label="Investments (total)" 
-                  value={`$${decision.cost}M`} 
+                  value={`$${formatCurrencyM(decision.cost)}M`} 
                 />
                 <DetailItem 
                   label="Investment period" 
@@ -460,21 +454,21 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
                   label="Annual cost savings" 
-                  value={`$${decision.optimizeMetrics.annualCost}M`} 
+                  value={`$${formatCurrencyM(decision.optimizeMetrics.annualCost)}M`} 
                 />
                 <DetailItem 
                   label="Implementation cost" 
-                  value={`$${decision.optimizeMetrics.implementationCost}M`} 
+                  value={`$${formatCurrencyM(decision.optimizeMetrics.implementationCost)}M`} 
                 />
                 <div className="col-span-2 bg-blue-50 border border-blue-200 rounded-xl p-4">
                   <div className="text-sm text-blue-700 mb-1">Investments</div>
                   <div className="text-blue-800 text-2xl font-bold">
-                    ${decision.optimizeMetrics.investment}M
+                    ${formatCurrencyM(decision.optimizeMetrics.investment)}M
                   </div>
                 </div>
                 <DetailItem 
                   label="Investment period" 
-                  value={`${decision.optimizeMetrics.investmentPeriod} year${decision.optimizeMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                  value={decision.optimizeMetrics.investmentPeriod != null ? `${decision.optimizeMetrics.investmentPeriod} year${decision.optimizeMetrics.investmentPeriod > 1 ? 's' : ''}` : '—'} 
                 />
               </div>
             )}
@@ -599,6 +593,25 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }
     <div className="text-slate-800 text-lg font-semibold">{value}</div>
   </div>
 );
+
+// =============================================================================
+// Display formatting (numbers from CSV — formatted for display only)
+// =============================================================================
+
+/** Format $M for display: null/undefined → "—", else e.g. "800" or "1,600" with comma. No minus sign. */
+function formatCurrencyM(value: number | null | undefined): string {
+  if (value == null || Number.isNaN(value)) return '—';
+  const n = Math.round(value);
+  if (n === 0) return '0';
+  return n >= 1000 ? n.toLocaleString() : String(n);
+}
+
+/** Format percent for display: null/undefined → "—", else e.g. "11%". */
+function formatPercent(value: number | null | undefined): string {
+  if (value == null || Number.isNaN(value)) return '—';
+  const rounded = Math.round(value * 10) / 10;
+  return `${rounded}%`;
+}
 
 // =============================================================================
 // Helper Functions

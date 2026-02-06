@@ -292,20 +292,31 @@ export const useGameStore = create<GameStore>()(
 
 /**
  * Returns the in-year investment amount for a decision (used for budget and Selected/Remaining).
- * Uses category metrics when present, else total / period.
+ * Uses category-specific metrics first so values match card display (e.g. Grow uses growMetrics only).
  */
 export function getInYearInvestment(decision: Decision): number {
   const inYearFromMetrics =
-    decision.growMetrics?.inYearInvestment ??
-    decision.optimizeMetrics?.inYearInvestment ??
-    decision.sustainMetrics?.inYearInvestment;
+    decision.category === 'grow' && decision.growMetrics?.inYearInvestment != null
+      ? decision.growMetrics.inYearInvestment
+      : decision.category === 'optimize' && decision.optimizeMetrics?.inYearInvestment != null
+        ? decision.optimizeMetrics.inYearInvestment
+        : decision.category === 'sustain' && decision.sustainMetrics?.inYearInvestment != null
+          ? decision.sustainMetrics.inYearInvestment
+          : null;
   if (inYearFromMetrics != null) return inYearFromMetrics;
   const displayInvestment =
-    decision.growMetrics?.investmentsTotal ??
-    decision.optimizeMetrics?.investment ??
-    decision.sustainMetrics?.investment ??
-    decision.cost;
-  const period = decision.durationYears;
+    decision.category === 'grow' && decision.growMetrics?.investmentsTotal != null
+      ? decision.growMetrics.investmentsTotal
+      : decision.category === 'optimize' && decision.optimizeMetrics?.investment != null
+        ? decision.optimizeMetrics.investment
+        : decision.category === 'sustain' && decision.sustainMetrics?.investment != null
+          ? decision.sustainMetrics.investment
+          : decision.cost;
+  const period =
+    decision.growMetrics?.investmentPeriod ??
+    decision.optimizeMetrics?.investmentPeriod ??
+    decision.sustainMetrics?.investmentPeriod ??
+    decision.durationYears;
   return period > 0 ? Math.round(displayInvestment / period) : displayInvestment;
 }
 

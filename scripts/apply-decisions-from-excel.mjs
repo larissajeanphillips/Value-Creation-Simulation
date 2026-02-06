@@ -1,6 +1,7 @@
 /**
- * Apply decisions_from_excel_export.json to backend/config/decisions.ts
- * Updates name, brief, narrative (detail), cost, introducedYear, durationYears (from investment period), and growMetrics/optimizeMetrics/sustainMetrics by decisionNumber.
+ * DEPRECATED: Backend now loads from public/decisions.json. Use scripts/import-decisions-from-csv.mjs instead.
+ * This script patched backend/config/decisions.ts from decisions_from_excel_export.json; no longer needed.
+ * Kept for reference only.
  */
 import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
