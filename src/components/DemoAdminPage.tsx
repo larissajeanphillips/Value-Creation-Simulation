@@ -79,7 +79,8 @@ export function DemoAdminPage() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [step, goToStep]);
 
-  const stepHref = useCallback((stepIndex: number) => `${getAdminDemoBasePath()}#${stepIndex}`, []);
+  /** Hash-only hrefs (#0–#3) so link navigation is same-document and reliable across hosts. */
+  const stepHref = useCallback((stepIndex: number) => `#${stepIndex}`, []);
 
   return (
     <DemoProvider>

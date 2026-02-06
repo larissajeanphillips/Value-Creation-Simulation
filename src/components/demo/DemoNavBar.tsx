@@ -72,6 +72,7 @@ export function DemoNavBar({
               href={prevHref}
               className={prevClassName}
               aria-label="Previous step"
+              onClick={() => onPrev()}
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -103,6 +104,7 @@ export function DemoNavBar({
               href={nextHref}
               className={nextClassName}
               aria-label="Next step"
+              onClick={() => onNext()}
             >
               Next
               <ChevronRight className="w-4 h-4" />
