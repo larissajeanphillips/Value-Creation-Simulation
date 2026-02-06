@@ -1,7 +1,8 @@
 /**
  * Value Creation Simulation - Decision Cards Configuration
  * 75 total decision cards. Source: CSV or Excel.
- * CSV layout: A=round, B=decision#, C=lever, D=name, E=brief, F=detail; G–L=grow metrics, M–Q=optimize, R–V=sustain.
+ * Excel "Decisions" sheet: row 1 = header (Round, #, Lever, Name, Brief, Detail, [Grow] Tot, [Grow] Inve, [Grow] In-Y, etc.);
+ * each subsequent row = one decision; all metrics and descriptions must match that row only.
  * Run: node scripts/read-decisions-csv.mjs (or read-decisions-excel.mjs) then node scripts/apply-decisions-from-excel.mjs.
  */
 
@@ -54,7 +55,7 @@ const GROW_DECISIONS: Decision[] = [
     introducedYear: 1,
     type: 'organic',
     guidingPrinciple: '1. Grow profitably',
-    durationYears: 2,
+    durationYears: 3,
     rampUpYears: 3,
     isOneTimeBenefit: false,
     revenueImpact: 0.03,
@@ -64,7 +65,7 @@ const GROW_DECISIONS: Decision[] = [
       fiveYearGrowth: 5,
       investmentsTotal: 800,
       investmentPeriod: 3,
-      inYearInvestment: 266.67,
+      inYearInvestment: 267,
       ebitMargin: 11,
     },
 
