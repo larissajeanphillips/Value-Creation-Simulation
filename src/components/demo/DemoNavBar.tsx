@@ -31,9 +31,11 @@ export function DemoNavBar({
   return (
     <div
       className={cn(
-        'fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-t border-slate-200 shadow-lg',
+        'fixed bottom-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur border-t border-slate-200 shadow-lg pointer-events-auto',
         className
       )}
+      role="navigation"
+      aria-label="Demo steps"
     >
       <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <a

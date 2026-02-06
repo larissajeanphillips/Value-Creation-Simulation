@@ -527,46 +527,74 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
               <BarChart3 className="w-4 h-4 text-magna-ignition-red" />
               End of Year Performance
             </h2>
-            <div className="grid grid-cols-4 gap-4 text-center">
+            <div className="space-y-4">
+              {/* Growth */}
               <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Revenue Growth</div>
-                <div className={cn("text-lg font-bold", derivedMetrics.revenueGrowth >= 0 ? "text-emerald-600" : "text-red-600")}>
-                  {formatPercent(derivedMetrics.revenueGrowth)}
+                <div className="text-[10px] font-semibold text-magna-cool-gray uppercase tracking-wider mb-2">Growth</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Revenue Growth</div>
+                    <div className={cn("text-lg font-bold", derivedMetrics.revenueGrowth >= 0 ? "text-emerald-600" : "text-red-600")}>
+                      {formatPercent(derivedMetrics.revenueGrowth)}
+                    </div>
+                  </div>
+                  <div className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Growth over Market</div>
+                    <div className={cn("text-lg font-bold", derivedMetrics.growthOverMarket >= 0.02 && derivedMetrics.growthOverMarket <= 0.04 ? "text-emerald-600" : derivedMetrics.growthOverMarket < 0.02 ? "text-amber-600" : "text-red-600")}>
+                      {formatPercent(derivedMetrics.growthOverMarket)}
+                    </div>
+                  </div>
                 </div>
               </div>
+              {/* Profitability */}
               <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Growth over Market</div>
-                <div className={cn("text-lg font-bold", derivedMetrics.growthOverMarket >= 0.02 && derivedMetrics.growthOverMarket <= 0.04 ? "text-emerald-600" : derivedMetrics.growthOverMarket < 0.02 ? "text-amber-600" : "text-red-600")}>
-                  {formatPercent(derivedMetrics.growthOverMarket)}
+                <div className="text-[10px] font-semibold text-magna-cool-gray uppercase tracking-wider mb-2">Profitability</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EBIT Margin</div>
+                    <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.ebitMargin, false)}</div>
+                  </div>
+                  <div className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">ROIC</div>
+                    <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.roic, false)}</div>
+                  </div>
                 </div>
               </div>
+              {/* Efficiency */}
               <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EBIT Margin</div>
-                <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.ebitMargin, false)}</div>
+                <div className="text-[10px] font-semibold text-magna-cool-gray uppercase tracking-wider mb-2">Efficiency</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">CapEx to Sales</div>
+                    <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(derivedMetrics.capexToSales, false)}</div>
+                  </div>
+                  <div className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">FCF Conversion</div>
+                    <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(derivedMetrics.fcfConversion, false)}</div>
+                  </div>
+                </div>
               </div>
+              {/* Valuation */}
               <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">ROIC</div>
-                <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(team.metrics.roic, false)}</div>
+                <div className="text-[10px] font-semibold text-magna-cool-gray uppercase tracking-wider mb-2">Valuation</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Share Price</div>
+                    <div className="text-lg font-bold text-magna-carbon-black">${team.stockPrice.toFixed(2)}</div>
+                  </div>
+                  <div className="text-center py-2 bg-slate-50 rounded-lg">
+                    <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EV/EBIT</div>
+                    <div className="text-lg font-bold text-magna-carbon-black">{derivedMetrics.evToEbit.toFixed(1)}x</div>
+                  </div>
+                </div>
               </div>
+              {/* Cash Flow */}
               <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">CapEx to Sales</div>
-                <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(derivedMetrics.capexToSales, false)}</div>
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">FCF Conversion</div>
-                <div className="text-lg font-bold text-magna-carbon-black">{formatPercent(derivedMetrics.fcfConversion, false)}</div>
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Share Price</div>
-                <div className="text-lg font-bold text-magna-carbon-black">${team.stockPrice.toFixed(2)}</div>
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">EV/EBIT</div>
-                <div className="text-lg font-bold text-magna-carbon-black">{derivedMetrics.evToEbit.toFixed(1)}x</div>
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Operating FCF</div>
-                <div className="text-lg font-bold text-magna-carbon-black">{formatCurrency(team.metrics.operatingFCF)}</div>
+                <div className="text-[10px] font-semibold text-magna-cool-gray uppercase tracking-wider mb-2">Cash Flow</div>
+                <div className="text-center py-2 bg-slate-50 rounded-lg">
+                  <div className="text-xs font-semibold text-magna-cool-gray uppercase mb-1">Operating FCF</div>
+                  <div className="text-lg font-bold text-magna-carbon-black">{formatCurrency(team.metrics.operatingFCF)}</div>
+                </div>
               </div>
             </div>
           </div>

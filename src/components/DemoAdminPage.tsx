@@ -31,7 +31,7 @@ export function DemoAdminPage() {
 
   return (
     <DemoProvider>
-      <div className="min-h-screen bg-slate-100 pb-20">
+      <div className="relative z-0 min-h-screen bg-slate-100 pb-20">
         {step === 0 && (
           <AdminDashboard
             onOpenFramework={() => setStep(1)}
