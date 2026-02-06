@@ -13,6 +13,8 @@ interface DemoNavBarProps {
   totalSteps: number;
   onPrev: () => void;
   onNext: () => void;
+  /** When set, Next/Prev render as links to this href so navigation works even if onClick is blocked. */
+  stepHref?: (stepIndex: number) => string;
   backHref?: string;
   backLabel?: string;
   className?: string;
@@ -23,12 +25,29 @@ export function DemoNavBar({
   totalSteps,
   onPrev,
   onNext,
+  stepHref,
   backHref = '/demo/admin',
   backLabel = 'Back to demo',
   className,
 }: DemoNavBarProps) {
   const isFirst = currentStep <= 0;
   const isLast = currentStep >= totalSteps - 1;
+
+  const prevHref = stepHref?.(currentStep - 1);
+  const nextHref = stepHref?.(currentStep + 1);
+
+  const prevClassName = cn(
+    'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
+    isFirst
+      ? 'text-slate-300 cursor-not-allowed pointer-events-none'
+      : 'text-slate-700 bg-slate-100 hover:bg-slate-200'
+  );
+  const nextClassName = cn(
+    'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
+    isLast
+      ? 'text-slate-300 cursor-not-allowed pointer-events-none'
+      : 'text-white bg-magna-red hover:bg-magna-red-dark'
+  );
 
   const navContent = (
     <div
@@ -48,43 +67,65 @@ export function DemoNavBar({
           {backLabel}
         </a>
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onPrev();
-            }}
-            disabled={isFirst}
-            className={cn(
-              'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
-              isFirst
-                ? 'text-slate-300 cursor-not-allowed'
-                : 'text-slate-700 bg-slate-100 hover:bg-slate-200'
-            )}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </button>
+          {stepHref && !isFirst ? (
+            <a
+              href={prevHref}
+              className={prevClassName}
+              aria-label="Previous step"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </a>
+          ) : stepHref && isFirst ? (
+            <span className={prevClassName} aria-disabled="true">
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPrev();
+              }}
+              disabled={isFirst}
+              className={prevClassName}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </button>
+          )}
           <span className="text-slate-600 text-sm font-medium min-w-[6rem] text-center">
             Step {currentStep + 1} of {totalSteps}
           </span>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onNext();
-            }}
-            disabled={isLast}
-            className={cn(
-              'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
-              isLast
-                ? 'text-slate-300 cursor-not-allowed'
-                : 'text-white bg-magna-red hover:bg-magna-red-dark'
-            )}
-          >
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          {stepHref && !isLast ? (
+            <a
+              href={nextHref}
+              className={nextClassName}
+              aria-label="Next step"
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </a>
+          ) : stepHref && isLast ? (
+            <span className={nextClassName} aria-disabled="true">
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onNext();
+              }}
+              disabled={isLast}
+              className={nextClassName}
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </div>
