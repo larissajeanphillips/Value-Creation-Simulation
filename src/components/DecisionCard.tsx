@@ -91,6 +91,12 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
     decision.optimizeMetrics?.investment ??
     decision.sustainMetrics?.investment ??
     decision.cost;
+  // Sustain: some cards have no total investment but have implementation cost + annual savings (show as —)
+  const hasSustainMetrics = decision.category === 'sustain' && decision.sustainMetrics;
+  const showTotalInvestmentAsDash =
+    hasSustainMetrics &&
+    (decision.sustainMetrics!.investment === 0 || decision.sustainMetrics!.investment == null) &&
+    (decision.sustainMetrics!.implementationCost > 0 || decision.sustainMetrics!.annualCost > 0);
   // Investment period: from CSV/metrics when present (so card matches source), else backend durationYears
   const investmentPeriodYears =
     decision.growMetrics?.investmentPeriod ??
@@ -168,7 +174,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           {decision.name}
         </h3>
         
-        {/* Investment: total, period, in-year (front of card). Always visible so users know cost and why they can't purchase when greyed out. */}
+        {/* Investment: total, period, in-year (front of card). Sustain also shows Implementation cost & Annual savings when present. */}
         <div className={cn(
           "mb-3",
           isDisabled && !isSelected && "rounded-xl bg-white/80 p-3 border border-slate-200"
@@ -176,17 +182,39 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           <div className="flex items-center gap-1.5 mb-1">
             <DollarSign className="w-5 h-5 text-slate-700" />
             <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
-            <span className="text-xl font-bold text-slate-800">${displayInvestment}M</span>
+            {showTotalInvestmentAsDash ? (
+              <span className="text-xl font-bold text-slate-500">—</span>
+            ) : (
+              <span className="text-xl font-bold text-slate-800">${displayInvestment}M</span>
+            )}
           </div>
           <div className="text-sm text-slate-600 pl-6 space-y-0.5">
             <p>
-              <span className="text-slate-500">Period: </span>
+              <span className="text-slate-500">Investment period: </span>
               <span className="font-medium text-slate-700">{investmentPeriodYears} year{investmentPeriodYears !== 1 ? 's' : ''}</span>
             </p>
             <p>
               <span className="text-slate-500">In-year investment: </span>
-              <span className="font-medium text-slate-700">${typeof perYearInvestment === 'number' ? perYearInvestment : displayInvestment}M{investmentPeriodYears > 1 ? ' per year' : ''}</span>
+              <span className="font-medium text-slate-700">
+                {showTotalInvestmentAsDash ? '—' : `$${typeof perYearInvestment === 'number' ? perYearInvestment : displayInvestment}M${investmentPeriodYears > 1 ? ' per year' : ''}`}
+              </span>
             </p>
+            {hasSustainMetrics && (decision.sustainMetrics!.implementationCost > 0 || decision.sustainMetrics!.annualCost > 0) && (
+              <>
+                <p>
+                  <span className="text-slate-500">Implementation cost: </span>
+                  <span className="font-medium text-slate-700">
+                    {decision.sustainMetrics!.implementationCost > 0 ? `$${decision.sustainMetrics!.implementationCost}M` : '—'}
+                  </span>
+                </p>
+                <p>
+                  <span className="text-slate-500">Annual savings: </span>
+                  <span className="font-medium text-slate-700">
+                    {decision.sustainMetrics!.annualCost > 0 ? `$${decision.sustainMetrics!.annualCost}M` : '—'}
+                  </span>
+                </p>
+              </>
+            )}
           </div>
           {isDisabled && !isSelected && disabledReason === 'affordability' && (
             <p className="mt-2 pt-2 border-t border-slate-200 text-sm font-medium text-amber-700">
@@ -284,6 +312,11 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
   const perYearInvestment =
     inYearFromMetrics ??
     (investmentPeriodYears > 0 ? Math.round(displayInvestment / investmentPeriodYears) : displayInvestment);
+  const sustainNoTotalInvestment =
+    decision.category === 'sustain' &&
+    decision.sustainMetrics &&
+    (decision.sustainMetrics.investment === 0 || decision.sustainMetrics.investment == null) &&
+    (decision.sustainMetrics.implementationCost > 0 || decision.sustainMetrics.annualCost > 0);
 
   return (
     <div 
@@ -325,12 +358,18 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             <div className="flex flex-col gap-1">
               <div className="flex items-baseline gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
-                <span className="text-3xl font-bold text-slate-800">${displayInvestment}M</span>
+                {sustainNoTotalInvestment ? (
+                  <span className="text-3xl font-bold text-slate-500">—</span>
+                ) : (
+                  <span className="text-3xl font-bold text-slate-800">${displayInvestment}M</span>
+                )}
                 <span className="text-slate-500 font-medium">over {investmentPeriodYears} year{investmentPeriodYears > 1 ? 's' : ''}</span>
               </div>
               <p className="text-base text-slate-600">
                 <span className="text-slate-500">In-year investment: </span>
-                <span className="font-semibold text-slate-700">${perYearInvestment}M{investmentPeriodYears > 1 ? ' per year' : ' this year'}</span>
+                <span className="font-semibold text-slate-700">
+                  {sustainNoTotalInvestment ? '—' : `$${perYearInvestment}M${investmentPeriodYears > 1 ? ' per year' : ' this year'}`}
+                </span>
               </p>
             </div>
           </div>
@@ -442,22 +481,35 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             {decision.category === 'sustain' && decision.sustainMetrics && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
-                  label="Annual cost savings" 
-                  value={`$${decision.sustainMetrics.annualCost}M`} 
+                  label="Total investment ($M)" 
+                  value={
+                    (decision.sustainMetrics.investment === 0 || decision.sustainMetrics.investment == null) &&
+                    (decision.sustainMetrics.implementationCost > 0 || decision.sustainMetrics.annualCost > 0)
+                      ? '—'
+                      : `$${decision.sustainMetrics.investment}M`
+                  } 
                 />
                 <DetailItem 
-                  label="Implementation cost" 
-                  value={`$${decision.sustainMetrics.implementationCost}M`} 
-                />
-                <div className="col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-4">
-                  <div className="text-sm text-amber-700 mb-1">Investments</div>
-                  <div className="text-amber-800 text-2xl font-bold">
-                    ${decision.sustainMetrics.investment}M
-                  </div>
-                </div>
-                <DetailItem 
-                  label="Investment period" 
+                  label="Investment period (yrs)" 
                   value={`${decision.sustainMetrics.investmentPeriod} year${decision.sustainMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+                <DetailItem 
+                  label="In-year investment ($M)" 
+                  value={
+                    sustainNoTotalInvestment
+                      ? '—'
+                      : decision.sustainMetrics.inYearInvestment != null
+                        ? `$${decision.sustainMetrics.inYearInvestment}M`
+                        : `$${Math.round((decision.sustainMetrics.investment ?? 0) / Math.max(1, decision.sustainMetrics.investmentPeriod))}M`
+                  } 
+                />
+                <DetailItem 
+                  label="Implementation cost ($M)" 
+                  value={decision.sustainMetrics.implementationCost > 0 ? `$${decision.sustainMetrics.implementationCost}M` : '—'} 
+                />
+                <DetailItem 
+                  label="Annual savings ($M)" 
+                  value={decision.sustainMetrics.annualCost > 0 ? `$${decision.sustainMetrics.annualCost}M` : '—'} 
                 />
               </div>
             )}
