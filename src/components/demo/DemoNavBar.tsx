@@ -1,8 +1,10 @@
 /**
  * DemoNavBar - Floating Prev / Step X of N / Next bar for click-through demos.
+ * Rendered via portal so it always stays on top and receives clicks (avoids stacking-context issues on Framework/Scoreboard steps).
  */
 
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -28,10 +30,10 @@ export function DemoNavBar({
   const isFirst = currentStep <= 0;
   const isLast = currentStep >= totalSteps - 1;
 
-  return (
+  const navContent = (
     <div
       className={cn(
-        'fixed bottom-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur border-t border-slate-200 shadow-lg pointer-events-auto',
+        'fixed bottom-0 left-0 right-0 z-[9999] bg-white/95 backdrop-blur border-t border-slate-200 shadow-lg pointer-events-auto',
         className
       )}
       role="navigation"
@@ -48,7 +50,10 @@ export function DemoNavBar({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={onPrev}
+            onClick={(e) => {
+              e.stopPropagation();
+              onPrev();
+            }}
             disabled={isFirst}
             className={cn(
               'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
@@ -65,7 +70,10 @@ export function DemoNavBar({
           </span>
           <button
             type="button"
-            onClick={onNext}
+            onClick={(e) => {
+              e.stopPropagation();
+              onNext();
+            }}
             disabled={isLast}
             className={cn(
               'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
@@ -81,4 +89,8 @@ export function DemoNavBar({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(navContent, document.body)
+    : navContent;
 }
