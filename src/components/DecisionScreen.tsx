@@ -32,6 +32,7 @@ import { cn } from '@/lib/utils';
 import { useGameStore, useCurrentTeam, useRemainingBudget, useSelectedCost, getInYearInvestment } from '@/stores/gameStore';
 import { useSocket } from '@/hooks/useSocket';
 import { useFinancials } from '@/hooks/useFinancials';
+import { useDemo } from '@/components/demo/DemoContext';
 import { DecisionCard } from './DecisionCard';
 import { MagnaLogo } from './MagnaLogo';
 import { FinancialDashboard } from './FinancialDashboard';
@@ -90,7 +91,26 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
   const financialMetrics = useFinancials();
   
   const { submitDecisions, unsubmitDecisions, syncDraftSelections } = useSocket();
-  
+  const { isDemo } = useDemo();
+  const setAvailableDecisions = useGameStore((s) => s.setAvailableDecisions);
+  const isConnected = useGameStore((s) => s.isConnected);
+
+  // In live mode: always sync decisions from backend when this screen is shown so cards reflect backend values
+  useEffect(() => {
+    if (isDemo) return;
+    const round = gameState?.currentRound;
+    if (!round || round < 1 || round > 5 || !isConnected) return;
+    const apiBase = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+    fetch(`${apiBase}/api/decisions/${round}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(res.statusText))))
+      .then((decisions: Decision[]) => {
+        if (Array.isArray(decisions) && decisions.length > 0) {
+          setAvailableDecisions(decisions);
+        }
+      })
+      .catch((err) => console.warn('[DecisionScreen] Failed to sync decisions from backend', err));
+  }, [isDemo, gameState?.currentRound, isConnected, setAvailableDecisions]);
+
   // Sync draft selections to backend whenever they change (for auto-submit on timeout)
   useEffect(() => {
     // Only sync if we have a connection and haven't submitted
