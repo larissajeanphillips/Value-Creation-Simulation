@@ -776,7 +776,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     rampUpYears: 2,
     isOneTimeBenefit: false,
     cogsImpact: -0.01,
-    recurringBenefit: 60,
+    recurringBenefit: 40,
     optimizeMetrics: {
       implementationCost: 0,
       investment: 120,
@@ -831,7 +831,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     cogsImpact: 0.005,
     riskPrevention: 'supply_chain_disruption',
-    recurringBenefit: 30,
+    recurringBenefit: 80,
     optimizeMetrics: {
       implementationCost: 2,
       investment: 0,
@@ -859,7 +859,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     isOneTimeBenefit: false,
     sgaImpact: -0.01,
     cogsImpact: -0.005,
-    recurringBenefit: 50,
+    recurringBenefit: 40,
     optimizeMetrics: {
       implementationCost: 0,
       investment: 120,
@@ -886,7 +886,7 @@ const OPTIMIZE_DECISIONS: Decision[] = [
     rampUpYears: 1,
     isOneTimeBenefit: false,
     sgaImpact: -0.015,
-    recurringBenefit: 35,
+    recurringBenefit: 40,
     optimizeMetrics: {
       implementationCost: 1,
       investment: 0,

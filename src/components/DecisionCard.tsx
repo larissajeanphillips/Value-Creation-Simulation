@@ -91,12 +91,16 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
     decision.optimizeMetrics?.investment ??
     decision.sustainMetrics?.investment ??
     decision.cost;
-  // Sustain: some cards have no total investment but have implementation cost + annual savings (show as —)
+  // Sustain/Optimize: some cards have no total investment but have implementation cost + annual savings (show as —)
   const hasSustainMetrics = decision.category === 'sustain' && decision.sustainMetrics;
+  const hasOptimizeMetrics = decision.category === 'optimize' && decision.optimizeMetrics;
   const showTotalInvestmentAsDash =
-    hasSustainMetrics &&
-    (decision.sustainMetrics!.investment === 0 || decision.sustainMetrics!.investment == null) &&
-    (decision.sustainMetrics!.implementationCost > 0 || decision.sustainMetrics!.annualCost > 0);
+    (hasSustainMetrics &&
+      (decision.sustainMetrics!.investment === 0 || decision.sustainMetrics!.investment == null) &&
+      (decision.sustainMetrics!.implementationCost > 0 || decision.sustainMetrics!.annualCost > 0)) ||
+    (hasOptimizeMetrics &&
+      (decision.optimizeMetrics!.investment === 0 || decision.optimizeMetrics!.investment == null) &&
+      (decision.optimizeMetrics!.implementationCost > 0 || decision.optimizeMetrics!.annualCost > 0));
   // Investment period: from CSV/metrics when present (so card matches source), else backend durationYears
   const investmentPeriodYears =
     decision.growMetrics?.investmentPeriod ??
@@ -317,6 +321,12 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
     decision.sustainMetrics &&
     (decision.sustainMetrics.investment === 0 || decision.sustainMetrics.investment == null) &&
     (decision.sustainMetrics.implementationCost > 0 || decision.sustainMetrics.annualCost > 0);
+  const optimizeNoTotalInvestment =
+    decision.category === 'optimize' &&
+    decision.optimizeMetrics &&
+    (decision.optimizeMetrics.investment === 0 || decision.optimizeMetrics.investment == null) &&
+    (decision.optimizeMetrics.implementationCost > 0 || decision.optimizeMetrics.annualCost > 0);
+  const showDashInModal = sustainNoTotalInvestment || optimizeNoTotalInvestment;
 
   return (
     <div 
@@ -358,7 +368,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             <div className="flex flex-col gap-1">
               <div className="flex items-baseline gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Total investment</span>
-                {sustainNoTotalInvestment ? (
+                {showDashInModal ? (
                   <span className="text-3xl font-bold text-slate-500">—</span>
                 ) : (
                   <span className="text-3xl font-bold text-slate-800">${displayInvestment}M</span>
@@ -368,7 +378,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
               <p className="text-base text-slate-600">
                 <span className="text-slate-500">In-year investment: </span>
                 <span className="font-semibold text-slate-700">
-                  {sustainNoTotalInvestment ? '—' : `$${perYearInvestment}M${investmentPeriodYears > 1 ? ' per year' : ' this year'}`}
+                  {showDashInModal ? '—' : `$${perYearInvestment}M${investmentPeriodYears > 1 ? ' per year' : ' this year'}`}
                 </span>
               </p>
             </div>
@@ -611,8 +621,10 @@ function getImpactSummary(
     if (decision.cogsImpact) {
       impacts.push(`COGS -${Math.abs(decision.cogsImpact * 100).toFixed(0)}%`);
     }
-    if (decision.recurringBenefit) {
-      impacts.push(`$${decision.recurringBenefit}M savings`);
+    // Use CSV/annual cost savings when available so card matches source data
+    const savings = decision.optimizeMetrics?.annualCost ?? decision.recurringBenefit;
+    if (savings) {
+      impacts.push(`$${savings}M savings`);
     }
   } else if (decision.category === 'sustain') {
     impacts.push(investLabel);
