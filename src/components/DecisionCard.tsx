@@ -217,7 +217,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         <div className="flex items-center justify-between pt-3 border-t border-slate-200">
           <div className="flex items-center gap-1 text-sm text-slate-700">
             <Clock className="w-4 h-4" />
-            <span className="font-medium">{decision.durationYears} year{decision.durationYears > 1 ? 's' : ''}</span> investment period
+            <span className="font-medium">{investmentPeriodYears} year{investmentPeriodYears > 1 ? 's' : ''}</span> investment period
           </div>
           
           <button
@@ -382,6 +382,10 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                 <DetailItem 
                   label="Investment period" 
                   value={`${decision.growMetrics.investmentPeriod} year${decision.growMetrics.investmentPeriod > 1 ? 's' : ''}`} 
+                />
+                <DetailItem 
+                  label="In-year investment" 
+                  value={`$${decision.growMetrics.inYearInvestment ?? Math.round(decision.growMetrics.investmentsTotal / decision.growMetrics.investmentPeriod)}M per year`} 
                 />
               </div>
             )}
