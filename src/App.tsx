@@ -7,7 +7,7 @@
  * Routes (requires backend server):
  * - / - Team interface (default)
  * - /admin - Facilitator control panel
- * - /demo - Player demo (no backend). /demo/admin - Facilitator demo links.
+ * - /demo - Player demo (no backend). /demo/admin - Facilitator admin walkthrough. /demo/admin/links - Facilitator demo links.
  * 
  * Display Routes (for big screen presentation):
  * - /display - Display Hub - landing page for AV teams
@@ -106,14 +106,19 @@ function getRouteFromURL(): { route: Route; displayRound: number } {
     return { route: 'admin', displayRound: 1 };
   }
 
-  // /demo/admin/walkthrough - Admin click-through demo (no PIN, no backend)
-  if (path === '/demo/admin/walkthrough' || path === '/demo/admin/walkthrough/') {
-    return { route: 'demo-admin', displayRound: 1 };
+  // /demo/admin/links - Facilitator demo links page (list of all demo/display links)
+  if (path === '/demo/admin/links' || path === '/demo/admin/links/') {
+    return { route: 'demo', displayRound: 1 };
   }
 
-  // /demo/admin - Facilitator demo links (no game start required)
-  if (path === '/demo/admin' || path === '/demo/admin/') {
-    return { route: 'demo', displayRound: 1 };
+  // /demo/admin and /demo/admin/walkthrough - Admin walkthrough (Dashboard → Framework → Scoreboard → Agenda)
+  if (
+    path === '/demo/admin' ||
+    path === '/demo/admin/' ||
+    path === '/demo/admin/walkthrough' ||
+    path === '/demo/admin/walkthrough/'
+  ) {
+    return { route: 'demo-admin', displayRound: 1 };
   }
 
   // /demo or /demo/player (legacy) - Player click-through demo

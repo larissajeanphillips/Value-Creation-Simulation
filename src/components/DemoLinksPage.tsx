@@ -3,7 +3,7 @@
  *
  * Single page for facilitators (e.g. Phil) to explore the simulation tool.
  * Lists all display and admin links—no game start required.
- * Access via: /demo/admin
+ * Access via: /demo/admin/links
  */
 
 import React from 'react';
@@ -69,7 +69,7 @@ const DEMO_LINKS: DemoLink[] = [
   {
     title: 'Admin click-through demo',
     description: 'Click through facilitator screens (no PIN, no backend)',
-    path: '/demo/admin/walkthrough',
+    path: '/demo/admin',
     icon: <Settings className="w-5 h-5" />,
   },
   {

@@ -48,8 +48,8 @@ export function DemoAdminPage() {
         totalSteps={ADMIN_DEMO_STEPS}
         onPrev={handlePrev}
         onNext={handleNext}
-        backHref="/demo/admin"
-        backLabel="Back to demo"
+        backHref="/demo/admin/links"
+        backLabel="All demo links"
       />
     </DemoProvider>
   );

@@ -31,7 +31,7 @@ import {
   Award,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useGameStore, useCurrentTeam, useRemainingBudget, useSelectedCost } from '@/stores/gameStore';
+import { useGameStore, useCurrentTeam, useRemainingBudget, useSelectedCost, getInYearInvestment } from '@/stores/gameStore';
 import { useSocket } from '@/hooks/useSocket';
 import { useFinancials } from '@/hooks/useFinancials';
 import { DecisionCard } from './DecisionCard';
@@ -598,27 +598,25 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
           <FinancialDashboard 
             metrics={financialMetrics}
             year={2025}
-            variant="compact"
+            variant="expanded"
           />
         </div>
         
-        {/* Category Sections */}
+        {/* Category Sections - all cards always visible for player */}
         {(['grow', 'optimize', 'sustain'] as DecisionCategory[]).map((category) => {
           const config = CATEGORY_CONFIG[category];
           const Icon = config.icon;
           const decisions = decisionsByCategory[category];
-          const isExpanded = expandedCategories.has(category);
           const selectedInCategory = decisions.filter((d) => selectedDecisionIds.has(d.id)).length;
           
           return (
             <div key={category} className="mb-6">
-              {/* Category Header */}
-              <button
-                onClick={() => toggleCategory(category)}
+              {/* Category Header (non-collapsible so all cards stay visible) */}
+              <div
                 className={cn(
-                  "w-full flex items-center justify-between p-5 rounded-xl transition-colors",
+                  "w-full flex items-center justify-between p-5 rounded-xl",
                   "bg-white shadow-sm",
-                  "border border-slate-200 hover:border-slate-300"
+                  "border border-slate-200"
                 )}
               >
                 <div className="flex items-center gap-4">
@@ -649,40 +647,34 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-slate-700 text-base">{decisions.length} options</span>
-                  {isExpanded ? (
-                    <ChevronUp className="w-6 h-6 text-slate-400" />
-                  ) : (
-                    <ChevronDown className="w-6 h-6 text-slate-400" />
-                  )}
                 </div>
-              </button>
+              </div>
               
-              {/* Decision Cards Grid */}
-              {isExpanded && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mt-4">
-                  {decisions.map((decision) => {
-                    const isSelected = selectedDecisionIds.has(decision.id);
-                    const canAfford = remainingBudget >= decision.cost || isSelected;
-                    const isDisabled = !canAfford || hasSubmitted;
-                    const disabledReason = isDisabled
-                      ? !canAfford
-                        ? 'affordability'
-                        : 'submitted'
-                      : undefined;
+              {/* Decision Cards Grid - always shown */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mt-4">
+                {decisions.map((decision) => {
+                  const isSelected = selectedDecisionIds.has(decision.id);
+                  const inYearAmount = getInYearInvestment(decision);
+                  const canAfford = remainingBudget >= inYearAmount || isSelected;
+                  const isDisabled = !canAfford || hasSubmitted;
+                  const disabledReason = isDisabled
+                    ? !canAfford
+                      ? 'affordability'
+                      : 'submitted'
+                    : undefined;
 
-                    return (
-                      <DecisionCard
-                        key={decision.id}
-                        decision={decision}
-                        isSelected={isSelected}
-                        isDisabled={isDisabled}
-                        disabledReason={disabledReason}
-                        onToggle={() => handleToggleDecision(decision.id)}
-                      />
-                    );
-                  })}
-                </div>
-              )}
+                  return (
+                    <DecisionCard
+                      key={decision.id}
+                      decision={decision}
+                      isSelected={isSelected}
+                      isDisabled={isDisabled}
+                      disabledReason={disabledReason}
+                      onToggle={() => handleToggleDecision(decision.id)}
+                    />
+                  );
+                })}
+              </div>
             </div>
           );
         })}

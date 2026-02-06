@@ -287,6 +287,29 @@ export const useGameStore = create<GameStore>()(
 );
 
 // =============================================================================
+// Helpers
+// =============================================================================
+
+/**
+ * Returns the in-year investment amount for a decision (used for budget and Selected/Remaining).
+ * Uses category metrics when present, else total / period.
+ */
+export function getInYearInvestment(decision: Decision): number {
+  const inYearFromMetrics =
+    decision.growMetrics?.inYearInvestment ??
+    decision.optimizeMetrics?.inYearInvestment ??
+    decision.sustainMetrics?.inYearInvestment;
+  if (inYearFromMetrics != null) return inYearFromMetrics;
+  const displayInvestment =
+    decision.growMetrics?.investmentsTotal ??
+    decision.optimizeMetrics?.investment ??
+    decision.sustainMetrics?.investment ??
+    decision.cost;
+  const period = decision.durationYears;
+  return period > 0 ? Math.round(displayInvestment / period) : displayInvestment;
+}
+
+// =============================================================================
 // Selectors
 // =============================================================================
 
@@ -316,7 +339,7 @@ export function useCurrentRound(): RoundNumber {
 }
 
 /**
- * Calculates total cost of selected decisions
+ * Calculates total in-year investment of selected decisions (used for Selected and Remaining).
  */
 export function useSelectedCost(): number {
   const selectedIds = useGameStore((s) => s.selectedDecisionIds);
@@ -325,7 +348,7 @@ export function useSelectedCost(): number {
   let total = 0;
   for (const id of selectedIds) {
     const decision = decisions.find((d) => d.id === id);
-    if (decision) total += decision.cost;
+    if (decision) total += getInYearInvestment(decision);
   }
   return total;
 }
