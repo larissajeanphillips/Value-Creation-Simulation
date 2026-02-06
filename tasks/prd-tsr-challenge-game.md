@@ -1,8 +1,8 @@
-# PRD: Magna TSR Challenge — Interactive Capital Allocation Game
+# PRD: Value Creation Simulation
 
 ## Introduction
 
-The **Magna TSR Challenge** is a live simulation game for Magna International's global leadership meeting in March 2026. Approximately 150 leaders (15 teams of 10) will compete as "CEOs" making capital allocation decisions across 5 rounds (representing fiscal years 2026-2030). The game teaches Total Shareholder Return (TSR) drivers through experiential learning, with the winner determined by cumulative shareholder value creation from 2026-2035.
+The **Value Creation Simulation** is a live simulation game for Magna International's global leadership meeting in March 2026. Approximately 150 leaders (15 teams of 10) will compete as "CEOs" making capital allocation decisions across 5 rounds (representing fiscal years 2026-2030). The game teaches Total Shareholder Return (TSR) drivers through experiential learning, with the winner determined by cumulative shareholder value creation from 2026-2035.
 
 ### Problem Statement
 
@@ -55,16 +55,15 @@ The game reinforces Magna's strategic framework through experiential learning:
 
 ### KPI Scorecard
 
-Teams will be assessed against Magna's Financial Framework targets:
+Magna's Financial Framework (2025 Strategy) defines six target financial metrics: **Growth over Market** (2–4%), **EBIT Margin** (10%+), **CapEx to Sales** (4–4.5%), **FCF Conversion** (>70%), **ROIC** (15%+), and **EPS Growth** (10%). In this simulation we assess only the five metrics below. We do not actively test CapEx to Sales (or debt-related metrics) because the game simplifies with **fixed assumptions for debt and capex**; those levers are held constant so teams focus on capital allocation and operating decisions.
 
 | KPI | Target | Assessment Criteria |
 |-----|--------|---------------------|
-| **Growth over Market** | 2-4% | 🟢 On target / 🟡 Below target / 🔴 Chasing volume unsustainably |
 | **EBIT Margin** | ≥10% | 🟢 ≥10% / 🟡 8-10% / 🔴 <8% |
-| **CapEx to Sales** | 4-4.5% | 🟢 In range / 🟡 Under-investing / 🔴 Over-investing |
-| **FCF Conversion** | >70% | 🟢 ≥70% / 🟡 50-70% / 🔴 <50% |
+| **Free Cash Flow Conversion** | >70% | 🟢 ≥70% / 🟡 50-70% / 🔴 <50% |
 | **ROIC** | ≥15% | 🟢 ≥15% / 🟡 12-15% / 🔴 <12% |
-| **Debt / EBITDA** | 1.0-1.5x | 🟢 In range / 🔴 Overleveraged or under-leveraged |
+| **EPS Growth** | ≥10% | 🟢 ≥10% / 🟡 5-10% / 🔴 <5% |
+| **Revenue Growth** | 2-4% | 🟢 On target / 🟡 Below target / 🔴 Negative or chasing volume unsustainably |
 
 ---
 
