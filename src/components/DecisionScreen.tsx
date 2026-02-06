@@ -19,8 +19,6 @@ import {
   Send,
   CheckCircle2,
   Loader2,
-  ChevronDown,
-  ChevronUp,
   Pencil,
   HelpCircle,
   X,
@@ -71,9 +69,6 @@ const CATEGORY_CONFIG: Record<DecisionCategory, {
 };
 
 export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCountdownShowing = false }) => {
-  const [expandedCategories, setExpandedCategories] = useState<Set<DecisionCategory>>(
-    new Set(['grow', 'optimize', 'sustain'])
-  );
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showOneMinuteWarning, setShowOneMinuteWarning] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -153,17 +148,6 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
     const seconds = displayTime % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }, [displayTime]);
-  
-  // Toggle category expansion
-  const toggleCategory = (category: DecisionCategory) => {
-    const newExpanded = new Set(expandedCategories);
-    if (newExpanded.has(category)) {
-      newExpanded.delete(category);
-    } else {
-      newExpanded.add(category);
-    }
-    setExpandedCategories(newExpanded);
-  };
   
   // Handle decision toggle
   const handleToggleDecision = (decisionId: string) => {
@@ -598,7 +582,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
           <FinancialDashboard 
             metrics={financialMetrics}
             year={2025}
-            variant="expanded"
+            variant="compact"
           />
         </div>
         
