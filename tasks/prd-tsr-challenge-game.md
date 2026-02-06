@@ -128,27 +128,6 @@ Two key Grow decisions in Round 2 test diversification learning:
 
 ---
 
-## Risky Decision Outcomes (Pre-Determined)
-
-Risky decisions have a ~20% failure rate. The following outcomes are **pre-determined** for consistency:
-
-| Decision | Round | Category | Projected Outcome | **Actual Outcome** | Rationale |
-|----------|-------|----------|-------------------|-------------------|-----------|
-| Southeast Asia Market Entry | 1 | Grow | +$120M/yr | ✅ **Succeeds** (+$100M/yr) | Execution slightly below plan but viable |
-| Autonomous Driving Systems Unit | 1 | Grow | +$180M/yr | ❌ **Fails** (-$50M/yr) | Technology pivot required; investment lost |
-| Software-Defined Vehicle Platform | 2 | Grow | +$200M/yr | ✅ **Succeeds** (+$220M/yr) | Industry adoption exceeds expectations |
-| Distressed Competitor Acquisition | 3 | Grow | +$250M/yr | ✅ **Succeeds** (+$200M/yr) | Integration challenges reduce synergies |
-| Chinese OEM Partnership | 3 | Grow | +$180M/yr | ❌ **Fails** (-$80M/yr) | Geopolitical tensions force exit |
-| Vehicle-to-Grid Services Business | 3 | Grow | +$60M/yr | ✅ **Succeeds** (+$40M/yr) | Slower market development |
-| Solid-State Battery Research | 3 | Grow | +$120M/yr | ✅ **Succeeds** (+$150M/yr) | Breakthrough accelerates timeline |
-| Hydrogen Fuel Cell Alliance | 4 | Grow | +$50M/yr | ✅ **Succeeds** (+$30M/yr) | Modest returns as expected |
-| Deep Cost Restructuring | 4 | Optimize | +$150M/yr | ✅ **Succeeds** (+$130M/yr) | Some capability damage but net positive |
-| Minimum Viable Maintenance | 4 | Sustain | Risk prevention | ❌ **Fails** (Equipment failure: -$100M) | Deferred maintenance catches up |
-
-**Summary:** 3 of 10 risky decisions fail (30% failure rate), teaching that high-risk bets should be selective.
-
----
-
 ## Game Structure
 
 ### Overview
@@ -173,18 +152,17 @@ Risky decisions have a ~20% failure rate. The following outcomes are **pre-deter
 
 ### Decision System
 
-**75 total unique decision cards** organized into 3 categories:
+**75+ unique decision cards** organized into 3 categories:
 
 | Category | Total Cards | Per Round | Description | Examples |
 |----------|-------------|-----------|-------------|----------|
-| **Grow** | 25 | 5 | Large strategic commitments to expand capacity, enter new markets, or acquire | New geography expansion, OEM tooling commitments, bolt-on acquisitions, JV partnerships |
+| **Grow** | 25+ | 5+ | Large strategic commitments to expand capacity, enter new markets, or acquire | New geography expansion, OEM tooling commitments, bolt-on acquisitions, JV partnerships |
 | **Optimize** | 25 | 5 | ROI-driven projects for efficiency and margin improvement | Factory automation, footprint consolidation, dual-sourcing, digital transformation |
 | **Sustain** | 25 | 5 | Non-discretionary investments to maintain operations | Mandatory equipment, compliance, workforce retention, safety |
 
 **Card Availability per Round:**
 - **15 cards available each round** (5 Grow + 5 Optimize + 5 Sustain)
 - Different cards appear in different rounds (based on "Introduced Year" attribute)
-- Some cards may be **flagged as risky** — these have probability-based outcomes
 
 Each decision card has attributes:
 - **Guiding Principle** (which strategic principle it relates to)
@@ -194,35 +172,95 @@ Each decision card has attributes:
 - **Decision Type** (Organic / Inorganic)
 - **Introduced Year** (which round it becomes available: 1-5)
 - **Impact Magnitude** (1-5 scale)
-- **Risky Flag** (boolean — if true, has probabilistic outcome)
+- **Category-specific metrics** — fixed inputs per card drive display and calculation; see [Decision Card Metrics (Fixed Inputs)](#decision-card-metrics-fixed-inputs)
+
+### Decision Card Metrics (Fixed Inputs)
+
+All metrics shown on decision cards are **fixed inputs** per card (sourced from Excel/CSV and applied via the decision pipeline). The tables below define the exact fields displayed and used for calculation by category. Values are to be supplied per decision (see pipeline and backend config).
+
+**Grow cards** — fixed inputs per card:
+
+| Metric | Field / source | Description |
+|--------|----------------|-------------|
+| Investments (total) | `growMetrics.investmentsTotal` or `cost` | Total investment in $M |
+| Investment period | `growMetrics.investmentPeriod` or `durationYears` | Years over which investment is spent |
+| In-year investment | `growMetrics.inYearInvestment` or total ÷ period | $M per year |
+| Revenue 1 year | `growMetrics.revenue1Year` | Revenue impact in year 1 ($M) |
+| 5-year growth | `growMetrics.fiveYearGrowth` | 5-year revenue growth rate (%) |
+| EBIT margin | `growMetrics.ebitMargin` | Expected EBIT margin (%) |
+
+**Optimize cards** — fixed inputs per card:
+
+| Metric | Field / source | Description |
+|--------|----------------|-------------|
+| Investments (total) | `optimizeMetrics.investment` or `cost` | Total investment in $M |
+| Investment period | `optimizeMetrics.investmentPeriod` or `durationYears` | Years |
+| In-year investment | `optimizeMetrics.inYearInvestment` or total ÷ period | $M per year |
+| Implementation cost | `optimizeMetrics.implementationCost` | One-time implementation cost ($M) |
+| Annual cost savings | `optimizeMetrics.annualCostSavings` | Recurring savings ($M) |
+
+**Sustain cards** — fixed inputs per card:
+
+| Metric | Field / source | Description |
+|--------|----------------|-------------|
+| Investments (total) | `sustainMetrics.investment` or `cost` | Total investment in $M |
+| Investment period | `sustainMetrics.investmentPeriod` or `durationYears` | Years |
+| In-year investment | `sustainMetrics.inYearInvestment` or total ÷ period | $M per year |
+| Implementation cost | `sustainMetrics.implementationCost` | One-time implementation cost ($M) |
+| Annual cost | `sustainMetrics.annualCost` | Recurring cost/savings ($M) |
+| Revenue protection | Narrative | Protects against losing business-as-usual revenue; no incremental cash flow when no category metrics |
+
+*Product owner will provide the complete set of fixed input values per decision for card display and backend calculation.*
+
+### Decision Card Design (UI)
+
+**Card front (summary):**
+- **Decision number** — e.g. "Decision #1" (top right)
+- **Category badge** — Grow (emerald) / Optimize (blue) / Sustain (amber) with icon
+- **Name** — decision title
+- **Total investment** — $XM, with **Period** (N years) and **In-year investment** ($YM per year)
+- **Business case** — brief (from Excel/`brief`) or first sentence of narrative
+- **Impact badges** — short labels (e.g. "$400M/yr", "COGS -1%", "Protects revenue")
+- **Footer** — investment period summary + "View business case" (opens expanded view)
+- **Disabled state** — when unaffordable: muted styling and "Exceeds available funds — cannot select"
+
+**Card back / expanded modal:**
+- **Header** — category badge, Decision #, close button; name and total investment + period + in-year investment
+- **Business case** — full narrative; note "Modeled assumptions; actual outcomes may differ."
+- **Expected outcomes** — category-specific metrics from fixed inputs (Grow: Revenue 1 year, 5-year growth, EBIT margin, Investments total, Investment period; Optimize/Sustain: Annual cost/savings, Implementation cost, Investments, Investment period). Sustain cards without category metrics show "No incremental cash flow created" and "Revenue Protection" narrative.
+- **Actions** — Close; Select Investment / Remove Selection (or "Cannot Afford" when disabled)
+
+**Selection state:** Selected cards show checkmark, category-colored border and tint; select/deselect updates remaining cash.
 
 ### Constraints & Mechanics
 
-- **Capital constraint:** Teams have limited free cash flow each round (after dividends and buybacks)
-- **Decision limits:** Each round limits the number of investment decisions teams can make
-- **Multi-year investments:** See Investment Duration Model below
-- **Probabilistic returns:** Returns depend on market conditions and scenario evolution
+- **Capital constraint:** Teams have limited free cash flow each round (after dividends and buybacks). Teams may select multiple decisions up to their available cash only; there is no per-round cap on the *number* of decisions.
+- **Multi-year investments:** See Investment Duration Model below (investments can span 1, 2, 3 or more years as specified on each card).
+- **Scenario-dependent returns:** Decision outcomes are multiplied by scenario modifiers (cost pressure, recession, recovery) so returns depend on market conditions and round.
 
 ### Investment Duration Model
 
-Investments follow a **one-time cost + recurring benefit** pattern:
+Investments follow a **multi-year cost + recurring benefit** pattern. **Investment period is not limited to 2 years**; cards can specify 1, 2, 3 or more years of investment (cost spread over that period).
 
 | Aspect | Detail |
 |--------|--------|
-| **Duration** | 1 or 2 years (specified on each card) |
-| **Cost timing** | One-time, paid in the round the decision is made |
-| **Benefit timing** | Recurring; may take 1-3 years to fully ramp up |
-| **Exception** | Divestitures provide one-time benefit (sale proceeds) |
+| **Duration** | 1, 2, 3 or more years (specified on each card via investment period / duration) |
+| **Cost timing** | Cost is spread over the investment period (e.g. $400M/yr for 2 years; $333M/yr for 3 years) |
+| **Benefit timing** | Recurring; may take 1-3 years to fully ramp up after investment |
+| **Exception** | Divestitures provide one-time benefit (sale proceeds); some cards have 0 investment period |
 
 **Example patterns:**
 - **1-year investment:** Pay $200M in Year 1 → +$50M/year recurring benefit starting Year 2
 - **2-year investment:** Pay $300M in Year 1, $200M in Year 2 → +$100M/year recurring benefit starting Year 3
+- **3-year investment:** Pay $267M in Year 1, $267M in Year 2, $266M in Year 3 → +$80M/year recurring benefit ramping in Years 2–4
 - **Divestiture:** Receive $500M one-time in Year 1, lose $30M/year recurring revenue
 
-**Ramp-up:** Some investments have gradual impact:
-- Year 1: 30% of full impact
-- Year 2: 70% of full impact  
-- Year 3+: 100% of full impact
+**Ramp-up:** Impact ramps by **ramp-up length** (1, 2, or 3 years) per card (`rampUpYears`):
+- **1-year ramp:** 100% of full impact in year 1.
+- **2-year ramp:** 50% in year 1, 100% in year 2.
+- **3-year ramp:** Year 1: 30%, Year 2: 70%, Year 3+: 100%.
+
+Backend uses these schedules in `backend/calculation-engine.ts` (`RAMP_UP_SCHEDULE` and `calculateRampUpFactor`).
 
 ### Scenario Modifiers
 
@@ -243,12 +281,6 @@ Scenarios apply **category-specific multipliers** to decision outcomes:
 - **Sustain** investments prove valuable in recession (avoiding catastrophic failures)
 - Recovery rewards **Grow** (positioned for upturn)
 
-### Risk / Chance Mechanic
-
-- **Risky bet cards:** Optional high-risk/high-reward decisions with ~20% chance of negative outcome
-- **Implementation:** Only 1 of 5 risky events actually triggers across the game
-- **Purpose:** Adds realism without punishing fundamentally good strategy
-
 ---
 
 ## User Stories
@@ -260,8 +292,8 @@ Scenarios apply **category-specific multipliers** to decision outcomes:
 - [ ] Team sees their current cash balance prominently displayed
 - [ ] Team sees remaining time in the round (countdown timer)
 - [ ] Team can browse decisions by category (Grow / Optimize / Sustain)
-- [ ] Each decision card shows: name, cost, brief description
-- [ ] Team can "flip" card to see detailed narrative and expected impact
+- [ ] Each decision card shows: name, total investment, period, in-year investment, business case brief, impact badges
+- [ ] Team can expand card to see full narrative and category-specific expected outcomes (Grow/Optimize/Sustain metrics)
 - [ ] Team can select/deselect decisions (selections update remaining cash)
 - [ ] Team cannot exceed available cash (visual warning if attempted)
 - [ ] Team can submit final decisions before timer expires
@@ -349,12 +381,11 @@ Scenarios apply **category-specific multipliers** to decision outcomes:
 - **FR-7:** System shall track each team's available cash (FCF) and prevent overspending
 - **FR-8:** System shall allow teams to select multiple decisions up to their cash limit
 - **FR-9:** System shall record all team decisions with timestamps
-- **FR-21:** System shall visually indicate which decisions are flagged as "risky"
 
 ### Scoring & Results
 - **FR-10:** System shall calculate team financial metrics after each round based on decisions made and scenario conditions
 - **FR-11:** System shall calculate stock price / TSR based on financial metrics
-- **FR-12:** System shall rank teams by cumulative TSR after each round
+- **FR-12:** System shall rank teams by stock price (highest share price = rank 1) after each round and for final results
 - **FR-13:** System shall simulate years 2031-2035 after Round 5 using team's ending position and auto-pilot logic
 - **FR-14:** System shall apply scenario modifiers (cost pressure, recession, recovery) to decision outcomes based on current round
 
@@ -363,11 +394,6 @@ Scenarios apply **category-specific multipliers** to decision outcomes:
 - **FR-16:** Facilitator shall be able to: start game, start round, pause round, resume round, end round, trigger events
 - **FR-17:** Facilitator actions shall propagate to all team clients in real-time
 - **FR-22:** Facilitator shall be able to configure number of teams (10-20) before game starts
-
-### Probabilistic Elements
-- **FR-18:** System shall support "risky" decision cards with probability-based outcomes
-- **FR-19:** System shall pre-determine which risky events trigger (1 of 5) at game start
-- **FR-20:** Risky outcomes shall be revealed during round results
 
 ---
 
@@ -410,10 +436,12 @@ Scenarios apply **category-specific multipliers** to decision outcomes:
    - Selected cards highlighted with running total
    - "Submit Decisions" button
 
-4. **Card Detail View**
-   - Flip animation or modal
-   - Full narrative, impact details, cost
-   - Select/deselect toggle
+4. **Card Detail View (Expanded Modal)**
+   - Modal with category-colored header
+   - Full narrative (business case), note that outcomes are modeled
+   - Category-specific expected outcomes from fixed inputs (Grow: revenue 1yr, 5yr growth, EBIT margin, investments total/period; Optimize/Sustain: annual cost/savings, implementation cost, investments, period)
+   - Total investment, period, in-year investment
+   - Close; Select Investment / Remove Selection (or Cannot Afford when unaffordable)
 
 5. **Round Results Screen**
    - Key metrics with delta indicators (↑↓)
@@ -491,10 +519,9 @@ interface Decision {
   introducedYear: number;          // 1-5, which round this card appears
   type: 'organic' | 'inorganic';
   guidingPrinciple: string;
-  isRisky: boolean;                // if true, has probabilistic outcome
   
   // Duration & Timing
-  durationYears: 1 | 2;            // how many years of cost commitment
+  durationYears: number;           // how many years of cost commitment (1, 2, 3 or more)
   rampUpYears: 1 | 2 | 3;          // years until full impact realized
   isOneTimeBenefit: boolean;       // true for divestitures
   
@@ -604,10 +631,10 @@ All financial calculation inputs are **fixed in the backend** and must not be ov
 | Cost of equity (forward price) | 9.3% | `COST_OF_EQUITY` in `backend/consolidation-engine.ts` (used only for Forward Price: share_price × (1 + COST_OF_EQUITY)) |
 | Invested capital (ROIC) | 40% of revenue | Hardcoded in `calculateROIC()` in `backend/calculation-engine.ts` |
 | DCF projection years | 10 | `DCF_PROJECTION_YEARS` in `backend/calculation-engine.ts` |
-| Ramp-up schedule (3-year) | Year 1: 30%, Year 2: 70%, Year 3: 100% | `RAMP_UP_SCHEDULE` in `backend/calculation-engine.ts` |
+| Ramp-up schedule | 1-yr: 100% in yr1; 2-yr: 50% then 100%; 3-yr: 30% / 70% / 100% | `RAMP_UP_SCHEDULE` and `calculateRampUpFactor` in `backend/calculation-engine.ts` |
 | Investor expectations noise | ±5% on NPV | `INVESTOR_NOISE_FACTOR` in `backend/calculation-engine.ts` |
 | Stock price bounds | 0.5× to 2× starting price | `MIN_STOCK_PRICE_MULTIPLIER`, `MAX_STOCK_PRICE_MULTIPLIER` in `backend/calculation-engine.ts` |
-| Starting investment cash per round | $1,200M | `STARTING_INVESTMENT_CASH` in `backend/config/baseline-financials.ts` |
+| Starting investment cash (round 1) | $1,200M | `STARTING_INVESTMENT_CASH` in `backend/config/baseline-financials.ts`; used for round 1; thereafter FCF varies by outcomes |
 
 Baseline financials (revenue, COGS, SG&A, depreciation, amortization, capex, shares outstanding, etc.) are fixed in `BASELINE_FINANCIALS` in `backend/config/baseline-financials.ts`.
 
@@ -656,14 +683,14 @@ The following formulas are implemented in [Value Creation Simulation](https://gi
 - **Cumulative TSR** uses the same TSR formula with cumulative dividends per share from game start.
 
 **Decision impacts (per decision, then summed):**
-- **Revenue change** = Base revenue × decision revenueImpact × scenario category multiplier × ramp-up factor. If risky and triggered: reverse and apply 0.5×.
+- **Revenue change** = Base revenue × decision revenueImpact × scenario category multiplier × ramp-up factor.
 - **COGS change** = Base COGS × decision cogsImpact × category multiplier × ramp-up factor.
 - **SG&A change** = Base SG&A × decision sgaImpact × category multiplier × ramp-up factor.
 - **Capex change** = Decision cost / duration years (only in years where cost is still paid).
 - **One-time benefit** = From decision (e.g. divestiture) × category multiplier, only in year 1 when applicable.
-- **Ramp-up:** 1-year: 100% in year 1; 2-year: 50% then 100%; 3-year: 30% / 70% / 100%.
+- **Ramp-up:** By `rampUpYears` (1, 2, or 3): 1-year → 100% in year 1; 2-year → 50% then 100%; 3-year → 30% / 70% / 100%. Investment period (duration) can be 1, 2, 3 or more years; cost is spread over that period.
 
-**Ranking:** Teams are ranked by **stock price** (highest = rank 1). Round and final results use this.
+**Ranking:** Teams are ranked by **stock price** (highest share price = rank 1). Round and final results use this.
 
 **Final simulation (2031–2035):** FCF grows at terminal growth rate (2%); dividends at 25% of FCF; share price grows with FCF and small random factor; same stock price bounds; final TSR = (final price − starting price + total dividends) / starting price.
 
@@ -693,11 +720,11 @@ All key questions have been answered. See relevant sections throughout the PRD.
 3. ✅ **Scoring formula** — Based on NPV increase, with noise from investor expectations
 4. ✅ **Decision impacts** — Grow→Revenue, Optimize→Costs, Sustain→Risk prevention
 5. ✅ **Scenario modifiers** — Category-specific (Grow hit harder in recession than Optimize)
-6. ✅ **Risky cards** — Flagged within the 75 decisions
-7. ✅ **Card availability** — 15 cards per round (5 Grow / 5 Optimize / 5 Sustain)
-8. ✅ **Multi-year decisions** — 1-2 year durations; one-time costs with recurring benefits
-9. ✅ **Facilitator access** — Password/PIN protected admin mode
-10. ✅ **Team count** — Configurable 10-20 teams
+6. ✅ **Card availability** — 15 cards per round (5 Grow / 5 Optimize / 5 Sustain)
+7. ✅ **Multi-year decisions** — Investment period can be 1, 2, 3 or more years (specified per card); costs spread over period; ramp-up by rampUpYears (1/2/3) with fixed schedules.
+8. ✅ **Facilitator access** — Password/PIN protected admin mode
+9. ✅ **Team count** — Configurable 10-20 teams
+10. ✅ **Ranking** — By stock price (highest = rank 1)
 
 ---
 
@@ -742,3 +769,5 @@ Subcategories include:
 | 0.4 | 2026-02-05 | — | Fixed inputs corrected: WACC 8% (was 7.5%), net debt $7,765M (was $8,574M). Values pulled from where WACC is set to 8% in code: baseline-financials.ts, consolidation-engine.ts, bau-engine.ts. Backend in this repo updated so calculation-engine and baseline-financials use 8% and $7,765M consistently. |
 | 0.5 | 2026-02-05 | — | Added capex maintenance 4% of revenue and cost of equity (9% baseline, 9.3% for forward price) to Fixed Inputs table. |
 | 0.6 | 2026-02-06 | — | Added Production URLs (Vercel) section: base https://value-creation-simulation.vercel.app with live admin, live player, live display, and demo links as single source of truth. |
+| 0.7 | 2026-02-06 | — | Decision card logic: added Decision Card Metrics (by category) and Decision Card Design (UI) sections; Grow/Optimize/Sustain metrics (investments total, period, in-year, category-specific). Multi-year investments: investment period can be 1, 2, 3 or more years (no longer limited to 2); updated Investment Duration Model, Data Model, user stories, and Resolved Questions Log. |
+| 0.8 | 2026-02-06 | — | Removed risk/risky flag entirely from PRD and decision logic. Consolidated decision logic: ranking by stock price (FR-12); ramp-up by rampUpYears (1/2/3) with all three schedules documented; decision limits = cash only; starting cash $1,200M clarified as round 1 only (FCF varies thereafter). Added Decision Card Metrics (Fixed Inputs) section with placeholder for product-owner-supplied values per card. Removed Risky Decision Outcomes, Risk/Chance Mechanic, FR-18/19/20/21, isRisky from Data Model, risky from backend formulas and Resolved Questions. |

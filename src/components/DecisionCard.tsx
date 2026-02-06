@@ -4,7 +4,7 @@
  * Displays a single investment decision card with:
  * - Front: Name, cost, brief description, category badge
  * - Back (expanded): Full narrative, impact details, guiding principle
- * - States: available, selected, disabled, risky
+ * - States: available, selected, disabled
  */
 
 import React, { useState } from 'react';
@@ -12,7 +12,6 @@ import {
   TrendingUp, 
   Settings, 
   Shield, 
-  AlertTriangle,
   Check,
   ChevronRight,
   Clock,
@@ -86,15 +85,19 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
     setIsExpanded(true);
   };
   
-  // Total investment: category-specific total when available, else decision.cost
+  // Total investment: from CSV/metrics (column G for grow, etc.) when available, else decision.cost
   const displayInvestment =
     decision.growMetrics?.investmentsTotal ??
     decision.optimizeMetrics?.investment ??
     decision.sustainMetrics?.investment ??
     decision.cost;
-  // Investment period = backend durationYears (same as calculation engine: cost / durationYears per year)
-  const investmentPeriodYears = decision.durationYears;
-  // In-year investment: from Excel metrics when present, else total / period
+  // Investment period: from CSV/metrics when present (so card matches source), else backend durationYears
+  const investmentPeriodYears =
+    decision.growMetrics?.investmentPeriod ??
+    decision.optimizeMetrics?.investmentPeriod ??
+    decision.sustainMetrics?.investmentPeriod ??
+    decision.durationYears;
+  // In-year investment: from CSV/metrics (column I) when present, else total / period
   const inYearFromMetrics =
     decision.growMetrics?.inYearInvestment ??
     decision.optimizeMetrics?.inYearInvestment ??
@@ -147,14 +150,6 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
             `bg-${config.accentColor}-500`
           )}>
             <Check className="w-5 h-5 text-white" />
-          </div>
-        )}
-        
-        {/* Risky Badge */}
-        {decision.isRisky && (
-          <div className="absolute top-8 right-3 flex items-center gap-1 px-2 py-1 bg-red-100 rounded-full">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
-            <span className="text-sm font-medium text-red-600">Risky</span>
           </div>
         )}
         
@@ -277,7 +272,11 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
     decision.optimizeMetrics?.investment ??
     decision.sustainMetrics?.investment ??
     decision.cost;
-  const investmentPeriodYears = decision.durationYears;
+  const investmentPeriodYears =
+    decision.growMetrics?.investmentPeriod ??
+    decision.optimizeMetrics?.investmentPeriod ??
+    decision.sustainMetrics?.investmentPeriod ??
+    decision.durationYears;
   const inYearFromMetrics =
     decision.growMetrics?.inYearInvestment ??
     decision.optimizeMetrics?.inYearInvestment ??
@@ -334,12 +333,6 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                 <span className="font-semibold text-slate-700">${perYearInvestment}M{investmentPeriodYears > 1 ? ' per year' : ' this year'}</span>
               </p>
             </div>
-            {decision.isRisky && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 rounded-full">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
-                <span className="text-base font-semibold text-red-600">Risky Investment</span>
-              </div>
-            )}
           </div>
         </div>
         

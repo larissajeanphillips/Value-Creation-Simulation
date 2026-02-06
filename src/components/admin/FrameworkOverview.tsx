@@ -333,7 +333,7 @@ const LandingView: React.FC<{ onNavigate: (view: DetailView) => void }> = ({ onN
     {
       id: 'events' as DetailView,
       title: 'Events & Risk Outcomes',
-      description: 'Special events, bait cards, and pre-determined risky decision outcomes',
+      description: 'Special events and bait cards test diversification and risk management',
       icon: Zap,
       bgColor: 'bg-red-50',
       borderColor: 'border-red-200',
@@ -723,7 +723,7 @@ const EventsView: React.FC = () => {
   return (
     <div>
       <h2 className="text-3xl font-bold text-slate-800 mb-2">Events & Risk Outcomes</h2>
-      <p className="text-slate-600 mb-8">Special events and pre-determined outcomes for risky decisions.</p>
+      <p className="text-slate-600 mb-8">Special events and bait cards test whether teams have built resilience through diversification.</p>
 
       {/* Special Events */}
       <div className="mb-12">
@@ -789,7 +789,7 @@ const EventsView: React.FC = () => {
           Risky Decision Outcomes (Pre-Determined)
         </h3>
         <p className="text-slate-600 text-sm mb-4">
-          3 of 10 risky decisions fail (30% failure rate) - teaching that high-risk bets should be selective.
+          Scenario multipliers and diversification teach capital allocation trade-offs.
         </p>
         <div className="bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden">
           <table className="w-full">

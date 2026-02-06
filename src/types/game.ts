@@ -73,9 +73,6 @@ export interface Decision {
   /** Which strategic principle this decision relates to */
   guidingPrinciple: string;
   
-  /** If true, has probabilistic outcome (~20% chance of negative) */
-  isRisky: boolean;
-  
   // Duration & Timing
   /** How many years of cost commitment (1 or 2) */
   durationYears: DurationYears;
@@ -362,17 +359,6 @@ export interface ScenarioState {
 }
 
 /**
- * RiskyEventState - Pre-determined risky event outcomes
- */
-export interface RiskyEventState {
-  /** Map of decision IDs to whether their risky outcome triggered */
-  triggeredEvents: Record<string, boolean>;
-  
-  /** Which event (1 of 5) actually triggers negative outcome */
-  activeEventIndex: number;
-}
-
-/**
  * GameState - Complete state of the game
  * This is the authoritative state held by the server
  */
@@ -394,9 +380,6 @@ export interface GameState {
   
   /** Current scenario state */
   scenario: ScenarioState;
-  
-  /** Pre-determined risky event outcomes */
-  riskyEvents: RiskyEventState;
   
   /** Configured number of teams (10-20) */
   teamCount: number;
@@ -569,12 +552,6 @@ export interface RoundResults {
   round: RoundNumber;
   scenarioNarrative: string;
   teamResults: TeamRoundResult[];
-  riskyOutcomes: Array<{
-    decisionId: string;
-    decisionName: string;
-    triggered: boolean;
-    impact: string;
-  }>;
   /** Dynamic market outlook with backward/forward looking statements */
   marketOutlook: MarketOutlook;
 }

@@ -10,7 +10,6 @@ import type {
   TeamState,
   TeamDecision,
   ScenarioState,
-  RiskyEventState,
   Decision,
   RoundResults,
   FinalResults,
@@ -108,7 +107,6 @@ export class GameStateManager {
       roundDuration: this.roundDuration,
       teams: this.createTeamStates(DEFAULT_GAME_CONFIG.teamCount),
       scenario: createScenarioState(1),
-      riskyEvents: this.createRiskyEventState(),
       teamCount: DEFAULT_GAME_CONFIG.teamCount,
       startedAt: undefined,
       roundStartedAt: undefined,
@@ -155,20 +153,6 @@ export class GameStateManager {
    */
   private generateReconnectToken(): string {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  }
-
-  /**
-   * Creates risky event state with pre-determined outcomes
-   * 1 of 5 risky decisions triggers negative outcome
-   */
-  private createRiskyEventState(): RiskyEventState {
-    // Pre-determine which event index will trigger (0-4)
-    const activeEventIndex = Math.floor(Math.random() * 5);
-    
-    return {
-      triggeredEvents: {},
-      activeEventIndex,
-    };
   }
 
   // ===========================================================================
@@ -1026,8 +1010,7 @@ export class GameStateManager {
       this.state.teams = calculateRoundEnd(
         this.state.teams,
         this.state.currentRound,
-        this.state.scenario.modifiers,
-        this.state.riskyEvents
+        this.state.scenario.modifiers
       );
     }
 
@@ -1046,7 +1029,6 @@ export class GameStateManager {
       this.state.teams,
       this.state.currentRound,
       this.state.scenario.narrative,
-      this.state.riskyEvents,
       marketOutlook,
       this.roundHistories
     );
@@ -1207,7 +1189,6 @@ export class GameStateManager {
     // Include team histories for Game Recap feature
     this.lastFinalResults = generateFinalResults(
       this.state.teams,
-      this.state.riskyEvents,
       this.roundHistories
     );
 

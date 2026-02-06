@@ -1,6 +1,6 @@
 /**
  * Apply decisions_from_excel_export.json to backend/config/decisions.ts
- * Updates name, brief, narrative (detail), cost, introducedYear, and growMetrics/optimizeMetrics/sustainMetrics by decisionNumber.
+ * Updates name, brief, narrative (detail), cost, introducedYear, durationYears (from investment period), and growMetrics/optimizeMetrics/sustainMetrics by decisionNumber.
  */
 import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -80,6 +80,8 @@ while ((match = decisionBlockRegex.exec(content)) !== null) {
   const narrative = escapeTsStr(data.detail);
   const cost = data.cost ?? 0;
   const introducedYear = data.introducedYear ?? 1;
+  const durationYears = data.grow?.investmentPeriod ?? data.optimize?.investmentPeriod ?? data.sustain?.investmentPeriod;
+  const durationYearsVal = durationYears !== undefined && durationYears !== null ? Math.max(1, Math.min(2, Math.round(durationYears))) : undefined;
   let newMetrics = '';
   if (data.grow) newMetrics = formatGrowMetrics(data.grow);
   else if (data.optimize) newMetrics = formatOptimizeMetrics(data.optimize);
@@ -92,9 +94,13 @@ while ((match = decisionBlockRegex.exec(content)) !== null) {
     : `name: ${name},\n    narrative: ${narrative},\n    cost: ${cost},`;
   const metricsRegex = /(growMetrics|optimizeMetrics|sustainMetrics):\s*\{[^}]*(?:\{[^}]*\}[^}])*\},/;
   const introducedYearRegex = /introducedYear:\s*\d+,/;
+  const durationYearsRegex = /durationYears:\s*[12],/;
   let newBlock = fullBlock.replace(nameNarrCostRegex, nameNarrCostRepl);
   newBlock = newBlock.replace(metricsRegex, newMetrics + ',');
   newBlock = newBlock.replace(introducedYearRegex, `introducedYear: ${introducedYear},`);
+  if (durationYearsVal !== undefined) {
+    newBlock = newBlock.replace(durationYearsRegex, `durationYears: ${durationYearsVal},`);
+  }
   replacements.push({ num, old: fullBlock, new: newBlock });
 }
 

@@ -53,7 +53,6 @@ const gameManager = initializeGameStateManager({
       io.emit('round-end', roundResults);
       console.log(`[Game] Round ${state.currentRound} results calculated:`);
       console.log(`  - Teams ranked: ${roundResults.teamResults.length}`);
-      console.log(`  - Risky outcomes: ${roundResults.riskyOutcomes.length}`);
       if (roundResults.teamResults.length > 0) {
         const leader = roundResults.teamResults[0];
         console.log(`  - Leader: Team ${leader.teamId} with ${(leader.cumulativeTSR * 100).toFixed(2)}% TSR`);

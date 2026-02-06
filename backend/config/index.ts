@@ -34,7 +34,6 @@ export {
   getDecisionsForRound,
   getDecisionsByCategory,
   getDecisionById,
-  getRiskyDecisions,
   validateDecisionConfiguration,
 } from './decisions.js';
 

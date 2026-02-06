@@ -21,7 +21,6 @@ import type {
   FinancialMetrics,
   ScenarioModifiers,
   RoundNumber,
-  RiskyEventState,
   TeamRoundResult,
   RoundResults,
   FinalTeamResult,
@@ -79,7 +78,6 @@ interface DecisionImpact {
   capexChange: number;        // Additional capex from investment
   oneTimeBenefit: number;     // One-time cash benefit (divestitures)
   rampUpFactor: number;       // Current ramp-up factor (0.3, 0.7, or 1.0)
-  isRiskyTriggered: boolean;  // Whether this risky decision had negative outcome
 }
 
 interface CalculatedMetrics extends FinancialMetrics {
@@ -103,13 +101,11 @@ interface ActiveInvestment {
  * - The decision's base impact values
  * - Scenario modifiers for the current round
  * - Ramp-up period (years since decision was made)
- * - Whether the risky outcome triggered
  */
 export function calculateDecisionImpact(
   decision: Decision,
   yearsActive: number,
-  modifiers: ScenarioModifiers,
-  riskyTriggered: boolean = false
+  modifiers: ScenarioModifiers
 ): DecisionImpact {
   // Get the appropriate scenario multiplier based on category
   const categoryMultiplier = getCategoryMultiplier(decision.category, modifiers);
@@ -126,50 +122,30 @@ export function calculateDecisionImpact(
   let revenueChange = 0;
   if (decision.revenueImpact) {
     revenueChange = baseRevenue * decision.revenueImpact * categoryMultiplier * rampUpFactor;
-    
-    // If risky and triggered, reverse the impact
-    if (decision.isRisky && riskyTriggered) {
-      revenueChange = -revenueChange * 0.5;  // 50% negative impact
-    }
   }
   
   // Calculate COGS change (negative values mean improvement/savings)
   let cogsChange = 0;
   if (decision.cogsImpact) {
-    // cogsImpact is typically negative for improvements (e.g., -0.01 = 1% reduction)
     cogsChange = baseCogs * decision.cogsImpact * categoryMultiplier * rampUpFactor;
-    
-    if (decision.isRisky && riskyTriggered) {
-      cogsChange = -cogsChange;  // Reverse the benefit
-    }
   }
   
   // Calculate SG&A change
   let sgaChange = 0;
   if (decision.sgaImpact) {
     sgaChange = baseSga * decision.sgaImpact * categoryMultiplier * rampUpFactor;
-    
-    if (decision.isRisky && riskyTriggered) {
-      sgaChange = -sgaChange;
-    }
   }
   
   // Calculate capex (only in years where cost is still being paid)
   let capexChange = 0;
   if (yearsActive <= decision.durationYears) {
-    // Spread cost over duration years
     capexChange = decision.cost / decision.durationYears;
   }
   
   // One-time benefit (for divestitures)
   let oneTimeBenefit = 0;
   if (decision.isOneTimeBenefit && yearsActive === 1) {
-    oneTimeBenefit = decision.recurringBenefit || 0;
-    oneTimeBenefit *= categoryMultiplier;
-    
-    if (decision.isRisky && riskyTriggered) {
-      oneTimeBenefit *= 0.5;  // Reduced benefit if risky outcome
-    }
+    oneTimeBenefit = (decision.recurringBenefit || 0) * categoryMultiplier;
   }
   
   return {
@@ -179,7 +155,6 @@ export function calculateDecisionImpact(
     capexChange,
     oneTimeBenefit,
     rampUpFactor,
-    isRiskyTriggered: decision.isRisky && riskyTriggered,
   };
 }
 
@@ -227,9 +202,7 @@ function calculateRampUpFactor(yearsActive: number, rampUpYears: 1 | 2 | 3): num
 export function calculateTeamMetrics(
   previousMetrics: FinancialMetrics,
   activeInvestments: ActiveInvestment[],
-  modifiers: ScenarioModifiers,
-  riskyEvents: RiskyEventState,
-  riskyDecisionIndex: number
+  modifiers: ScenarioModifiers
 ): CalculatedMetrics {
   // Start with previous metrics as base
   let revenue = previousMetrics.revenue;
@@ -238,23 +211,12 @@ export function calculateTeamMetrics(
   let capex = BASELINE_FINANCIALS.capex;  // Reset to baseline each year
   let oneTimeBenefits = 0;
   
-  // Track which risky decision we're on
-  let riskyIndex = 0;
-  
   // Apply all active investment impacts
   for (const investment of activeInvestments) {
-    // Determine if this risky decision triggers
-    let riskyTriggered = false;
-    if (investment.decision.isRisky) {
-      riskyTriggered = riskyIndex === riskyEvents.activeEventIndex;
-      riskyIndex++;
-    }
-    
     const impact = calculateDecisionImpact(
       investment.decision,
       investment.yearsActive,
-      modifiers,
-      riskyTriggered
+      modifiers
     );
     
     // Apply impacts
@@ -497,7 +459,6 @@ export function generateRoundResults(
   teams: Record<number, TeamState>,
   round: RoundNumber,
   scenarioNarrative: string,
-  riskyEvents: RiskyEventState,
   marketOutlook: MarketOutlook,
   roundHistories: Record<number, TeamRoundSnapshot[]> = {}
 ): RoundResults {
@@ -506,16 +467,11 @@ export function generateRoundResults(
   const sorted = rankTeamsByStockPrice(claimedTeams);
   
   const teamResults: TeamRoundResult[] = sorted.map((team, index) => {
-    // Build stock price history from round histories
     const history = roundHistories[team.teamId] || [];
     const stockPricesByRound: Record<number, number> = {};
-    
-    // Add historical prices from completed rounds
     for (const snapshot of history) {
       stockPricesByRound[snapshot.round] = snapshot.stockPrice;
     }
-    
-    // Add current round's price
     stockPricesByRound[round] = team.stockPrice;
     
     return {
@@ -535,33 +491,10 @@ export function generateRoundResults(
     };
   });
   
-  // Generate risky outcomes summary
-  const riskyOutcomes: RoundResults['riskyOutcomes'] = [];
-  let riskyIndex = 0;
-  
-  for (const team of claimedTeams) {
-    for (const decision of team.currentRoundDecisions) {
-      const dec = getDecisionById(decision.decisionId);
-      if (dec?.isRisky) {
-        const triggered = riskyIndex === riskyEvents.activeEventIndex;
-        riskyOutcomes.push({
-          decisionId: dec.id,
-          decisionName: dec.name,
-          triggered,
-          impact: triggered 
-            ? '❌ Risky outcome triggered - reduced impact' 
-            : '✅ Risk avoided - full impact realized',
-        });
-        riskyIndex++;
-      }
-    }
-  }
-  
   return {
     round,
     scenarioNarrative,
     teamResults,
-    riskyOutcomes,
     marketOutlook,
   };
 }
@@ -575,7 +508,6 @@ export function generateRoundResults(
  */
 export function generateFinalResults(
   teams: Record<number, TeamState>,
-  riskyEvents: RiskyEventState,
   teamHistories: Record<number, TeamRoundSnapshot[]> = {}
 ): FinalResults {
   const claimedTeams = Object.values(teams).filter(t => t.isClaimed);
@@ -671,14 +603,10 @@ The simulation projected team performance from 2031 to 2035, assuming:
 export function processRoundEnd(
   teams: Record<number, TeamState>,
   currentRound: RoundNumber,
-  modifiers: ScenarioModifiers,
-  riskyEvents: RiskyEventState
+  modifiers: ScenarioModifiers
 ): Record<number, TeamState> {
   const startingPrice = BASELINE_FINANCIALS.sharePrice;
   const updatedTeams: Record<number, TeamState> = {};
-  
-  // Track risky decision outcomes
-  let globalRiskyIndex = 0;
   
   for (const [teamIdStr, team] of Object.entries(teams)) {
     const teamId = parseInt(teamIdStr, 10);
@@ -688,28 +616,16 @@ export function processRoundEnd(
       continue;
     }
     
-    // Get all active investments for this team
     const allTeamDecisions = [...team.allDecisions, ...team.currentRoundDecisions];
     const activeInvestments = getActiveInvestments(allTeamDecisions, currentRound);
-    
-    // Calculate updated metrics
     const previousMetrics = team.metrics;
     const previousPrice = team.stockPrice;
     
     const newMetrics = calculateTeamMetrics(
       previousMetrics,
       activeInvestments,
-      modifiers,
-      riskyEvents,
-      globalRiskyIndex
+      modifiers
     );
-    
-    // Update global risky index
-    for (const inv of activeInvestments) {
-      if (inv.decision.isRisky) {
-        globalRiskyIndex++;
-      }
-    }
     
     // Calculate round TSR
     const roundTSR = calculateRoundTSR(
@@ -765,17 +681,6 @@ function calculateTotalDividends(
 // =============================================================================
 // Utility Exports
 // =============================================================================
-
-/**
- * Checks if a risky decision's negative outcome should trigger
- * Based on the pre-determined active event index
- */
-export function checkRiskyOutcome(
-  decisionIndex: number,
-  riskyEvents: RiskyEventState
-): boolean {
-  return decisionIndex === riskyEvents.activeEventIndex;
-}
 
 /**
  * Formats currency values for display
