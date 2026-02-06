@@ -172,7 +172,7 @@ Each decision card has attributes:
 - **Decision Type** (Organic / Inorganic)
 - **Introduced Year** (which round it becomes available: 1-5)
 - **Impact Magnitude** (1-5 scale)
-- **Category-specific metrics** — fixed inputs per card drive display and calculation; see [Decision Card Metrics (Fixed Inputs)](#decision-card-metrics-fixed-inputs)
+- **Category-specific metrics and descriptions** — hardcoded inputs per card; the user feeds a CSV or screenshot to update the metrics and descriptions shown on decision cards. See [Decision Card Metrics (Fixed Inputs)](#decision-card-metrics-fixed-inputs).
 
 ### Display Data vs. Calculation Data (Separation of Concerns)
 
@@ -180,21 +180,21 @@ Each decision card has attributes:
 
 | Purpose | Source | Stored / used for | Owner / steward |
 |--------|--------|-------------------|-----------------|
-| **Front-end display** (what users see on decision cards) | CSV or screenshots supplied by the product owner | Stored and rendered on the front end only. All text and numbers on the card face (name, brief, narrative, total investment, investment period, in-year investment, implementation cost, annual cost savings, etc.) must reflect this data exactly. | Product owner provides CSV/screenshots; implementation stores and displays them. |
+| **Front-end display** (what users see on decision cards) | **CSV or screenshots supplied by the user** | **Hardcoded inputs.** Stored and rendered on the front end only. All metrics and descriptions on the card (name, brief, narrative, total investment, investment period, in-year investment, implementation cost, annual cost savings, etc.) are **hardcoded** from this source and must reflect it exactly. | User feeds CSV/screenshots; implementation stores and displays them as hardcoded inputs. |
 | **Backend calculations** (TSR, stock price, financial simulation) | Backend configuration and calculation engine (e.g. Julia Gavril's model) | Used only for round-by-round financial outcomes: cost, revenueImpact, cogsImpact, sgaImpact, recurringBenefit, rampUpYears, scenario multipliers, etc. Not necessarily identical to display numbers. | Calculation logic and inputs maintained separately (e.g. Julia Gavril / backend config). |
 
 **Rules:**
 
-- The product owner will **always feed CSV or screenshots** for the **front end** of the decisions. That data is **stored** and **shown on the front end** as the single source of truth for what appears on the cards.
-- **Display data** (from CSV/screenshots) must not be assumed to drive the calculation engine. When updating from CSV or screenshots, update only the display/store used for the front end.
+- The **user will feed a screenshot or CSV** to **update the metrics and descriptions shown on decision cards**. Those values are **hardcoded inputs**: they are stored and shown on the front end exactly as supplied—not calculated or derived.
+- **Display data** (from CSV/screenshots) must not be assumed to drive the calculation engine. When updating from CSV or screenshots, update only the display/store used for the front end (the hardcoded metrics and descriptions on the cards).
 - **Calculation data** (e.g. what Julia Gavril is saving in the backend) remains separate. The backend may keep its own fields (cost, recurringBenefit, impacts, etc.) for simulation; those are updated/maintained independently from the CSV/screenshot display data.
-- Card UI must use **display data** (growMetrics, optimizeMetrics, sustainMetrics, brief, narrative) for all visible metrics; the calculation engine uses its own inputs and must not override or replace what is shown on the cards.
+- Card UI must use **display data** (growMetrics, optimizeMetrics, sustainMetrics, brief, narrative) for all visible metrics and descriptions; the calculation engine uses its own inputs and must not override or replace what is shown on the cards.
 
 ### Decision Card Metrics (Fixed Inputs) — Display Data
 
-All metrics **shown on decision cards** are **display data** per card, sourced from the product owner's **CSV or screenshots** and stored for front-end use. The tables below define the exact fields displayed on the card by category. These values are what users see; they are **separate from** the backend calculation inputs (see Display Data vs. Calculation Data above).
+All **metrics and descriptions** shown on decision cards are **hardcoded inputs** per card. The **user will feed a screenshot or CSV** to update these values; they are not calculated by the system. The tables below define the exact fields displayed on the card by category. These values are what users see; they are **separate from** the backend calculation inputs (see Display Data vs. Calculation Data above).
 
-**Source of display data: CSV or screenshots.** The product owner supplies a Decisions sheet (CSV/Excel) or screenshots. **Row 1 = header** (e.g. Round, #, Lever, Name, Brief, Detail, [Grow] Total Investment, [Optimize] Total Investm, [Optimize] Annual cost savings, etc.). **Each subsequent row = one decision.** All descriptions (name, brief, narrative) and metrics shown on the card (total investment, period, in-year investment, implementation cost, annual cost savings, etc.) must come from **that row only**—no mixing. Store this data and render it on the front end so the cards match the CSV/screenshots exactly.
+**Source of display data: user-supplied CSV or screenshots.** The user supplies a Decisions sheet (CSV/Excel) or screenshots. **Row 1 = header** (e.g. Round, #, Lever, Name, Brief, Detail, [Grow] Total Investment, [Optimize] Total Investm, [Optimize] Annual cost savings, etc.). **Each subsequent row = one decision.** All **descriptions** (name, brief, narrative) and **metrics** shown on the card (total investment, period, in-year investment, implementation cost, annual cost savings, etc.) are **hardcoded** from that row—no mixing, no derivation. Store this data and render it on the front end so the cards match the CSV/screenshots exactly.
 
 **Grow cards** — fixed inputs per card:
 
@@ -228,17 +228,18 @@ All metrics **shown on decision cards** are **display data** per card, sourced f
 | Annual cost | `sustainMetrics.annualCost` | Recurring cost/savings ($M) |
 | Revenue protection | Narrative | Protects against losing business-as-usual revenue; no incremental cash flow when no category metrics |
 
-*Product owner will provide CSV or screenshots with the complete set of values per decision for **card display**; those are stored and shown on the front end. Backend calculation inputs are maintained separately (see Display Data vs. Calculation Data).*
+*The user will feed a screenshot or CSV to update the **metrics and descriptions** shown on decision cards. Those values are **hardcoded inputs**: stored and shown on the front end exactly as supplied. Backend calculation inputs are maintained separately (see Display Data vs. Calculation Data).*
 
 ### Decision Card Design (UI)
 
-**Card front (summary):**
+**Card front (summary):** All metrics and descriptions are **hardcoded inputs** from user-supplied CSV or screenshots (see Decision Card Metrics).
+
 - **Decision number** — e.g. "Decision #1" (top right)
 - **Category badge** — Grow (emerald) / Optimize (blue) / Sustain (amber) with icon
-- **Name** — decision title
-- **Total investment** — $XM, with **Period** (N years) and **In-year investment** ($YM per year)
-- **Business case** — brief (from Excel/`brief`) or first sentence of narrative
-- **Impact badges** — short labels (e.g. "$400M/yr", "COGS -1%", "Protects revenue")
+- **Name** — decision title (hardcoded from CSV/screenshot)
+- **Total investment** — $XM or "—" when 0, with **Period** (N years) and **In-year investment** (hardcoded)
+- **Business case** — brief (hardcoded from CSV/screenshot) or first sentence of narrative
+- **Impact badges** — short labels (e.g. "$400M/yr", "COGS -1%", "Protects revenue") from hardcoded inputs
 - **Footer** — investment period summary + "View business case" (opens expanded view)
 - **Disabled state** — when unaffordable: muted styling and "Exceeds available funds — cannot select"
 
@@ -496,11 +497,11 @@ Scenarios apply **category-specific multipliers** to decision outcomes:
 1. **Game state management:** Central server holds authoritative game state; clients subscribe to updates
 2. **Timer synchronization:** Server broadcasts remaining time; clients display but don't control
 3. **Calculation engine:** Backend calculates all financial outcomes (not in client). The authoritative implementation is in [Value Creation Simulation](https://github.com/larissajeanphillips/Value-Creation-Simulation); do not use financial logic from any other repository
-4. **Decision card data:** Display data for the 75 cards comes from **CSV or screenshots** supplied by the product owner; that data is stored and used for the **front end** only (what users see on the cards). Backend calculation inputs (cost, impacts, recurringBenefit, etc.) are maintained **separately** (e.g. by Julia Gavril / calculation engine) and are not necessarily identical to display metrics. See PRD section "Display Data vs. Calculation Data."
+4. **Decision card data:** The **user will feed a screenshot or CSV** to update the **metrics and descriptions** shown on decision cards. Those values are **hardcoded inputs** for the 75 cards—stored and used for the **front end** only (what users see on the cards). Backend calculation inputs (cost, impacts, recurringBenefit, etc.) are maintained **separately** (e.g. by Julia Gavril / calculation engine) and are not necessarily identical to display metrics. See PRD section "Display Data vs. Calculation Data."
 
 ### Decision data import and validation
 
-**Display data (front end):** When the product owner supplies **CSV or screenshots** for decision cards, that data is imported and stored for **front-end display only**. Each card's name, brief, narrative, and all visible metrics (total investment, period, in-year, implementation cost, annual savings, etc.) must match the CSV/screenshots. Validation: row 1 = header; each subsequent row = one decision; no mixing of rows.
+**Display data (front end):** The **user feeds a screenshot or CSV** to update the **metrics and descriptions** on decision cards. Those values are **hardcoded inputs**: imported and stored for **front-end display only**. Each card's name, brief, narrative, and all visible metrics (total investment, period, in-year, implementation cost, annual savings, etc.) must match the CSV/screenshots exactly. Validation: row 1 = header; each subsequent row = one decision; no mixing of rows.
 
 **Calculation data (backend):** Backend decision config (e.g. `backend/config/decisions.ts`) may hold both display-oriented fields (e.g. `growMetrics`, `optimizeMetrics`, `sustainMetrics`) and calculation-oriented fields (`cost`, `recurringBenefit`, `revenueImpact`, `cogsImpact`, `sgaImpact`, etc.). When updating from CSV/screenshots, update the **display** fields so the front end shows the supplied data; calculation fields are maintained separately (e.g. Julia Gavril) and are not overwritten by display import unless explicitly mapped.
 
@@ -796,3 +797,4 @@ Subcategories include:
 | 0.8 | 2026-02-06 | — | Removed risk/risky flag entirely from PRD and decision logic. Consolidated decision logic: ranking by stock price (FR-12); ramp-up by rampUpYears (1/2/3) with all three schedules documented; decision limits = cash only; starting cash $1,200M clarified as round 1 only (FCF varies thereafter). Added Decision Card Metrics (Fixed Inputs) section with placeholder for product-owner-supplied values per card. Removed Risky Decision Outcomes, Risk/Chance Mechanic, FR-18/19/20/21, isRisky from Data Model, risky from backend formulas and Resolved Questions. |
 | 0.9 | 2026-02-06 | — | Decisions Excel alignment: source of truth is "Decisions" sheet with row 1 = header, one row per decision; each card must use data from its single row only (no mixing rows). Documented in Decision Card Metrics, Key Technical Decisions, and Decision data import. Example: Decision 2 (Advanced Powertrain R&D Expansion) — total investment $800M, period 3 years, in-year $267M (aligned with Excel). |
 | 0.10 | 2026-02-06 | — | Display data vs. calculation data: Product owner will always feed CSV or screenshots for the front end of decisions; that data is stored and shown on the front end only. Backend calculations (e.g. Julia Gavril's model) are separate—cost, recurringBenefit, impacts maintained independently. New PRD section "Display Data vs. Calculation Data"; Decision Card Metrics reframed as display data; Decision data import and Data Model updated to reflect separation. |
+| 0.11 | 2026-02-06 | — | Clarified that the user will feed a screenshot or CSV to update the metrics and descriptions shown on decision cards; these are hardcoded inputs (not calculated). Updated Display Data vs. Calculation Data, Decision Card Metrics, Key Technical Decisions, Decision data import, and Card front (summary) to state hardcoded inputs and user-supplied CSV/screenshots. |

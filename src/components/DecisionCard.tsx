@@ -85,22 +85,17 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
     setIsExpanded(true);
   };
   
-  // Total investment: from CSV/metrics (column G for grow, etc.) when available, else decision.cost
+  // Total investment: from CSV/metrics when available, else decision.cost (Grow/Optimize/Sustain)
   const displayInvestment =
     decision.growMetrics?.investmentsTotal ??
     decision.optimizeMetrics?.investment ??
     decision.sustainMetrics?.investment ??
     decision.cost;
-  // Sustain/Optimize: some cards have no total investment but have implementation cost + annual savings (show as —)
+  // Show "—" for total and in-year whenever total investment is 0 or missing (per CSV/screenshots; all categories)
+  const showTotalInvestmentAsDash =
+    displayInvestment === 0 || displayInvestment == null;
   const hasSustainMetrics = decision.category === 'sustain' && decision.sustainMetrics;
   const hasOptimizeMetrics = decision.category === 'optimize' && decision.optimizeMetrics;
-  const showTotalInvestmentAsDash =
-    (hasSustainMetrics &&
-      (decision.sustainMetrics!.investment === 0 || decision.sustainMetrics!.investment == null) &&
-      (decision.sustainMetrics!.implementationCost > 0 || decision.sustainMetrics!.annualCost > 0)) ||
-    (hasOptimizeMetrics &&
-      (decision.optimizeMetrics!.investment === 0 || decision.optimizeMetrics!.investment == null) &&
-      (decision.optimizeMetrics!.implementationCost > 0 || decision.optimizeMetrics!.annualCost > 0));
   // Investment period: from CSV/metrics when present (so card matches source), else backend durationYears
   const investmentPeriodYears =
     decision.growMetrics?.investmentPeriod ??
@@ -316,17 +311,9 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
   const perYearInvestment =
     inYearFromMetrics ??
     (investmentPeriodYears > 0 ? Math.round(displayInvestment / investmentPeriodYears) : displayInvestment);
-  const sustainNoTotalInvestment =
-    decision.category === 'sustain' &&
-    decision.sustainMetrics &&
-    (decision.sustainMetrics.investment === 0 || decision.sustainMetrics.investment == null) &&
-    (decision.sustainMetrics.implementationCost > 0 || decision.sustainMetrics.annualCost > 0);
-  const optimizeNoTotalInvestment =
-    decision.category === 'optimize' &&
-    decision.optimizeMetrics &&
-    (decision.optimizeMetrics.investment === 0 || decision.optimizeMetrics.investment == null) &&
-    (decision.optimizeMetrics.implementationCost > 0 || decision.optimizeMetrics.annualCost > 0);
-  const showDashInModal = sustainNoTotalInvestment || optimizeNoTotalInvestment;
+  // Same rule as card front: show "—" when total investment is 0 or missing (all categories)
+  const showDashInModal =
+    displayInvestment === 0 || displayInvestment == null;
 
   return (
     <div 
