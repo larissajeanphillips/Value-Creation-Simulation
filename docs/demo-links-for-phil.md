@@ -12,8 +12,8 @@
 
 | Role | Description | URL |
 |------|-------------|-----|
-| **Facilitator / Admin demo** | Displays, scoreboard, rounds, debrief, admin—start here for Phil | https://value-creation-simulation.vercel.app/demo |
-| **Player demo** | Team interface: join a team, lobby, decisions (when game is running) | https://value-creation-simulation.vercel.app/demo/player |
+| **Facilitator / Admin demo** | Displays, scoreboard, rounds, debrief, admin—start here for Phil | https://value-creation-simulation.vercel.app/demo/admin |
+| **Player demo** | Team interface: join a team, lobby, decisions (when game is running) | https://value-creation-simulation.vercel.app/demo |
 
 ---
 
@@ -21,8 +21,8 @@
 
 | Page | URL |
 |------|-----|
-| **Facilitator demo (start here)** | https://value-creation-simulation.vercel.app/demo |
-| **Player demo** | https://value-creation-simulation.vercel.app/demo/player |
+| **Facilitator demo (start here)** | https://value-creation-simulation.vercel.app/demo/admin |
+| **Player demo** | https://value-creation-simulation.vercel.app/demo |
 | Team interface (player app) | https://value-creation-simulation.vercel.app/ |
 | Display Hub (big-screen menu) | https://value-creation-simulation.vercel.app/display |
 | Live Scoreboard | https://value-creation-simulation.vercel.app/display/scoreboard |
@@ -43,8 +43,8 @@
 Paste this block into Verso:
 
 ```
-Facilitator demo (start here): https://value-creation-simulation.vercel.app/demo
-Player demo: https://value-creation-simulation.vercel.app/demo/player
+Facilitator demo (start here): https://value-creation-simulation.vercel.app/demo/admin
+Player demo: https://value-creation-simulation.vercel.app/demo
 Team interface: https://value-creation-simulation.vercel.app/
 Display Hub: https://value-creation-simulation.vercel.app/display
 Live Scoreboard: https://value-creation-simulation.vercel.app/display/scoreboard

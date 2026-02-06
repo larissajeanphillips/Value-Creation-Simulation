@@ -22,8 +22,8 @@ The frontend is deployed on Vercel. **Base URL:** `https://value-creation-simula
 
 | Purpose | Link |
 |--------|------|
-| **Facilitator demo** (displays, scoreboard, rounds, debrief, admin; start here for Phil) | https://value-creation-simulation.vercel.app/demo |
-| **Player demo** (team interface entry for participants) | https://value-creation-simulation.vercel.app/demo/player |
+| **Facilitator demo** (displays, scoreboard, rounds, debrief, admin; start here for Phil) | https://value-creation-simulation.vercel.app/demo/admin |
+| **Player demo** (team interface entry for participants) | https://value-creation-simulation.vercel.app/demo |
 | **Live admin** (facilitator control panel) | https://value-creation-simulation.vercel.app/admin |
 | **Live player** (team interface) | https://value-creation-simulation.vercel.app/ |
 | **Live display** (Display Hub — big-screen menu) | https://value-creation-simulation.vercel.app/display |
