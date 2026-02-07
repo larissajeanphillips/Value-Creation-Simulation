@@ -109,6 +109,11 @@ export function calculateConsolidatedProjection(
   
   // Base BAU growth rate (2.0%)
   const base_growth_rate = 0.02;
+
+  // Scenario constants (per PRD Consolidation Engine Spec §2.5)
+  const RECESSION_RATE = 0.15;   // One-time BAU revenue decline in 2029
+  const RECOVERY_RATE = 0.18;   // One-time BAU revenue increase in 2030
+  const COST_PRESSURE_COGS_ADD = 0.005; // From 2028: BAU COGS ratio = cogs_revenue_ratio + 0.005
   
   console.log(`\n=== Round ${round} Consolidation ===`);
   console.log(`Selected Decisions: ${selectedDecisions.join(', ')}`);
@@ -145,7 +150,19 @@ export function calculateConsolidatedProjection(
     }
     
     // Calculate growth rate for this specific year
-    const year_growth_rate = base_growth_rate - applicable_decline;
+    // For recession/recovery years, the scenario REPLACES the base growth rate
+    let year_growth_rate: number;
+    
+    if (yearIndex === 3 && round >= 4) {
+      // 2029 Recession: -15% replaces base growth for this year
+      year_growth_rate = -RECESSION_RATE - applicable_decline;
+    } else if (yearIndex === 4 && round >= 5) {
+      // 2030 Recovery: +18% replaces base growth for this year
+      year_growth_rate = RECOVERY_RATE - applicable_decline;
+    } else {
+      // Normal years: use base growth minus declines
+      year_growth_rate = base_growth_rate - applicable_decline;
+    }
     
     // Revenue (BAU) - Apply year-specific growth
     let revenue_bau: number;
@@ -157,8 +174,10 @@ export function calculateConsolidatedProjection(
       revenue_bau = priorYear!.revenue_bau * (1 + year_growth_rate);
     }
     
-    // COGS (BAU) - Using BAU engine formula: -Revenue × COGS/Revenue ratio (86.46%)
-    const cogs_bau = -revenue_bau * cogs_revenue_ratio;
+    // COGS (BAU) - Cost pressure from 2028 onward: use cogs_revenue_ratio + 0.005 (spec §2.5, §6.1)
+    // Cost Pressure (2028/yearIndex 2+) only applies in Round 3+
+    const cogs_ratio_bau = (yearIndex >= 2 && round >= 3) ? cogs_revenue_ratio + COST_PRESSURE_COGS_ADD : cogs_revenue_ratio;
+    const cogs_bau = -revenue_bau * cogs_ratio_bau;
     
     // SG&A (BAU) - Using BAU engine formula: Prior SG&A × (1 + growth rate) = 2.0%
     // BAU engine formula: -state.sga × (1 + growth) for first year, then priorYear.sga × (1 + growth)
@@ -177,33 +196,15 @@ export function calculateConsolidatedProjection(
       // Years 0-4: IC stays flat
       ic_ending_bau = invested_capital_2025;
     } else {
-      // Years 5-9: IC grows based on capital turnover
-      // Calculate Revenue_2030 accounting for year-specific growth rates
-      // Each year's decline kicks in at year (2026 + roundNumber)
+      // Years 5-9: IC grows based on capital turnover locked at 2030
+      // Use the ACTUAL revenue_bau from 2030 (yearIndex 4), which includes recession effects
+      const revenue_2030_bau = years[4].revenue_bau;
       
-      let revenue_at_year = revenue_2025;
+      // Capital Turnover 2030 = Revenue_2030_BAU / IC_2030
+      const capital_turnover_2030 = revenue_2030_bau / invested_capital_2025;
       
-      // Calculate revenue for each year from 2026 to 2030
-      for (let y = 2026; y <= 2030; y++) {
-        // Calculate applicable decline for year y
-        let year_decline = 0;
-        for (let r = 1; r <= allDeclines.length; r++) {
-          const decline_start_year = 2026 + r;
-          if (y >= decline_start_year) {
-            year_decline += allDeclines[r - 1];
-          }
-        }
-        
-        const year_specific_growth = base_growth_rate - year_decline;
-        revenue_at_year *= (1 + year_specific_growth);
-      }
-      
-      const revenue_2030 = revenue_at_year;
-      
-      // Capital Turnover 2030 = Revenue_2030 / IC_2030
-      const capital_turnover_2030 = revenue_2030 / invested_capital_2025;
-      
-      // IC_Ending = Revenue_BAU / Capital_Turnover_2030
+      // IC_Ending_BAU = Revenue_BAU / Capital_Turnover_2030
+      // This grows IC proportionally with revenue growth
       ic_ending_bau = revenue_bau / capital_turnover_2030;
     }
     
@@ -230,25 +231,45 @@ export function calculateConsolidatedProjection(
     let acquisition = 0;
     let premium = 0;
     
+    // Scenario multiplier: Only apply scenarios if we've reached that round
+    // AND only to decisions from earlier rounds
+    // - Recession (2029/yearIndex 3): affects decisions 1-45 (Rounds 1-3) when in Round 4+
+    // - Recovery (2030/yearIndex 4+): affects decisions 1-60 (Rounds 1-4) when in Round 5
+    // Scenarios affect: Revenue, Growth, COGS, COGS savings, Synergies (NOT SG&A per spec)
     for (const decisionId of selectedDecisions) {
       const decision = getDecision(decisionId);
       if (!decision) continue;
       
       const cf = decision.cashFlows;
+      let mult = 1;
       
-      // Add decision cash flows (column index = yearIndex)
-      revenue_decisions += cf.Revenue[yearIndex];
-      growth_decisions += cf['Growth '][yearIndex]; // Note the space!
-      cogs_decisions += cf.COGS[yearIndex]; // Already negative
-      sga_decisions += cf['SG&A'][yearIndex]; // Already negative
-      cogs_savings += cf['COGS savings'][yearIndex];
+      // Apply scenario multipliers based on current round, year, and decision ID
+      if (yearIndex >= 4 && round >= 5) {
+        // 2030 onward and we're in Round 5: apply both recession and recovery to R1-R4 decisions
+        if (decisionId <= 60) {
+          mult = (1 - RECESSION_RATE) * (1 + RECOVERY_RATE);
+        }
+      } else if (yearIndex >= 3 && round >= 4) {
+        // 2029 onward and we're in Round 4: apply recession only to R1-R3 decisions
+        // Recession multiplier persists for all future years in Round 4
+        if (decisionId <= 45) {
+          mult = 1 - RECESSION_RATE; // 0.85
+        }
+      }
+      
+      revenue_decisions += cf.Revenue[yearIndex] * mult;
+      growth_decisions += cf['Growth '][yearIndex] * mult;
+      cogs_decisions += cf.COGS[yearIndex] * mult;
+      cogs_savings += cf['COGS savings'][yearIndex] * mult;
+      synergies += cf.Synergies[yearIndex] * mult;
+      // No scenario multiplier: SG&A, SG&A savings, Manufacturing OH savings, Investment, Implementation Cost, Acquisition, Premium
+      sga_decisions += cf['SG&A'][yearIndex];
       sga_savings += cf['SG&A savings'][yearIndex];
       mfg_oh_savings += cf['Manufacturing OH savings'][yearIndex];
-      synergies += cf.Synergies[yearIndex];
-      investment_decisions += cf.Investment[yearIndex]; // Already negative
-      implementation_cost += cf['Implementation Cost'][yearIndex]; // Already negative
-      acquisition += cf.Acquisition[yearIndex]; // Already negative
-      premium += cf.Premium[yearIndex]; // Already negative
+      investment_decisions += cf.Investment[yearIndex];
+      implementation_cost += cf['Implementation Cost'][yearIndex];
+      acquisition += cf.Acquisition[yearIndex];
+      premium += cf.Premium[yearIndex];
     }
     
     // =================================================================

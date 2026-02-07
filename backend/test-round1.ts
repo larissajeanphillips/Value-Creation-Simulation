@@ -14,7 +14,7 @@ console.log("=" * 80);
 const selectedDecisions = [1];
 
 // No cumulative decline yet (this is Round 1)
-const cumulativeGrowthDecline = 0;
+const declinesByRound = [];  // Empty array for Round 1
 
 // Starting share price (from Round 0 BAU)
 const startingSharePrice = 52.27;
@@ -23,7 +23,7 @@ const startingSharePrice = 52.27;
 const result = calculateConsolidatedProjection(
   1,  // round
   selectedDecisions,
-  cumulativeGrowthDecline,
+  declinesByRound,
   startingSharePrice
 );
 
