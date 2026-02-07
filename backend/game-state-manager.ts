@@ -30,7 +30,7 @@ import {
 } from './config/index.js';
 
 import {
-  processRoundEnd as calculateRoundEnd,
+  // processRoundEnd as calculateRoundEnd, // No longer used - all rounds now use consolidation engine
   generateRoundResults,
   generateFinalResults,
 } from './calculation-engine.js';
@@ -985,6 +985,261 @@ export class GameStateManager {
   }
 
   /**
+   * Calculate Round 3 results using the consolidation engine
+   * Combines Round 1 + Round 2 + Round 3 decisions with cumulative growth declines
+   */
+  private calculateRound3Results(): void {
+    console.log('[Round3] Calculating results using consolidation engine...');
+    
+    for (const team of Object.values(this.state.teams)) {
+      if (!team.isClaimed) continue;
+      
+      // Extract decisions by round from allDecisions and currentRoundDecisions
+      const round1Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 1)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round2Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 2)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round3Decisions: number[] = team.currentRoundDecisions
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const allDecisionNumbers = [...round1Decisions, ...round2Decisions, ...round3Decisions];
+      
+      console.log(`[Round3] Team ${team.teamId}:`);
+      console.log(`  Round 1 decisions: [${round1Decisions.join(', ')}]`);
+      console.log(`  Round 2 decisions: [${round2Decisions.join(', ')}]`);
+      console.log(`  Round 3 decisions: [${round3Decisions.join(', ')}]`);
+      console.log(`  Combined: [${allDecisionNumbers.join(', ')}]`);
+      
+      // Calculate cumulative growth declines from Rounds 1 and 2
+      const round1SustainIds = [11, 13, 14];
+      const round2SustainIds = [27, 29];
+      
+      const round1Skipped = round1SustainIds.filter(id => !round1Decisions.includes(id)).length;
+      const round2Skipped = round2SustainIds.filter(id => !round2Decisions.includes(id)).length;
+      
+      const round1Decline = round1Skipped * 0.001;
+      const round2Decline = round2Skipped * 0.001;
+      
+      console.log(`  Round 1 Sustain skipped: ${round1Skipped}, decline: ${(round1Decline * 100).toFixed(2)}%`);
+      console.log(`  Round 2 Sustain skipped: ${round2Skipped}, decline: ${(round2Decline * 100).toFixed(2)}%`);
+      
+      const startingSharePrice = team.stockPrice;
+      
+      try {
+        const result = calculateConsolidatedProjection(
+          3,
+          allDecisionNumbers,
+          [round1Decline, round2Decline],
+          startingSharePrice
+        );
+        
+        team.stockPrice = result.share_price;
+        team.metrics.stockPrice = result.share_price;
+        team.metrics.revenue = result.years[2].revenue_total;  // 2028 revenue (yearIndex 2)
+        team.metrics.ebitda = result.years[2].ebitda;
+        team.metrics.ebit = result.years[2].ebit;
+        team.metrics.fcf = result.years[2].fcf;
+        team.metrics.roic = (result.years[2].nopat / result.years[2].ic_ending) * 100;
+        team.metrics.enterpriseValue = result.enterprise_value;
+        team.metrics.tsr = result.tsr * 100;
+        
+        console.log(`[Round3] Team ${team.teamId}: Share Price $${result.share_price.toFixed(2)}, TSR ${(result.tsr * 100).toFixed(2)}%`);
+        
+      } catch (error) {
+        console.error(`[Round3] Error calculating for team ${team.teamId}:`, error);
+        team.metrics.stockPrice = team.stockPrice;
+      }
+    }
+  }
+
+  /**
+   * Calculate Round 4 results using the consolidation engine
+   * Combines Round 1 + Round 2 + Round 3 + Round 4 decisions with cumulative growth declines
+   */
+  private calculateRound4Results(): void {
+    console.log('[Round4] Calculating results using consolidation engine...');
+    
+    for (const team of Object.values(this.state.teams)) {
+      if (!team.isClaimed) continue;
+      
+      // Extract decisions by round
+      const round1Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 1)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round2Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 2)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round3Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 3)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round4Decisions: number[] = team.currentRoundDecisions
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const allDecisionNumbers = [...round1Decisions, ...round2Decisions, ...round3Decisions, ...round4Decisions];
+      
+      console.log(`[Round4] Team ${team.teamId}:`);
+      console.log(`  Round 1 decisions: [${round1Decisions.join(', ')}]`);
+      console.log(`  Round 2 decisions: [${round2Decisions.join(', ')}]`);
+      console.log(`  Round 3 decisions: [${round3Decisions.join(', ')}]`);
+      console.log(`  Round 4 decisions: [${round4Decisions.join(', ')}]`);
+      console.log(`  Combined: [${allDecisionNumbers.join(', ')}]`);
+      
+      // Calculate cumulative growth declines from Rounds 1, 2, and 3
+      const round1SustainIds = [11, 13, 14];
+      const round2SustainIds = [27, 29];
+      const round3SustainIds = [41, 43, 44, 45];
+      
+      const round1Skipped = round1SustainIds.filter(id => !round1Decisions.includes(id)).length;
+      const round2Skipped = round2SustainIds.filter(id => !round2Decisions.includes(id)).length;
+      const round3Skipped = round3SustainIds.filter(id => !round3Decisions.includes(id)).length;
+      
+      const round1Decline = round1Skipped * 0.001;
+      const round2Decline = round2Skipped * 0.001;
+      const round3Decline = round3Skipped * 0.001;
+      
+      console.log(`  Round 1 Sustain skipped: ${round1Skipped}, decline: ${(round1Decline * 100).toFixed(2)}%`);
+      console.log(`  Round 2 Sustain skipped: ${round2Skipped}, decline: ${(round2Decline * 100).toFixed(2)}%`);
+      console.log(`  Round 3 Sustain skipped: ${round3Skipped}, decline: ${(round3Decline * 100).toFixed(2)}%`);
+      
+      const startingSharePrice = team.stockPrice;
+      
+      try {
+        const result = calculateConsolidatedProjection(
+          4,
+          allDecisionNumbers,
+          [round1Decline, round2Decline, round3Decline],
+          startingSharePrice
+        );
+        
+        team.stockPrice = result.share_price;
+        team.metrics.stockPrice = result.share_price;
+        team.metrics.revenue = result.years[3].revenue_total;  // 2029 revenue (yearIndex 3)
+        team.metrics.ebitda = result.years[3].ebitda;
+        team.metrics.ebit = result.years[3].ebit;
+        team.metrics.fcf = result.years[3].fcf;
+        team.metrics.roic = (result.years[3].nopat / result.years[3].ic_ending) * 100;
+        team.metrics.enterpriseValue = result.enterprise_value;
+        team.metrics.tsr = result.tsr * 100;
+        
+        console.log(`[Round4] Team ${team.teamId}: Share Price $${result.share_price.toFixed(2)}, TSR ${(result.tsr * 100).toFixed(2)}%`);
+        
+      } catch (error) {
+        console.error(`[Round4] Error calculating for team ${team.teamId}:`, error);
+        team.metrics.stockPrice = team.stockPrice;
+      }
+    }
+  }
+
+  /**
+   * Calculate Round 5 results using the consolidation engine
+   * Combines all Round 1-5 decisions with cumulative growth declines
+   */
+  private calculateRound5Results(): void {
+    console.log('[Round5] Calculating results using consolidation engine...');
+    
+    for (const team of Object.values(this.state.teams)) {
+      if (!team.isClaimed) continue;
+      
+      // Extract decisions by round
+      const round1Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 1)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round2Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 2)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round3Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 3)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round4Decisions: number[] = team.allDecisions
+        .filter(td => td.round === 4)
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const round5Decisions: number[] = team.currentRoundDecisions
+        .map(td => getDecisionById(td.decisionId)?.decisionNumber)
+        .filter((num): num is number => num !== undefined);
+      
+      const allDecisionNumbers = [...round1Decisions, ...round2Decisions, ...round3Decisions, ...round4Decisions, ...round5Decisions];
+      
+      console.log(`[Round5] Team ${team.teamId}:`);
+      console.log(`  Round 1 decisions: [${round1Decisions.join(', ')}]`);
+      console.log(`  Round 2 decisions: [${round2Decisions.join(', ')}]`);
+      console.log(`  Round 3 decisions: [${round3Decisions.join(', ')}]`);
+      console.log(`  Round 4 decisions: [${round4Decisions.join(', ')}]`);
+      console.log(`  Round 5 decisions: [${round5Decisions.join(', ')}]`);
+      console.log(`  Combined: [${allDecisionNumbers.join(', ')}]`);
+      
+      // Calculate cumulative growth declines from Rounds 1-4
+      const round1SustainIds = [11, 13, 14];
+      const round2SustainIds = [27, 29];
+      const round3SustainIds = [41, 43, 44, 45];
+      const round4SustainIds = [58, 59];
+      
+      const round1Skipped = round1SustainIds.filter(id => !round1Decisions.includes(id)).length;
+      const round2Skipped = round2SustainIds.filter(id => !round2Decisions.includes(id)).length;
+      const round3Skipped = round3SustainIds.filter(id => !round3Decisions.includes(id)).length;
+      const round4Skipped = round4SustainIds.filter(id => !round4Decisions.includes(id)).length;
+      
+      const round1Decline = round1Skipped * 0.001;
+      const round2Decline = round2Skipped * 0.001;
+      const round3Decline = round3Skipped * 0.001;
+      const round4Decline = round4Skipped * 0.001;
+      
+      console.log(`  Round 1 Sustain skipped: ${round1Skipped}, decline: ${(round1Decline * 100).toFixed(2)}%`);
+      console.log(`  Round 2 Sustain skipped: ${round2Skipped}, decline: ${(round2Decline * 100).toFixed(2)}%`);
+      console.log(`  Round 3 Sustain skipped: ${round3Skipped}, decline: ${(round3Decline * 100).toFixed(2)}%`);
+      console.log(`  Round 4 Sustain skipped: ${round4Skipped}, decline: ${(round4Decline * 100).toFixed(2)}%`);
+      
+      const startingSharePrice = team.stockPrice;
+      
+      try {
+        const result = calculateConsolidatedProjection(
+          5,
+          allDecisionNumbers,
+          [round1Decline, round2Decline, round3Decline, round4Decline],
+          startingSharePrice
+        );
+        
+        team.stockPrice = result.share_price;
+        team.metrics.stockPrice = result.share_price;
+        team.metrics.revenue = result.years[4].revenue_total;  // 2030 revenue (yearIndex 4)
+        team.metrics.ebitda = result.years[4].ebitda;
+        team.metrics.ebit = result.years[4].ebit;
+        team.metrics.fcf = result.years[4].fcf;
+        team.metrics.roic = (result.years[4].nopat / result.years[4].ic_ending) * 100;
+        team.metrics.enterpriseValue = result.enterprise_value;
+        team.metrics.tsr = result.tsr * 100;
+        
+        console.log(`[Round5] Team ${team.teamId}: Share Price $${result.share_price.toFixed(2)}, TSR ${(result.tsr * 100).toFixed(2)}%`);
+        
+      } catch (error) {
+        console.error(`[Round5] Error calculating for team ${team.teamId}:`, error);
+        team.metrics.stockPrice = team.stockPrice;
+      }
+    }
+  }
+
+  /**
    * Process the end of a round
    */
   private processRoundEnd(): void {
@@ -998,20 +1253,17 @@ export class GameStateManager {
       }
     }
 
-    // Calculate financial impacts
+    // Calculate financial impacts using consolidation engine for all rounds
     if (this.state.currentRound === 1) {
-      // Use new consolidation engine for Round 1
       this.calculateRound1Results();
     } else if (this.state.currentRound === 2) {
-      // Use new consolidation engine for Round 2
       this.calculateRound2Results();
-    } else {
-      // Use old calculation engine for Rounds 3-5 (to be migrated later)
-      this.state.teams = calculateRoundEnd(
-        this.state.teams,
-        this.state.currentRound,
-        this.state.scenario.modifiers
-      );
+    } else if (this.state.currentRound === 3) {
+      this.calculateRound3Results();
+    } else if (this.state.currentRound === 4) {
+      this.calculateRound4Results();
+    } else if (this.state.currentRound === 5) {
+      this.calculateRound5Results();
     }
 
     // Capture round snapshots for Game Recap feature

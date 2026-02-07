@@ -8,8 +8,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "dev": "npx tsc && node server.js",
-    "start": "node server.js",
+    "dev": "npx tsx server.ts",
+    "start": "npx tsx server.ts",
     "build": "npx tsc",
     "lint": "eslint . --ext .ts"
   },
